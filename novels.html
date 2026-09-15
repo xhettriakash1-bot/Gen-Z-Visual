@@ -2,4 +2,10 @@
 <header><div class="logo">Gen-Z <span>Visual</span></div><a href="index.html" class="top-btn" style="background:white;color:black">Home</a></header>
 <div class="section"><div class="section-head"><h3>📖 All Novels</h3></div><div class="grid" id="grid"></div></div>
 <script>fetch('data/novels.xml').then(r=>r.text()).then(s=>{let x=new DOMParser().parseFromString(s,"text/xml");let g=document.getElementById("grid");g.innerHTML="";x.querySelectorAll("novel").forEach(n=>{let id=n.querySelector("id").textContent;let t=n.querySelector("title").textContent;let a=n.querySelector("author").textContent;let c=n.querySelector("cover").textContent;g.innerHTML+=`<div class="card" onclick="location.href='read.html?id=${id}'"><img src="${c}"><div class="card-info"><b>${t}</b><small>by ${a}</small></div></div>`})})</script>
+// SHOW MY UPLOADED NOVELS FROM DASHBOARD
+let myNovels = JSON.parse(localStorage.getItem("myNovels")||"[]");
+myNovels.forEach(n=>{
+  // create card same as XML novels
+  grid.innerHTML += `<div class="card" onclick="location.href='read.html?id=my_${n.id}'"><img src="${n.cover}"><h3>${n.title}</h3><p>${n.author}</p></div>`;
+});
 </body></html>
