@@ -1,226 +1,62 @@
 <!DOCTYPE html>
 <html><head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Admin Panel - Gen-Z Visual</title>
+<title>Admin Panel</title>
 <link rel="stylesheet" href="style.css">
 <style>
-*{box-sizing:border-box} body{background:#0a0a0a;color:white;margin:0;font-family:system-ui}
-header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#0a0a0a;border-bottom:1px solid #222;position:sticky;top:0;z-index:10}
-.logo{font-weight:900;font-size:20px}.logo span{color:#a855f7}
-.wrap{max-width:1000px;margin:0 auto;padding:16px;padding-bottom:120px}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0}
-.stat{background:#141417;border:1px solid #232326;border-radius:16px;padding:16px;text-align:center}
-.stat b{font-size:26px;display:block}
+*{box-sizing:border-box}body{background:#0a0a0a;color:white;margin:0;font-family:system-ui}
+header{display:flex;justify-content:space-between;padding:12px 16px;border-bottom:1px solid #222;position:sticky;top:0;background:#0a0a0a;z-index:10}
+.logo{font-weight:900}.logo span{color:#a855f7}
+.wrap{max-width:1000px;margin:0 auto;padding:16px}
 .card{background:#141417;border:1px solid #232326;border-radius:20px;padding:16px;margin-bottom:16px}
-.row{display:flex;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid #1e1e22;flex-wrap:wrap}
-.row:last-child{border:none}.row img{width:50px;height:70px;border-radius:10px;object-fit:cover}
+.row{display:flex;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid #222;flex-wrap:wrap}
 .badge{font-size:10px;padding:3px 8px;border-radius:99px;font-weight:800}
 .badge-reader{background:#1e293b;color:#60a5fa}.badge-creator{background:#2a1e3b;color:#c084fc}
 .btn{padding:7px 14px;border-radius:99px;border:none;font-weight:800;cursor:pointer;font-size:12px}
-.btn-del{background:#ff0055;color:white}.btn-login{background:white;color:black}.btn-edit{background:#a855f7;color:white}
-.btn-save{background:#a855f7;color:white;padding:12px;width:100%;margin-top:8px}.btn-create{background:white;color:black;padding:12px;width:100%;margin-top:8px;font-weight:900}
-.tabs{display:flex;gap:8px;background:#141417;border:1px solid #232326;padding:4px;border-radius:99px;width:fit-content;margin:18px 0;flex-wrap:wrap}
-.tabs div{padding:10px 18px;border-radius:99px;font-weight:800;font-size:13px;cursor:pointer;color:#888}
-.tabs div.on{background:white;color:black}
-input{width:100%;padding:12px;background:#0e0e10;border:1px solid #2a2a2e;border-radius:12px;color:white;outline:none;margin:6px 0}
+.btn-del{background:#ff0055;color:white}.btn-approve{background:#22c55e;color:black}
+.tabs{display:flex;gap:6px;background:#141417;border:1px solid #232326;padding:4px;border-radius:99px;width:fit-content;margin:18px 0;flex-wrap:wrap}
+.tabs div{padding:9px 14px;border-radius:99px;font-weight:800;font-size:12px;cursor:pointer;color:#888}.tabs div.on{background:white;color:black}
 .small{font-size:11px;color:#666}
-.role-pick{display:flex;gap:8px;margin:8px 0}
-.role-pick div{flex:1;text-align:center;padding:10px;border-radius:99px;border:1px solid #2a2a2e;cursor:pointer;font-weight:700;color:#888;background:#0e0e10}
-.role-pick div.on{background:white;color:black}
-/* EDIT MODAL */
-.modal{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:none;place-items:center;z-index:100;padding:16px}
-.modal.on{display:grid}
-.modal-box{background:#141417;border:1px solid #2a2a2e;border-radius:20px;padding:20px;max-width:400px;width:100%}
 </style>
 </head>
 <body>
-<header>
-<div class="logo">ADMIN <span>PANEL</span></div>
-<div style="display:flex;gap:8px">
-<a href="index.html" style="background:#1e1e22;color:white;text-decoration:none;padding:8px 14px;border-radius:99px;font-size:12px;font-weight:700">Home</a>
-<button onclick="logout()" style="background:#ff0055;color:white;border:none;padding:8px 14px;border-radius:99px;font-weight:700;cursor:pointer">Logout</button>
-</div>
-</header>
-
+<header><div class="logo">ADMIN <span>PANEL</span></div><div style="display:flex;gap:6px"><a href="index.html" style="background:#222;color:white;text-decoration:none;padding:8px 14px;border-radius:99px">Home</a><button onclick="logout()" style="background:#ff0055;color:white;border:none;padding:8px 14px;border-radius:99px;font-weight:700">Logout</button></div></header>
 <div class="wrap">
-<h2>Welcome, Akash 👑</h2>
-<p class="small">akashchettri2003@gmail.com • Super Admin</p>
-
-<div class="stats">
-<div class="stat"><b id="uCount">0</b><span>Users</span></div>
-<div class="stat"><b id="nCount">0</b><span>Novels</span></div>
-<div class="stat"><b id="cCount">0</b><span>Comics</span></div>
-</div>
-
-<div class="tabs">
-<div id="tUsers" class="on">👥 Users</div>
-<div id="tCreate" style="background:#a855f7;color:white">+ Create</div>
-<div id="tNovels">📚 Novels</div>
-<div id="tComics">💥 Comics</div>
-<div id="tSettings">⚙️ Settings</div>
-</div>
-
+<h2>Admin Panel 👑</h2>
+<p class="small" id="adminInfo"></p>
+<div class="tabs"><div id="tUsers" class="on">👥 Users</div><div id="tPending">⏳ Pending</div></div>
 <div id="boxUsers" class="card"></div>
-
-<div id="boxCreate" class="card" style="display:none;border-color:#a855f7">
-<h3 style="color:#a855f7;margin:0">+ Create Account</h3>
-<div class="role-pick"><div id="crReader" class="on">📚 Reader</div><div id="crCreator">🎨 Creator</div></div>
-<input id="newName" placeholder="Full Name*">
-<input id="newEmail" placeholder="Email*">
-<input id="newPass" placeholder="Password*" type="text">
-<button class="btn btn-create" onclick="createUserFromAdmin()">Create Account</button>
-<p id="createMsg" class="small" style="margin-top:8px"></p>
+<div id="boxPending" class="card" style="display:none"></div>
 </div>
-
-<div id="boxNovels" class="card" style="display:none"></div>
-<div id="boxComics" class="card" style="display:none"></div>
-
-<div id="boxSettings" class="card" style="display:none">
-<h3>⚙️ Admin Password</h3>
-<input id="curEmail" disabled>
-<input id="curPass" type="password" placeholder="Current password">
-<input id="newPassSet" type="password" placeholder="New password min 8">
-<input id="confirmPassSet" type="password" placeholder="Confirm new">
-<button class="btn btn-save" onclick="changeAdminPass()">Update Password</button>
-<p id="passMsg" class="small"></p>
-</div>
-</div>
-
-<!-- EDIT USER MODAL -->
-<div id="editModal" class="modal">
-<div class="modal-box">
-<h3 style="margin-top:0">✏️ Edit User</h3>
-<input id="editName" placeholder="Name">
-<input id="editEmail" placeholder="Email">
-<input id="editPass" placeholder="Password">
-<div class="role-pick"><div id="editRoleReader" class="on">📚 Reader</div><div id="editRoleCreator">🎨 Creator</div></div>
-<input type="hidden" id="editIndex">
-<button class="btn btn-save" onclick="saveEdit()">💾 Save Changes</button>
-<button class="btn" style="background:#222;color:white;width:100%;margin-top:8px;padding:12px;border-radius:99px" onclick="closeEdit()">Cancel</button>
-<p id="editMsg" class="small" style="margin-top:8px"></p>
-</div>
-</div>
-
 <script>
-const ADMINS = [
- {email:"akashchettri2003@gmail.com", pass:"Akashchettri2003@123#"},
- {email:"xhettriakash1@gmail.com", pass:"Akash123"}
-];
-const DEFAULT_PASS="Akashchettri2003@123#";
+const API="http://localhost:3000/api";
 if(localStorage.getItem("role")!=="admin"){alert("Admin only");location.href="login.html";}
-function getAdminPass(){
- let curUser = localStorage.getItem("genz_user");
- if(curUser=="xhettriakash1@gmail.com") return "Akash123";
- return localStorage.getItem("adminCustomPass") || DEFAULT_PASS;
-}
+document.getElementById("adminInfo").innerText=localStorage.getItem("genz_user");
 
-let createRole="reader", editRole="reader";
-document.getElementById("crReader").onclick=()=>{createRole="reader"; document.getElementById("crReader").className="on"; document.getElementById("crCreator").className="";};
-document.getElementById("crCreator").onclick=()=>{createRole="creator"; document.getElementById("crCreator").className="on"; document.getElementById("crReader").className="";};
-document.getElementById("editRoleReader").onclick=()=>{editRole="reader"; document.getElementById("editRoleReader").className="on"; document.getElementById("editRoleCreator").className="";};
-document.getElementById("editRoleCreator").onclick=()=>{editRole="creator"; document.getElementById("editRoleCreator").className="on"; document.getElementById("editRoleReader").className="";};
+document.getElementById("tUsers").onclick=()=>{document.getElementById("boxUsers").style.display="block";document.getElementById("boxPending").style.display="none";document.getElementById("tUsers").className="on";document.getElementById("tPending").className=""; loadUsers();};
+document.getElementById("tPending").onclick=()=>{document.getElementById("boxUsers").style.display="none";document.getElementById("boxPending").style.display="block";document.getElementById("tPending").className="on";document.getElementById("tUsers").className=""; loadPending();};
 
-document.getElementById("tUsers").onclick=()=>switchTab("Users");
-document.getElementById("tCreate").onclick=()=>switchTab("Create");
-document.getElementById("tNovels").onclick=()=>switchTab("Novels");
-document.getElementById("tComics").onclick=()=>switchTab("Comics");
-document.getElementById("tSettings").onclick=()=>switchTab("Settings");
-
-function switchTab(t){
- document.getElementById("boxUsers").style.display=t=="Users"?"block":"none";
- document.getElementById("boxCreate").style.display=t=="Create"?"block":"none";
- document.getElementById("boxNovels").style.display=t=="Novels"?"block":"none";
- document.getElementById("boxComics").style.display=t=="Comics"?"block":"none";
- document.getElementById("boxSettings").style.display=t=="Settings"?"block":"none";
- ["tUsers","tCreate","tNovels","tComics","tSettings"].forEach(id=>{ document.getElementById(id).className = (id=="t"+t?"on":""); });
-}
-
-function load(){
- let users=JSON.parse(localStorage.getItem("allUsers")||"[]");
- let novels=JSON.parse(localStorage.getItem("myNovels")||"[]");
- let comics=JSON.parse(localStorage.getItem("myComics")||"[]");
- document.getElementById("uCount").innerText=users.length;
- document.getElementById("nCount").innerText=novels.length;
- document.getElementById("cCount").innerText=comics.length;
- let hu=`<h3>All Users (${users.length})</h3>`;
- users.forEach((u,i)=>{
-  hu+=`<div class="row">
-   <div style="width:36px;height:36px;border-radius:99px;background:#222;display:grid;place-items:center;font-weight:900">${u.name[0].toUpperCase()}</div>
-   <div style="flex:1"><b>${u.name}</b> <span class="badge ${u.role=='creator'?'badge-creator':'badge-reader'}">${u.role}</span><br><span class="small">${u.email} • ${u.pass}</span></div>
-   <div style="display:flex;gap:6px;flex-wrap:wrap">
-    <button class="btn btn-edit" onclick="openEdit(${i})">Edit</button>
-    <button class="btn btn-login" onclick="loginAs('${u.email}')">Login</button>
-    <button class="btn btn-del" onclick="delUser(${i})">X</button>
-   </div>
-  </div>`;
+async function loadUsers(){
+ let r=await fetch(API+"/users"); let users=await r.json();
+ let h=`<h3>All Users (${users.length})</h3>`;
+ users.forEach(u=>{
+  h+=`<div class="row"><div style="flex:1"><b>${u.name}</b> <span class="badge ${u.role=='creator'?'badge-creator':'badge-reader'}">${u.role}</span> ${u.verified?'':'(pending)'}<br><span class="small">${u.email} • ${u.password}</span></div><div style="display:flex;gap:5px">${!u.verified?`<button class="btn btn-approve" onclick="approve('${u.email}')">Approve</button>`:""}<button class="btn btn-del" onclick="del('${u.email}')">Delete</button></div></div>`;
  });
- document.getElementById("boxUsers").innerHTML=hu;
- let hn=`<h3>Novels (${novels.length})</h3>`; novels.forEach(n=>{ hn+=`<div class="row"><img src="${n.cover}"><div style="flex:1"><b>${n.title}</b></div><button class="btn btn-del" onclick="delNovel(${n.id})">Del</button></div>`; });
- document.getElementById("boxNovels").innerHTML=hn;
- let hc=`<h3>Comics (${comics.length})</h3>`; comics.forEach(c=>{ hc+=`<div class="row"><img src="${c.cover}"><div style="flex:1"><b>${c.title}</b></div><button class="btn btn-del" onclick="delComic(${c.id})">Del</button></div>`; });
- document.getElementById("boxComics").innerHTML=hc;
+ document.getElementById("boxUsers").innerHTML=h;
 }
-
-function createUserFromAdmin(){
- let name=document.getElementById("newName").value.trim();
- let email=document.getElementById("newEmail").value.trim().toLowerCase();
- let pass=document.getElementById("newPass").value.trim();
- let msg=document.getElementById("createMsg");
- if(!name||!email||!pass){ msg.style.color="#ff6b6b"; msg.innerText="Fill all"; return; }
- let users=JSON.parse(localStorage.getItem("allUsers")||"[]");
- if(users.find(u=>u.email==email)){ msg.style.color="#ff6b6b"; msg.innerText="Exists"; return; }
- users.push({name,email,pass,role:createRole});
- localStorage.setItem("allUsers",JSON.stringify(users));
- msg.style.color="#22c55e"; msg.innerText="✅ Created "+createRole+": "+email;
- document.getElementById("newName").value=""; document.getElementById("newEmail").value=""; document.getElementById("newPass").value="";
- load();
+async function loadPending(){
+ let r=await fetch(API+"/pending"); let pending=await r.json();
+ let h=`<h3>Pending Creators (${pending.length})</h3>`;
+ if(pending.length==0) h+="<p class='small'>No pending</p>";
+ pending.forEach(p=>{
+  h+=`<div class="row" style="flex-direction:column;align-items:flex-start"><b>${p.name}</b><span class="small">${p.email}</span><span class="small">${p.portfolio}</span><span class="small">${p.bio}</span><div style="display:flex;gap:6px;margin-top:8px"><button class="btn btn-approve" onclick="approve('${p.email}')">Approve</button><button class="btn btn-del" onclick="del('${p.email}')">Reject</button></div></div>`;
+ });
+ document.getElementById("boxPending").innerHTML=h;
 }
-
-function openEdit(i){
- let users=JSON.parse(localStorage.getItem("allUsers")||"[]");
- let u=users[i];
- document.getElementById("editIndex").value=i;
- document.getElementById("editName").value=u.name;
- document.getElementById("editEmail").value=u.email;
- document.getElementById("editPass").value=u.pass;
- editRole=u.role;
- if(editRole=="reader"){ document.getElementById("editRoleReader").className="on"; document.getElementById("editRoleCreator").className=""; }
- else{ document.getElementById("editRoleCreator").className="on"; document.getElementById("editRoleReader").className=""; }
- document.getElementById("editModal").classList.add("on");
-}
-function closeEdit(){ document.getElementById("editModal").classList.remove("on"); }
-function saveEdit(){
- let i=parseInt(document.getElementById("editIndex").value);
- let name=document.getElementById("editName").value.trim();
- let email=document.getElementById("editEmail").value.trim().toLowerCase();
- let pass=document.getElementById("editPass").value.trim();
- let msg=document.getElementById("editMsg");
- if(!name||!email||!pass){ msg.style.color="#ff6b6b"; msg.innerText="Fill all"; return; }
- let users=JSON.parse(localStorage.getItem("allUsers")||"[]");
- // check duplicate email except current
- if(users.some((u,idx)=>idx!=i && u.email==email)){ msg.style.color="#ff6b6b"; msg.innerText="Email already used"; return; }
- users[i]={name,email,pass,role:editRole};
- localStorage.setItem("allUsers",JSON.stringify(users));
- msg.style.color="#22c55e"; msg.innerText="✅ Updated!";
- setTimeout(()=>{ closeEdit(); load(); },600);
-}
-
-function changeAdminPass(){
- let cur=document.getElementById("curPass").value;
- let np=document.getElementById("newPassSet").value;
- let cp=document.getElementById("confirmPassSet").value;
- let msg=document.getElementById("passMsg");
- if(cur!==getAdminPass()){ msg.style.color="#ff6b6b"; msg.innerText="❌ Current wrong"; return; }
- if(np.length<8){ msg.style.color="#ff6b6b"; msg.innerText="❌ Min 8"; return; }
- if(np!==cp){ msg.style.color="#ff6b6b"; msg.innerText="❌ Not match"; return; }
- localStorage.setItem("adminCustomPass",np); msg.style.color="#22c55e"; msg.innerText="✅ Updated: "+np;
-}
-function delUser(i){ if(!confirm("Delete?"))return; let u=JSON.parse(localStorage.getItem("allUsers")||"[]"); u.splice(i,1); localStorage.setItem("allUsers",JSON.stringify(u)); load(); }
-window.delNovel=(id)=>{ let a=JSON.parse(localStorage.getItem("myNovels")||"[]").filter(x=>x.id!=id); localStorage.setItem("myNovels",JSON.stringify(a)); load(); }
-window.delComic=(id)=>{ let a=JSON.parse(localStorage.getItem("myComics")||"[]").filter(x=>x.id!=id); localStorage.setItem("myComics",JSON.stringify(a)); load(); }
-function loginAs(email){ let u=JSON.parse(localStorage.getItem("allUsers")||"[]").find(x=>x.email==email); localStorage.setItem("isLoggedIn","true"); localStorage.setItem("role",u.role); localStorage.setItem("genz_user",u.email); localStorage.setItem("genz_name",u.name); location.href=u.role=="creator"?"dashboard.html":"index.html"; }
-function logout(){ localStorage.removeItem("isLoggedIn"); localStorage.removeItem("role"); localStorage.removeItem("genz_user"); localStorage.removeItem("genz_name"); location.href="login.html"; }
-load();
+async function approve(email){ await fetch(API+"/approve",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email})}); loadUsers(); loadPending(); }
+async function del(email){ if(!confirm("Delete "+email+"?"))return; await fetch(API+"/delete",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email})}); loadUsers(); loadPending(); }
+function logout(){ localStorage.clear(); location.href="login.html"; }
+loadUsers();
 </script>
 </body>
- </html>
+</html>
