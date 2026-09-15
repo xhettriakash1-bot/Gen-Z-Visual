@@ -1,4 +1,4 @@
-// GEN-Z VISUAL - v550 SECURE + DYNAMIC + ADMIN MANAGE
+// GEN-Z VISUAL - v650 FIXED FINAL
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -16,12 +16,21 @@ const app = express();
 app.set('trust proxy', 1);
 app.disable('x-powered-by');
 
-// MONGO
-const MONGO_URI = process.env.MONGODB_URI || "";
-if(MONGO_URI) mongoose.connect(MONGO_URI).then(()=>console.log("✅ Mongo Connected v550")).catch(e=>console.log("Mongo fail", e.message));
-else console.log("⚠️ File mode");
+// FIXED MONGO - supports both MONGO_URI and MONGODB_URI
+const MONGO_URI = process.env.MONGO_URI || process.env.MONGODB_URI || "";
+console.log("MONGO_URI exists?", MONGO_URI? "YES" : "NO");
 
-// SCHEMAS
+if(MONGO_URI){
+  mongoose.connect(MONGO_URI, { dbName: "genzvisual" }).then(()=>{
+    console.log("✅ Mongo Connected v650");
+    console.log("v650 LIVE");
+    ensureAdmins();
+  }).catch(e=> console.log("❌ Mongo fail:", e.message));
+} else {
+  console.log("⚠️ File mode v650");
+  console.log("v650 LIVE");
+}
+
 const userSchema = new mongoose.Schema({
   email: {type:String, unique:true, lowercase:true},
   password: String,
@@ -38,13 +47,11 @@ app.use(mongoSanitize());
 app.use(hpp());
 app.use('/api/', rateLimit({windowMs:15*60*1000, max:500}));
 
-// FILE HELPERS
 const readJSON = (f)=>{ try{return JSON.parse(fs.readFileSync(path.join(__dirname,f),'utf8'))}catch{return []} };
 const writeJSON = (f,d)=>{ try{fs.writeFileSync(path.join(__dirname,f), JSON.stringify(d,null,2))}catch{} };
 if(!fs.existsSync(path.join(__dirname,'users.json'))) writeJSON('users.json',[]);
 if(!fs.existsSync(path.join(__dirname,'novels.json'))) writeJSON('novels.json',[]);
 
-// DEFAULT ADMINS
 const DEFAULT_ADMINS = [
   { email: (process.env.ADMIN1_EMAIL || "xhettriakash1@gmail.com").toLowerCase(), password: process.env.ADMIN1_PASS || "Akash123" },
   { email: (process.env.ADMIN2_EMAIL || "akashchettri2003@gmail.com").toLowerCase(), password: process.env.ADMIN2_PASS || "Akashchettri2003" }
@@ -66,9 +73,7 @@ async function ensureAdmins(){
     }
   }
 }
-ensureAdmins();
 
-// SECURE MIDDLEWARE - JWT
 const protect = async (req,res,next)=>{
   try{
     const token = req.headers.authorization?.split(" ")[1];
@@ -79,9 +84,7 @@ const protect = async (req,res,next)=>{
 };
 const isAdmin = (req,res,next)=>{ if(req.user.role!=='admin') return res.status(403).json({error:"Admin only"}); next(); };
 
-// API
-app.get('/api/health', (req,res)=>res.json({ok:true, v:"v550"}));
-
+app.get('/api/health', (req,res)=>res.json({ok:true, v:"v650", mongo: mongoose.connection.readyState===1?"connected":"disconnected"}));
 app.post('/api/register', async (req,res)=>{
   const {email,password,name} = req.body;
   if(!email||!password) return res.status(400).json({error:"Required"});
@@ -97,7 +100,6 @@ app.post('/api/register', async (req,res)=>{
   }
   res.json({success:true, msg:"Registered"});
 });
-
 app.post('/api/login', async (req,res)=>{
   const {email,password} = req.body;
   const emailL = email.toLowerCase();
@@ -107,12 +109,10 @@ app.post('/api/login', async (req,res)=>{
   const token = jwt.sign({id:user._id||user.id, email:user.email, role:user.role}, process.env.JWT_SECRET||"GENZ_SECRET_2026", {expiresIn:"7d"});
   res.json({success:true, token, user:{email:user.email, role:user.role, name:user.name}});
 });
-
-// ★ NEW 1: ADMIN CHANGE OWN PASSWORD
 app.post('/api/admin/change-password', protect, isAdmin, async (req,res)=>{
   const {oldPassword, newPassword} = req.body;
   let user = mongoose.connection.readyState===1? await User.findById(req.user.id) : null;
-  if(!user){ // file mode
+  if(!user){
     let users = readJSON('users.json');
     let idx = users.findIndex(u=>u.email===req.user.email);
     if(idx===-1) return res.json({ok:false, msg:"Not found"});
@@ -126,8 +126,6 @@ app.post('/api/admin/change-password', protect, isAdmin, async (req,res)=>{
   await user.save();
   res.json({ok:true, msg:"Password changed!"});
 });
-
-// ★ NEW 2: MAKE MORE ADMIN
 app.post('/api/admin/make-admin', protect, isAdmin, async (req,res)=>{
   const {email} = req.body;
   const emailL = email.toLowerCase();
@@ -143,12 +141,9 @@ app.post('/api/admin/make-admin', protect, isAdmin, async (req,res)=>{
   }
   res.json({ok:true, msg:`${email} is now ADMIN`});
 });
-
 app.get('/api/users', protect, isAdmin, async (req,res)=>{
   if(mongoose.connection.readyState===1) res.json(await User.find().select('-password'));
   else res.json(readJSON('users.json').map(u=>({email:u.email, role:u.role, name:u.name})));
 });
-
-app.get('/', (req,res)=>res.send("🟢 v550 SECURE & DYNAMIC LIVE - Admin can change password + make admin"));
-
-app.listen(process.env.PORT || 10000, ()=>console.log("v550 LIVE"));
+app.get('/', (req,res)=>res.send("🟢 v650 LIVE - Mongo Connected"));
+app.listen(process.env.PORT || 10000, ()=>console.log("v650 LIVE"));
