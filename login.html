@@ -4,9 +4,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Login - Gen-Z Visual v350</title>
 <link rel="stylesheet" href="style.css?v=350">
-<meta http-equiv="X-Content-Type-Options" content="nosniff">
 <script>
-// v350 SMART FIREWALL - PROTECTED but OPEN FOR ALL - KEPT SAME
 if(window.top!==window.self) window.top.location=window.self.location;
 const Firewall={
   patterns:[/<script/gi,/javascript:/gi,/onerror=/gi,/onload=/gi,/union.*select/gi,/<iframe/gi,/eval\(/gi],
@@ -29,7 +27,6 @@ window.FirewallCheck=()=>{
   if(now-lastSubmit<2000){alert("⛔ Too fast - wait 2 sec"); return false;} 
   lastSubmit=now; return true;
 };
-console.log("🛡️ Firewall v350 Active - Public Access Allowed");
 </script>
 <style>
 *{box-sizing:border-box}body{background:#0a0a0a;color:white;margin:0;font-family:system-ui}
@@ -57,7 +54,7 @@ input,textarea{width:100%;padding:13px;margin:7px 0;background:#0e0e10;border:1p
 <input id="lPass" type="password" placeholder="Password">
 <button class="btn" id="btnLogin">Login</button>
 <p id="lMsg" class="msg"></p>
-<p style="font-size:11px;color:#22c55e;text-align:center;margin-top:10px">🛡️ Firewall v350 Active - Backend: gen-z-visual-1</p>
+<p style="font-size:11px;color:#22c55e;text-align:center;margin-top:10px">🛡️ Firewall v350 Active - Backend: gen-z-visual-2 ✅</p>
 </div>
 <div id="signupBox" style="display:none">
 <div class="role"><div id="rReader" class="on">📚 Reader</div><div id="rCreator">🎨 Creator</div></div>
@@ -77,8 +74,8 @@ input,textarea{width:100%;padding:13px;margin:7px 0;background:#0e0e10;border:1p
 </div>
 </div>
 <script>
-// ===== FIXED API - YOUR LIVE BACKEND =====
-const API = "https://gen-z-visual-1.onrender.com/api";
+// ===== FIXED API - NEW LIVE BACKEND v2 =====
+const API = "https://gen-z-visual-2.onrender.com/api";
 let curRole="reader";
 let rR=document.getElementById("rReader"), rC=document.getElementById("rCreator"), cExtra=document.getElementById("creatorExtra");
 rR.onclick=()=>{curRole="reader"; rR.className="on"; rC.className=""; cExtra.style.display="none";};
@@ -86,4 +83,48 @@ rC.onclick=()=>{curRole="creator"; rC.className="on"; rR.className=""; cExtra.st
 document.getElementById("tLogin").onclick=()=>{document.getElementById("loginBox").style.display="block";document.getElementById("signupBox").style.display="none";document.getElementById("tLogin").className="on";document.getElementById("tSignup").className="";};
 document.getElementById("tSignup").onclick=()=>{document.getElementById("loginBox").style.display="none";document.getElementById("signupBox").style.display="block";document.getElementById("tSignup").className="on";document.getElementById("tLogin").className="";};
 
-document.getElement
+document.getElementById("btnLogin").onclick=async()=>{
+  if(!FirewallCheck()) return;
+  const email=document.getElementById("lEmail").value.trim();
+  const password=document.getElementById("lPass").value;
+  const msg=document.getElementById("lMsg");
+  if(!email||!password){msg.innerText="❌ Fill all fields";return;}
+  msg.innerText="⏳ Logging in...";
+  try{
+    const res=await fetch(`${API}/auth/login`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email,password})});
+    const data=await res.json();
+    if(res.ok){
+      localStorage.setItem("token",data.token);
+      localStorage.setItem("user",JSON.stringify(data.user));
+      msg.style.color="#22c55e"; msg.innerText="✅ Login success! Redirecting...";
+      setTimeout(()=>{ if(data.user.role==="admin") location.href="admin.html"; else location.href="dashboard.html"; },800);
+    }else{ msg.style.color="red"; msg.innerText="❌ "+(data.message||"Login failed"); }
+  }catch(e){ msg.style.color="red"; msg.innerText="❌ Backend error - try again"; }
+};
+
+document.getElementById("btnSignup").onclick=async()=>{
+  if(!FirewallCheck()) return;
+  const name=document.getElementById("sName").value.trim();
+  const email=document.getElementById("sEmail").value.trim();
+  const pass=document.getElementById("sPass").value;
+  const pass2=document.getElementById("sPass2").value;
+  const agree=document.getElementById("agree").checked;
+  const msg=document.getElementById("sMsg");
+  if(!name||!email||!pass||!pass2){msg.innerText="❌ Fill all * fields";return;}
+  if(pass!==pass2){msg.innerText="❌ Passwords not match";return;}
+  if(!agree){msg.innerText="❌ Agree terms";return;}
+  let body={name,email,password:pass,role:curRole};
+  if(curRole==="creator"){
+    body.creatorCode=document.getElementById("sCode").value.trim();
+    body.portfolio=document.getElementById("sPortfolio").value.trim();
+    body.bio=document.getElementById("sBio").value.trim();
+  }
+  msg.innerText="⏳ Creating...";
+  try{
+    const res=await fetch(`${API}/auth/register`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
+    const data=await res.json();
+    if(res.ok){ msg.style.color="#22c55e"; msg.innerText="✅ Account created! Go to Login"; }
+    else{ msg.style.color="red"; msg.innerText="❌ "+(data.message||"Failed"); }
+  }catch(e){ msg.style.color="red"; msg.innerText="❌ Backend error"; }
+};
+</script></body></html>
