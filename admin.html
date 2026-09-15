@@ -3,35 +3,40 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Admin Panel - Gen-Z Visual</title>
-<link rel="stylesheet" href="style.css">
-<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<link rel="stylesheet" href="style.css?v=3">
 <script>
-// ===== OPEN FOR ALL - NO DOMAIN BLOCK =====
-// Only anti-clickjack protection kept
+// ===== FIREWALL v4 - ADMIN ONLY =====
 (function(){
+  // LAYER 1: DOMAIN LOCK
+  const ALLOWED_DOMAINS = ["sh1-bot.github.io","xhettriakash1.github.io","localhost","127.0.0.1"];
+  const host = location.hostname;
+  if(location.protocol!=="file:" && host!=="" && !ALLOWED_DOMAINS.some(h=>host.includes(h))){
+    document.documentElement.innerHTML="<h1 style='color:red;text-align:center;margin-top:20%;font-family:system-ui'>⛔ Unauthorized Domain<br><small style='font-size:14px;color:#888'>"+host+" not allowed</small></h1>";
+    throw new Error("Blocked Domain");
+  }
+  // LAYER 2: ANTI-CLICKJACK
   if(window.top!==window.self) window.top.location=window.self.location;
-})();
 
-// ===== ADMIN LOCK - ONLY YOU CAN OPEN THIS PAGE =====
-(function(){
+  // LAYER 3: ADMIN LOCK
   const role = localStorage.getItem("role");
   const user = localStorage.getItem("genz_user");
   const ALLOWED_ADMINS = ["xhettriakash1@gmail.com","akashchettri2003@gmail.com"];
+  
   if(role!=="admin" || !ALLOWED_ADMINS.includes(user)){
     document.addEventListener('DOMContentLoaded', ()=>{
       document.body.innerHTML = `
       <div style="background:#000;color:white;height:100vh;display:flex;align-items:center;justify-content:center;flex-direction:column;font-family:system-ui;text-align:center;padding:20px">
-        <h1 style="color:red;font-size:40px">⛔ ACCESS DENIED</h1>
+        <h1 style="color:#ef4444;font-size:40px">⛔ ACCESS DENIED</h1>
         <p style="color:#888">Admin only. Your attempt is logged.</p>
-        <p style="color:#555;font-size:12px">Logged as: ${user||'Guest'}</p>
-        <a href="login.html" style="margin-top:20px;background:white;color:black;padding:12px 24px;border-radius:99px;text-decoration:none;font-weight:900">Go to Login</a>
+        <p style="color:#555;font-size:12px;margin-top:8px">Logged as: ${user||'Guest'}</p>
+        <p style="color:#333;font-size:10px;margin-top:4px">IP logged • ${new Date().toLocaleString()}</p>
+        <a href="login.html" style="margin-top:24px;background:white;color:black;padding:12px 24px;border-radius:99px;text-decoration:none;font-weight:900">Go to Login</a>
         <a href="index.html" style="margin-top:12px;color:#666;text-decoration:none;font-size:13px">Back to Home</a>
       </div>`;
     });
     throw new Error("Not Admin");
   }
 })();
-document.addEventListener('contextmenu',e=>e.preventDefault());
 </script>
 <style>
 *{box-sizing:border-box}body{background:#0a0a0a;color:white;margin:0;font-family:system-ui}
@@ -66,7 +71,7 @@ td{padding:8px;border-bottom:1px solid #1a1a1a}
 <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
 <div class="card" style="flex:1;min-width:150px;text-align:center"><div style="font-size:28px;font-weight:900" id="totalUsers">0</div><div style="font-size:12px;color:#888">Total Users</div></div>
 <div class="card" style="flex:1;min-width:150px;text-align:center"><div style="font-size:28px;font-weight:900;color:#f59e0b" id="pendingCount">0</div><div style="font-size:12px;color:#888">Pending Creators</div></div>
-<div class="card" style="flex:1;min-width:150px;text-align:center"><div style="font-size:28px;font-weight:900;color:#22c55e">OPEN</div><div style="font-size:12px;color:#888">Public Site</div></div>
+<div class="card" style="flex:1;min-width:150px;text-align:center"><div style="font-size:28px;font-weight:900;color:#22c55e">SECURED</div><div style="font-size:12px;color:#888">Firewall Active</div></div>
 </div>
 
 <div class="card">
@@ -85,9 +90,7 @@ td{padding:8px;border-bottom:1px solid #1a1a1a}
 </div>
 
 <script>
-const API = "http://localhost:3000/api";
-// When you deploy backend, change to: https://your-app.onrender.com/api
-
+const API = "https://gen-z-backend.onrender.com/api"; // CHANGE THIS to your real Render link
 document.getElementById("adminEmail").innerText = localStorage.getItem("genz_user") || "Admin";
 function logout(){ localStorage.clear(); location.href="login.html"; }
 
@@ -130,4 +133,4 @@ async function deleteUser(email){
 loadData();
 </script>
 </body>
-  </html>
+</html>
