@@ -1,1 +1,102 @@
-<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width, initial-scale=1"><title>Dashboard</title><style>body{background:#0a0a0a;color:white;font-family:sans-serif;padding:20px}.card{background:#1a1a1a;padding:15px;border-radius:12px;margin:10px 0}</style></head><body><h2>📊 Dashboard</h2><div class="card">Welcome: <span id="u"></span></div><div class="card">Your Uploads: 0 (will show from comics.xml)</div><div class="card">Storage: Connected to Google Drive ✅</div><script>document.getElementById('u').innerText=localStorage.getItem('user')||'Guest';</script></body></html>
+<!DOCTYPE html>
+<html><head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Creator Studio</title>
+<link rel="stylesheet" href="style.css">
+<style>
+.studio{max-width:600px;margin:20px auto;padding:0 16px}
+.tab{display:flex;gap:8px;background:#0e0e10;padding:4px;border-radius:99px;margin-bottom:16px}
+.tab button{flex:1;padding:10px;border:none;border-radius:99px;font-weight:800;background:transparent;color:#888;cursor:pointer}
+.tab button.active{background:white;color:black}
+.form{background:#141417;border:1px solid #232326;border-radius:20px;padding:18px;margin-bottom:16px}
+.form input,.form textarea,.form select{width:100%;padding:12px;margin:8px 0;background:#0e0e10;border:1px solid #2a2a2e;border-radius:10px;color:white;outline:none}
+.form button{width:100%;padding:14px;background:white;color:black;border:none;border-radius:99px;font-weight:900;cursor:pointer;margin-top:8px}
+.preview{width:100px;height:140px;border-radius:10px;object-fit:cover;background:#222;display:none;margin-top:8px}
+.item{background:#141417;border:1px solid #232326;border-radius:14px;padding:12px;margin-bottom:8px;display:flex;gap:10px;align-items:center}
+.item img{width:50px;height:70px;border-radius:8px;object-fit:cover}
+</style></head><body>
+<header><div class="logo">Creator Studio</div><button onclick="logout()" class="top-btn" style="background:#ff0055;color:white;border:none;cursor:pointer">Logout</button></header>
+
+<div class="studio">
+<h2 id="welcome" style="margin:16px 0 8px">Studio</h2>
+
+<div class="tab">
+<button id="b1" class="active" onclick="switchTab('novel')">Upload Novel</button>
+<button id="b2" onclick="switchTab('comic')">Upload Comic</button>
+</div>
+
+<!-- NOVEL FORM -->
+<div id="novelForm" class="form">
+<h3>New Novel</h3>
+<input id="nTitle" placeholder="Novel Title">
+<input id="nAuthor" placeholder="Author Name">
+<select id="nGenre"><option>Fantasy</option><option>Romance</option><option>Action</option><option>Horror</option><option>Sci-Fi</option></select>
+<label style="font-size:11px;color:#888">Cover Image (from file)</label>
+<input type="file" id="nCoverFile" accept="image/*" onchange="previewFile(this,'nPreview')">
+<img id="nPreview" class="preview">
+<label style="font-size:11px;color:#888">PDF File (from device)</label>
+<input type="file" id="nPdfFile" accept="application/pdf">
+<input id="nPdfLink" placeholder="OR Paste PDF Link (drive link)">
+<textarea id="nDesc" placeholder="Description"></textarea>
+<button onclick="publishNovel()">📚 Publish Novel</button>
+</div>
+
+<!-- COMIC FORM -->
+<div id="comicForm" class="form" style="display:none">
+<h3>New Comic</h3>
+<input id="cTitle" placeholder="Comic Title">
+<input id="cAuthor" placeholder="Author">
+<label style="font-size:11px;color:#888">Cover Image</label>
+<input type="file" id="cCoverFile" accept="image/*" onchange="previewFile(this,'cPreview')">
+<img id="cPreview" class="preview">
+<label style="font-size:11px;color:#888">Comic Pages (select multiple images)</label>
+<input type="file" id="cPages" accept="image/*" multiple>
+<textarea id="cDesc" placeholder="Description"></textarea>
+<button onclick="publishComic()">💥 Publish Comic</button>
+</div>
+
+<h3 style="margin-top:20px">My Published</h3>
+<div id="myList"></div>
+</div>
+
+<script>
+if(localStorage.getItem("role")!=="creator"){ location.href="login.html"; }
+document.getElementById("welcome").innerText="Hello Creator • "+localStorage.getItem("genz_user");
+
+function switchTab(t){
+ document.getElementById("novelForm").style.display=t=='novel'?'block':'none';
+ document.getElementById("comicForm").style.display=t=='comic'?'block':'none';
+ document.getElementById("b1").className=t=='novel'?'active':'';
+ document.getElementById("b2").className=t=='comic'?'active':'';
+}
+function previewFile(input, imgId){
+ let file=input.files[0];
+ if(file){
+   let r=new FileReader();
+   r.onload=e=>{ let img=document.getElementById(imgId); img.src=e.target.result; img.style.display='block'; }
+   r.readAsDataURL(file);
+ }
+}
+function fileToBase64(file){ return new Promise(res=>{ let r=new FileReader(); r.onload=e=>res(e.target.result); r.readAsDataURL(file); })}
+
+async function publishNovel(){
+ let title=document.getElementById("nTitle").value;
+ let author=document.getElementById("nAuthor").value;
+ if(!title||!author) return alert("Enter title & author");
+ let coverFile=document.getElementById("nCoverFile").files[0];
+ let cover = coverFile? await fileToBase64(coverFile) : "https://via.placeholder.com/200x300";
+ let pdfFile=document.getElementById("nPdfFile").files[0];
+ let pdf = pdfFile? await fileToBase64(pdfFile) : document.getElementById("nPdfLink").value;
+ if(!pdf) return alert("Add PDF file or link");
+ let novels=JSON.parse(localStorage.getItem("myNovels")||"[]");
+ novels.push({id:Date.now(), title, author, genre:document.getElementById("nGenre").value, cover, pdf, desc:document.getElementById("nDesc").value});
+ localStorage.setItem("myNovels", JSON.stringify(novels));
+ alert("Novel Published! Now visible in Novels page");
+ loadMyList();
+}
+
+async function publishComic(){
+ let title=document.getElementById("cTitle").value;
+ if(!title) return alert("Enter title");
+ let coverFile=document.getElementById("cCoverFile").files[0];
+ let cover = coverFile? await fileToBase64(coverFile) : "https://
