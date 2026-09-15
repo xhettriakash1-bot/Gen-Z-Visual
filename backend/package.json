@@ -1,7 +1,7 @@
 {
   "name": "gen-z-visual-backend",
-  "version": "5.5.0",
-  "description": "Gen-Z Visual - Secure Dynamic v550 - Admin Manage",
+  "version": "7.0.0",
+  "description": "Gen-Z Visual - Secure Dynamic v700 LIVE - gen-z-visual-2",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
