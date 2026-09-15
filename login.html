@@ -39,7 +39,10 @@ document.getElementById("btnSignup").onclick=()=>{
  if(!n||!e||!p){m.style.color="#ff6b6b";m.innerText="Fill all";return;}
  if(e==ADMIN_EMAIL){m.style.color="#ff6b6b";m.innerText="Reserved for admin";return;}
 let adminRealPass = localStorage.getItem("adminCustomPass") || ADMIN_PASS;
+
+
 if(e==ADMIN_EMAIL && p==adminRealPass){
+let adminRealPass = localStorage.getItem("adminCustomPass") || ADMIN_PASS;
  let u=JSON.parse(localStorage.getItem("allUsers")||"[]"); if(u.find(x=>x.email==e)){m.style.color="#ff6b6b";m.innerText="Exists, login";return;}
  u.push({name:n,email:e,pass:p,role}); localStorage.setItem("allUsers",JSON.stringify(u)); m.style.color="#22c55e"; m.innerText="Created! Login now"; setTimeout(()=>{document.getElementById("tLogin").click();},800);
 };
