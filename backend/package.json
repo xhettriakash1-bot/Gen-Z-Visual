@@ -1,5 +1,5 @@
 {
-  "name": "genz-backend",
+  "name": "gen-z-visual-backend",
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
@@ -11,7 +11,7 @@
     "helmet": "^7.1.0",
     "express-rate-limit": "^7.1.5",
     "hpp": "^0.2.3",
-    "mongoose": "^8.0.0",
+    "mongoose": "^8.0.3",
     "dotenv": "^16.3.1"
   }
 }
