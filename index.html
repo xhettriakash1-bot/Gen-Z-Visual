@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Gen-Z Visual - Home</title>
-<link rel="stylesheet" href="style.css?v=300">
+<title>Gen-Z Visual - Home v700 LIVE</title>
+<link rel="stylesheet" href="style.css?v=700">
 <style>
 *{box-sizing:border-box}body{background:#0a0a0a;color:white;margin:0;font-family:system-ui,sans-serif}
 header{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid #222;position:sticky;top:0;background:#0a0a0a;z-index:10}
@@ -15,15 +15,17 @@ nav a{color:#aaa;text-decoration:none;margin-left:14px;font-size:14px;font-weigh
 .hero p{color:#888;margin-top:16px;font-size:17px}
 .btn{padding:14px 28px;background:white;color:black;border-radius:99px;font-weight:900;text-decoration:none;display:inline-block;margin:8px}
 .btn2{padding:14px 28px;background:#1a1a1a;color:white;border:1px solid #333;border-radius:99px;font-weight:900;text-decoration:none;display:inline-block;margin:8px}
+.status{margin-top:30px;padding:12px;border-radius:12px;background:#111;border:1px solid #222;font-size:12px}
 </style>
 </head>
 <body>
 <header>
-<div class="logo">Gen-Z <span>Visual</span></div>
+<div class="logo">Gen-Z <span>Visual</span> v700</div>
 <nav>
 <a href="index.html">Home</a>
 <a href="login.html" style="background:white;color:black;padding:8px 16px;border-radius:99px">Login</a>
 <a href="admin.html" style="color:#a855f7">Admin</a>
+<a href="author.html" style="color:#22c55e">Author</a>
 </nav>
 </header>
 <div class="hero">
@@ -31,13 +33,36 @@ nav a{color:#aaa;text-decoration:none;margin-left:14px;font-size:14px;font-weigh
 <p>Read, create, and share visual stories. Open for everyone.</p>
 <br><br>
 <a href="login.html" class="btn">Start Reading →</a>
-<a href="login.html?role=creator" class="btn2">Become Creator</a>
-<p style="margin-top:30px;color:#555;font-size:13px">Backend: v300 LIVE - Public Access Enabled</p>
+<a href="author.html" class="btn2">Become Creator 🎨</a>
+<div class="status" id="status">⏳ Checking backend gen-z-visual-2...</div>
 </div>
 <script>
-// v300 - OPEN PUBLIC - NO DOMAIN BLOCK
-const API = "https://gen-z-visual-i630.onrender.com";
-console.log("API:", API, "Mode: OPEN PUBLIC");
+// v700 - FIXED - LIVE BACKEND
+const API_BASE = "https://gen-z-visual-2.onrender.com";
+const API = `${API_BASE}/api`;
+console.log("API v700 LIVE:", API_BASE);
+
+async function check(){
+  const el = document.getElementById('status');
+  try{
+    const res = await fetch(`${API_BASE}/api/health`);
+    const data = await res.json();
+    el.innerHTML = `✅ <b>Backend LIVE v700</b><br>Mongo: ${data.mongo||'connected'} | Firewall: Active<br><small>${API_BASE}</small>`;
+    el.style.borderColor = "#22c55e";
+    el.style.color = "#22c55e";
+  }catch(e){
+    try{
+      const res2 = await fetch(`${API_BASE}/`);
+      const txt = await res2.text();
+      el.innerHTML = `✅ Backend LIVE<br><small>${txt.slice(0,100)}</small>`;
+      el.style.color = "#22c55e";
+    }catch(e2){
+      el.innerHTML = `❌ Backend offline<br><small>${e.message}</small>`;
+      el.style.color = "red";
+    }
+  }
+}
+check();
 </script>
 </body>
 </html>
