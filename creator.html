@@ -1,1 +1,137 @@
-<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width, initial-scale=1"><title>Creator</title><style>body{background:#0a0a0a;color:white;font-family:sans-serif;padding:20px}.card{background:#1a1a1a;padding:20px;border-radius:12px}input{width:90%;padding:12px;margin:10px 0;border-radius:8px}.btn{background:#00ff88;color:black;padding:12px;border:none;border-radius:20px;width:100%;font-weight:bold}</style></head><body><div class="card"><h2>🎨 Creator Account</h2><input placeholder="Creator Name"><input placeholder="Your Novel/Comic Name"><input type="file"><button class="btn" onclick="alert('This will auto-backup to Google Drive after we connect Render in Step 5')">Upload & Backup to Drive</button></div></body></html>
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Creator Studio - Gen-Z Visual</title>
+<link rel="stylesheet" href="style.css?v=350">
+<script>
+// ===== FIREWALL v350 - KEPT SAME AS LOGIN =====
+if(window.top!==window.self) window.top.location=window.self.location;
+const Firewall={
+  patterns:[/<script/gi,/javascript:/gi,/onerror=/gi,/onload=/gi,/union.*select/gi,/<iframe/gi,/eval\(/gi],
+  scan(v){ return this.patterns.some(p=>p.test(v)); },
+  protect(){
+    document.addEventListener('input',e=>{
+      if(e.target.tagName==="INPUT"||e.target.tagName==="TEXTAREA"){
+        if(this.scan(e.target.value)){ e.target.value=""; e.target.style.border="2px solid red"; e.target.placeholder="⛔ Blocked"; }
+      }
+    });
+  }
+};
+window.addEventListener('DOMContentLoaded',()=>Firewall.protect());
+
+// ===== ROLE LOCK - CREATOR + ADMIN ONLY =====
+(function(){
+  const role = (localStorage.getItem("role") || JSON.parse(localStorage.getItem("user")||"{}").role || "").toLowerCase();
+  const email = (localStorage.getItem("email") || localStorage.getItem("genz_user") || JSON.parse(localStorage.getItem("user")||"{}").email || "").toLowerCase();
+  const ALLOWED_ADMINS = ["xhettriakash1@gmail.com","akashchettri2003@gmail.com"];
+  const allowed = role==="creator" || role==="admin" || ALLOWED_ADMINS.includes(email);
+  if(!allowed){
+    document.addEventListener('DOMContentLoaded',()=>{
+      document.body.innerHTML = `<div style="background:#000;color:white;height:100vh;display:flex;align-items:center;justify-content:center;flex-direction:column;font-family:system-ui;text-align:center;padding:20px">
+      <h1 style="color:#ef4444">⛔ CREATOR ONLY</h1><p style="color:#888">Login as Creator or Admin.<br>Current: ${email} (${role||'guest'})</p>
+      <a href="login.html" style="margin-top:20px;background:white;color:black;padding:12px 24px;border-radius:99px;text-decoration:none;font-weight:900">Login</a></div>`;
+    });
+    throw new Error("Not Creator");
+  }
+})();
+</script>
+<style>
+*{box-sizing:border-box}body{background:#0a0a0a;color:white;margin:0;font-family:system-ui}
+header{display:flex;justify-content:space-between;padding:12px 16px;border-bottom:1px solid #222;position:sticky;top:0;background:#0a0a0a;z-index:10}
+.logo{font-weight:900}.logo span{color:#a855f7}
+.wrap{max-width:600px;margin:24px auto;padding:0 16px}
+.card{background:#141417;border:1px solid #232326;border-radius:24px;padding:22px}
+input,textarea,select{width:100%;padding:13px;margin:8px 0;background:#0e0e10;border:1px solid #2a2a2e;border-radius:12px;color:white;outline:none}
+.btn{width:100%;padding:14px;background:#22c55e;color:black;border:none;border-radius:99px;font-weight:900;cursor:pointer;margin-top:10px;font-size:15px}
+.btn-drive{background:#a855f7;color:white;margin-top:8px}
+.badge{padding:6px 12px;border-radius:99px;background:#222;color:#22c55e;font-size:11px;font-weight:800}
+</style>
+</head>
+<body>
+<header>
+<div class="logo">Gen-Z <span>Visual</span> <span style="font-size:11px;color:#22c55e">CREATOR STUDIO</span></div>
+<div><span id="creatorEmail" style="font-size:11px;color:#888"></span>
+<a href="index.html" style="background:#222;color:white;text-decoration:none;padding:8px 14px;border-radius:99px;font-size:12px;margin-left:8px">Home</a>
+<button onclick="logout()" style="background:#ef4444;color:white;border:none;padding:8px 14px;border-radius:99px;font-size:12px;margin-left:6px;cursor:pointer">Logout</button>
+</div>
+</header>
+
+<div class="wrap">
+<div class="card">
+<h2>🎨 Creator Studio <span class="badge" id="statusBadge">READY</span></h2>
+<p style="font-size:12px;color:#666">Upload novel/comic. Will auto-backup to Google Drive after Step 5.</p>
+
+<input id="cName" placeholder="Creator Name*">
+<input id="novelName" placeholder="Your Novel/Comic Name*">
+<select id="type">
+<option value="novel">📚 Novel</option>
+<option value="comic">🎨 Comic / Visual Novel</option>
+</select>
+<textarea id="desc" placeholder="Description* min 20 chars" rows="4"></textarea>
+<input id="coverUrl" placeholder="Cover Image URL (optional) - paste Drive link later">
+<input id="fileInput" type="file" accept=".pdf,.epub,.zip,.jpg,.png">
+
+<button class="btn" id="btnUpload">📤 Upload Content</button>
+<button class="btn btn-drive" onclick="alert('Step 5: Connect Render to Google Drive API.\nFor now content saves to backend /api/novels.\nAfter Drive connect, this button will auto-backup.')">☁️ Backup to Google Drive (Coming Step 5)</button>
+
+<p id="msg" style="font-size:12px;margin-top:12px;text-align:center;font-weight:700"></p>
+
+<div style="margin-top:20px;border-top:1px solid #222;padding-top:12px">
+<h4 style="margin:0 0 8px 0;font-size:14px">📦 Your Uploads</h4>
+<div id="myUploads" style="font-size:12px;color:#888">Loading...</div>
+</div>
+</div>
+</div>
+
+<script>
+const API = "https://gen-z-visual-1.onrender.com/api";
+const email = (localStorage.getItem("email")||"").toLowerCase();
+document.getElementById("creatorEmail").innerText = email;
+function logout(){ localStorage.clear(); location.href="login.html"; }
+
+document.getElementById("btnUpload").onclick = async()=>{
+  const name = document.getElementById("cName").value.trim();
+  const novel = document.getElementById("novelName").value.trim();
+  const desc = document.getElementById("desc").value.trim();
+  const type = document.getElementById("type").value;
+  const cover = document.getElementById("coverUrl").value.trim();
+  const file = document.getElementById("fileInput").files[0];
+  const m = document.getElementById("msg");
+
+  if(Firewall.scan(name+novel+desc)){ m.style.color="red"; m.innerText="⛔ Malicious code blocked"; return; }
+  if(!name||!novel||!desc){ m.style.color="red"; m.innerText="Fill all required"; return; }
+  if(desc.length<20){ m.style.color="red"; m.innerText="Description min 20 chars"; return; }
+
+  m.style.color="#f59e0b"; m.innerText="⏳ Uploading...";
+  document.getElementById("statusBadge").innerText="UPLOADING...";
+
+  try{
+    // For now save metadata to backend - file upload will be Drive in Step 5
+    let payload = {creatorEmail:email, creatorName:name, title:novel, description:desc, type:type, coverUrl:cover, fileName: file?file.name:"", date:new Date().toISOString()};
+    let r = await fetch(API+"/novels",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+    let d = await r.json();
+    if(d.success){
+      m.style.color="#22c55e"; m.innerText="✅ Uploaded! Saved to backend. Drive backup in Step 5.";
+      document.getElementById("statusBadge").innerText="SAVED";
+      loadUploads();
+    }else{
+      m.style.color="red"; m.innerText=d.message||"Upload failed";
+    }
+  }catch(e){
+    m.style.color="red"; m.innerText="Backend offline - wake Render first";
+  }
+};
+
+async function loadUploads(){
+  try{
+    let r = await fetch(API+"/novels?email="+email);
+    let data = await r.json();
+    let box = document.getElementById("myUploads");
+    if(!data.length){ box.innerHTML="<span style='color:#555'>No uploads yet</span>"; return; }
+    box.innerHTML = data.map(n=>`<div style="background:#0e0e10;padding:10px;border-radius:12px;margin:6px 0;border:1px solid #222"><b>${n.title}</b> <span style="color:#666">(${n.type})</span><br><small style="color:#555">${n.description.slice(0,60)}...</small></div>`).join("");
+  }catch(e){ document.getElementById("myUploads").innerText="Backend offline"; }
+}
+loadUploads();
+</script>
+</body></html>
