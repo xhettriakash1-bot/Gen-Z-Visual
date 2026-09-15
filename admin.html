@@ -2,51 +2,149 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Admin Panel - Gen-Z Visual</title>
-<link rel="stylesheet" href="style.css?v=3">
+<title>Admin Panel v700 LIVE - Gen-Z Visual</title>
+<link rel="stylesheet" href="style.css?v=700">
 <script>
-// ===== FIREWALL v4 - ADMIN ONLY - KEPT & FIXED =====
+// ===== FIREWALL v700 - FIXED FOR YOUR GITHUB =====
 (function(){
-  // LAYER 1: DOMAIN LOCK - FIXED FOR YOUR DOMAINS
-  const ALLOWED_DOMAINS = ["kash1-bot.github.io","xhettriak.github.io","localhost","127.0.0.1"];
-  const host = location.hostname;
-  if(location.protocol!=="file:" && host!=="" && !ALLOWED_DOMAINS.some(h=>host.includes(h))){
-    if(!host.includes("github.io")){
-      document.documentElement.innerHTML="<h1 style='color:red;text-align:center;margin-top:20%;font-family:system-ui'>⛔ Unauthorized Domain<br><small>"+host+"</small></h1>";
-      throw new Error("Blocked Domain");
-    }
-  }
-  // LAYER 2: ANTI-CLICKJACK - KEPT
   if(window.top!==window.self) window.top.location=window.self.location;
-
-  // LAYER 3: ADMIN LOCK - FIXED FOR YOUR 2 EMAILS
-  const role = localStorage.getItem("role");
-  const e1 = localStorage.getItem("genz_user");
-  const e2 = localStorage.getItem("email");
-  const uObj = JSON.parse(localStorage.getItem("user") || "{}");
-  const currentEmail = (e1 || e2 || uObj.email || "").toLowerCase();
-  const currentRole = (role || uObj.role || "").toLowerCase();
-  
-  // YOUR 2 PROTECTED ADMINS - NEVER DELETE
+  const role = (localStorage.getItem("role") || JSON.parse(localStorage.getItem("user")||"{}").role || "").toLowerCase();
+  const email = (localStorage.getItem("email") || JSON.parse(localStorage.getItem("user")||"{}").email || localStorage.getItem("genz_user") || "").toLowerCase();
   const ALLOWED_ADMINS = ["xhettriakash1@gmail.com","akashchettri2003@gmail.com"];
-  
-  if(currentRole!=="admin" && !ALLOWED_ADMINS.includes(currentEmail)){
-    document.addEventListener('DOMContentLoaded', ()=>{
-      document.body.innerHTML = `
-      <div style="background:#000;color:white;height:100vh;display:flex;align-items:center;justify-content:center;flex-direction:column;font-family:system-ui;text-align:center;padding:20px">
-        <h1 style="color:#ef4444;font-size:40px">⛔ ACCESS DENIED</h1>
-        <p style="color:#888">Admin only. Attempt logged.</p>
-        <p style="font-size:12px;color:#555;margin-top:8px">Logged as: ${currentEmail||'Guest'} (${currentRole||'no role'})</p>
-        <a href="login.html" style="margin-top:24px;background:white;color:black;padding:12px 24px;border-radius:99px;text-decoration:none;font-weight:900">Go to Login</a>
-      </div>`;
-    });
-    throw new Error("Not Admin");
+  const token = localStorage.getItem("token") || localStorage.getItem("genz_token");
+  if(!token){
+    location.href="login.html";
+    return;
+  }
+  if(role!=="admin" && !ALLOWED_ADMINS.includes(email)){
+    // Allow if email is in protected list even if role wrong
+    if(!ALLOWED_ADMINS.includes(email)){
+      document.addEventListener('DOMContentLoaded', ()=>{
+        document.body.innerHTML = `<div style="background:#000;color:white;height:100vh;display:flex;align-items:center;justify-content:center;flex-direction:column;font-family:system-ui;text-align:center;padding:20px"><h1 style="color:#ef4444">⛔ ADMIN ONLY</h1><p style="color:#888">Logged as: ${email} (${role})</p><a href="login.html" style="margin-top:20px;background:white;color:black;padding:12px 24px;border-radius:99px;text-decoration:none;font-weight:900">Login as Admin</a><br><a href="emergency.html" style="margin-top:10px;color:#a855f7">Emergency Login</a></div>`;
+      });
+      throw new Error("Not Admin");
+    }
   }
 })();
 </script>
 <style>
 *{box-sizing:border-box}body{background:#0a0a0a;color:white;margin:0;font-family:system-ui}
-header{display:flex;justify-content:space-between;padding:12px 16px;border-bottom:1px solid #222;position:sticky;top:0;background:#0a0a0a;z-index:10}
+header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid #222;position:sticky;top:0;background:#0a0a0a;z-index:10}
 .logo{font-weight:900}.logo span{color:#a855f7}
 .wrap{max-width:1100px;margin:20px auto;padding:16px}
-.card{background
+.card{background:#141417;border:1px solid #232326;border-radius:18px;padding:20px;margin-bottom:18px}
+input{width:100%;padding:12px;margin:6px 0;background:#0e0e10;border:1px solid #2a2a2e;border-radius:10px;color:white}
+button{padding:12px 18px;border-radius:99px;border:none;font-weight:800;cursor:pointer;margin-top:8px}
+.btn-w{background:white;color:black}.btn-d{background:#1a1a1a;color:white;border:1px solid #333}
+table{width:100%;border-collapse:collapse;margin-top:10px}td,th{padding:10px;border-bottom:1px solid #222;text-align:left;font-size:13px}
+.badge{padding:4px 8px;border-radius:20px;background:#22c55e;color:black;font-size:10px;font-weight:800}
+.small{font-size:11px;color:#777}
+</style>
+</head>
+<body>
+<header><div class="logo">Admin <span>Panel v700 ✅ LIVE</span></div>
+<div style="display:flex;gap:8px;align-items:center">
+<span id="adminEmail" style="font-size:11px;color:#888"></span>
+<a href="index.html" style="background:#222;color:white;padding:8px 14px;border-radius:99px;text-decoration:none;font-size:12px">Home</a>
+<button onclick="logout()" style="background:#ef4444;color:white;padding:8px 14px;font-size:12px">Logout</button>
+</div></header>
+
+<div class="wrap">
+<div class="card" style="border-color:#22c55e">
+<h3>🟢 Backend Status: <span id="backendStatus">Checking...</span></h3>
+<p class="small" id="healthDetail">Backend: https://gen-z-visual-2.onrender.com</p>
+</div>
+
+<div class="card">
+<h3>🔐 Change My Password</h3>
+<input id="oldPass" type="password" placeholder="Old Password">
+<input id="newPass" type="password" placeholder="New Password">
+<button class="btn-w" onclick="changePass()">Change Password</button>
+<p id="passMsg" class="small"></p>
+</div>
+
+<div class="card">
+<h3>👑 Make User Admin</h3>
+<input id="makeAdminEmail" placeholder="User email (must signup first)">
+<button class="btn-w" onclick="makeAdmin()">Make Admin</button>
+<p id="makeMsg" class="small"></p>
+</div>
+
+<div class="card">
+<h3>👥 All Users <button class="btn-d" style="margin-left:10px" onclick="loadUsers()">Reload</button></h3>
+<div id="usersList">Loading...</div>
+</div>
+
+<div class="card">
+<h3>📚 All Novels</h3>
+<button class="btn-d" onclick="loadNovels()">Load Novels</button>
+<div id="novelsList" style="margin-top:10px"></div>
+</div>
+</div>
+
+<script>
+const API_BASE = "https://gen-z-visual-2.onrender.com";
+const API = `${API_BASE}/api`;
+const email = (JSON.parse(localStorage.getItem("user")||"{}").email || "");
+document.getElementById("adminEmail").innerText = email;
+function logout(){ localStorage.clear(); location.href="login.html"; }
+
+async function checkHealth(){
+  try{
+    const r = await fetch(`${API_BASE}/api/health`);
+    const d = await r.json();
+    document.getElementById("backendStatus").innerHTML = `LIVE ✅ v700 | Mongo: ${d.mongo}`;
+    document.getElementById("backendStatus").style.color="#22c55e";
+    document.getElementById("healthDetail").innerText = `✅ ${API_BASE} | Admins: ${d.admins?.join(", ")} | Endpoints: /api/login + /api/auth/login`;
+  }catch(e){
+    document.getElementById("backendStatus").innerText = "Offline ❌ - Wake Render";
+    document.getElementById("backendStatus").style.color="red";
+  }
+}
+checkHealth();
+
+async function changePass(){
+  const oldPassword = document.getElementById("oldPass").value;
+  const newPassword = document.getElementById("newPass").value;
+  if(!oldPassword||!newPassword) return alert("Fill both");
+  const token = localStorage.getItem("token") || localStorage.getItem("genz_token");
+  const res = await fetch(`${API}/admin/change-password`, {method:"POST", headers:{"Content-Type":"application/json", Authorization:`Bearer ${token}`}, body:JSON.stringify({oldPassword,newPassword})});
+  const d = await res.json();
+  document.getElementById("passMsg").innerText = d.msg||d.error||JSON.stringify(d);
+  document.getElementById("passMsg").style.color = d.ok? "#22c55e":"red";
+}
+
+async function makeAdmin(){
+  const email = document.getElementById("makeAdminEmail").value.trim();
+  const token = localStorage.getItem("token") || localStorage.getItem("genz_token");
+  const res = await fetch(`${API}/admin/make-admin`, {method:"POST", headers:{"Content-Type":"application/json", Authorization:`Bearer ${token}`}, body:JSON.stringify({email})});
+  const d = await res.json();
+  document.getElementById("makeMsg").innerText = d.msg||JSON.stringify(d);
+  loadUsers();
+}
+
+async function loadUsers(){
+  const token = localStorage.getItem("token") || localStorage.getItem("genz_token");
+  const box = document.getElementById("usersList");
+  box.innerText="Loading...";
+  try{
+    const res = await fetch(`${API}/users`, {headers:{Authorization:`Bearer ${token}`}});
+    const users = await res.json();
+    if(!Array.isArray(users)){ box.innerText=JSON.stringify(users); return; }
+    box.innerHTML = `<table><tr><th>Email</th><th>Role</th><th>Name</th></tr>${users.map(u=>`<tr><td>${u.email}</td><td><span class="badge">${u.role}</span></td><td>${u.name||''}</td></tr>`).join("")}</table>`;
+  }catch(e){ box.innerText="Failed: "+e.message; }
+}
+
+async function loadNovels(){
+  const box = document.getElementById("novelsList");
+  box.innerText="Loading...";
+  try{
+    const res = await fetch(`${API}/novels`);
+    const list = await res.json();
+    box.innerHTML = list.length? list.map(n=>`<div style="background:#0e0e10;padding:10px;border-radius:10px;margin:6px 0;border:1px solid #222"><b>${n.title}</b> - ${n.genre||''}<br><small>${(n.description||'').slice(0,80)}</small></div>`).join("") : "No novels yet";
+  }catch(e){ box.innerText="Failed: "+e.message; }
+}
+loadUsers();
+</script>
+</body>
+</html>
