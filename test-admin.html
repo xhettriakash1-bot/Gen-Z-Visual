@@ -1,29 +1,42 @@
 <!DOCTYPE html><html><body style="background:#000;color:#fff;font-family:sans-serif;padding:20px">
-<h2>🔧 EMERGENCY ADMIN LOGIN TEST - Firewall Kept</h2>
-<input id="e" value="xhettriakash1@gmail.com" style="width:100%;padding:12px;margin:5px 0"><br>
-<input id="p" value="Akash123" type="password" style="width:100%;padding:12px;margin:5px 0"><br>
-<button onclick="doLogin()" style="padding:12px 20px;border-radius:20px">LOGIN AS ADMIN</button>
-<pre id="out" style="background:#111;padding:15px;border-radius:12px;margin-top:15px"></pre>
+<h2>🔧 EMERGENCY ADMIN LOGIN v700 FIXED</h2>
+<input id="e" value="xhettriakash1@gmail.com" style="width:100%;padding:12px;margin:5px 0;background:#111;color:#fff;border:1px solid #333;border-radius:8px"><br>
+<input id="p" value="Akash123" type="password" style="width:100%;padding:12px;margin:5px 0;background:#111;color:#fff;border:1px solid #333;border-radius:8px"><br>
+<button onclick="doLogin()" style="padding:12px 20px;border-radius:99px;background:#fff;color:#000;font-weight:900;border:none;width:100%">LOGIN AS ADMIN v700</button>
+<pre id="out" style="background:#111;padding:15px;border-radius:12px;margin-top:15px;white-space:pre-wrap">Ready - Backend: gen-z-visual-2 LIVE ✅</pre>
 <script>
-const API="https://gen-z-visual-1.onrender.com/api";
+const API_BASE="https://gen-z-visual-2.onrender.com";
+const APIS=[`${API_BASE}/api/auth/login`,`${API_BASE}/api/login`];
+
 async function doLogin(){
  let email=document.getElementById('e').value.trim().toLowerCase();
  let pass=document.getElementById('p').value.trim();
- document.getElementById('out').innerText="Connecting to "+API+"/login ...";
- try{
-  let r=await fetch(API+"/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email,password:pass})});
-  let d=await r.json();
-  document.getElementById('out').innerText=JSON.stringify(d,null,2);
-  if(d.success){
-    localStorage.setItem("user",JSON.stringify(d.user));
-    localStorage.setItem("email",d.user.email);
-    localStorage.setItem("role",d.user.role);
-    document.getElementById('out').innerText+="\n\n✅ SAVED! Role="+d.user.role+"\nNow opening admin.html...";
-    setTimeout(()=>location.href="admin.html",1000);
-  }
- }catch(err){
-  document.getElementById('out').innerText="❌ FETCH FAILED: "+err+"\n\n1. Check backend is live: https://gen-z-visual-1.onrender.com\n2. Check internet / CORS";
+ document.getElementById('out').innerText="Connecting to LIVE backend...\n"+APIS.join("\n")+" ...";
+ 
+ for(let API_URL of APIS){
+   try{
+    document.getElementById('out').innerText+=`\n\nTrying: ${API_URL}...`;
+    let r=await fetch(API_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email,password:pass})});
+    let d=await r.json();
+    document.getElementById('out').innerText+="\nResponse: "+JSON.stringify(d,null,2);
+    if(r.ok && (d.success || d.token)){
+      localStorage.setItem("user",JSON.stringify(d.user));
+      localStorage.setItem("genz_user",JSON.stringify(d.user));
+      localStorage.setItem("email",d.user.email);
+      localStorage.setItem("role",d.user.role);
+      localStorage.setItem("token",d.token);
+      localStorage.setItem("genz_token",d.token);
+      document.getElementById('out').innerText+=`\n\n✅ SAVED! Role=${d.user.role} Email=${d.user.email}\n✅ Token saved\nNow opening admin.html in 1 sec...`;
+      setTimeout(()=>location.href="admin.html",1000);
+      return;
+    } else {
+      document.getElementById('out').innerText+=`\n❌ Failed: ${d.message||d.error}`;
+    }
+   }catch(err){
+    document.getElementById('out').innerText+="\n❌ FETCH FAILED: "+err.message;
+   }
  }
+ document.getElementById('out').innerText+="\n\n❌ All endpoints failed. Check https://gen-z-visual-2.onrender.com/api/health";
 }
 </script>
 </body></html>
