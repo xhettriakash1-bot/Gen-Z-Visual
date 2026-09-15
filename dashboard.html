@@ -5,12 +5,12 @@
 <link rel="stylesheet" href="style.css">
 <style>
 .studio{max-width:600px;margin:20px auto;padding:0 16px}
-.tab{display:flex;gap:8px;background:#0e0e10;padding:4px;border-radius:99px;margin-bottom:16px}
-.tab button{flex:1;padding:10px;border:none;border-radius:99px;font-weight:800;background:transparent;color:#888;cursor:pointer}
-.tab button.active{background:white;color:black}
-.form{background:#141417;border:1px solid #232326;border-radius:20px;padding:18px;margin-bottom:16px}
+.tabs{display:flex;gap:8px;background:#0e0e10;padding:5px;border-radius:99px;margin-bottom:16px}
+.tabs button{flex:1;padding:12px;border:none;border-radius:99px;font-weight:800;background:transparent;color:#888;cursor:pointer}
+.tabs button.active{background:white;color:black!important}
+.form{background:#141417;border:1px solid #232326;border-radius:20px;padding:18px;margin-bottom:16px;display:block}
 .form input,.form textarea,.form select{width:100%;padding:12px;margin:8px 0;background:#0e0e10;border:1px solid #2a2a2e;border-radius:10px;color:white;outline:none}
-.form button{width:100%;padding:14px;background:white;color:black;border:none;border-radius:99px;font-weight:900;cursor:pointer;margin-top:8px}
+.form button.publish{width:100%;padding:14px;background:white;color:black;border:none;border-radius:99px;font-weight:900;cursor:pointer;margin-top:8px}
 .preview{width:100px;height:140px;border-radius:10px;object-fit:cover;background:#222;display:none;margin-top:8px}
 .item{background:#141417;border:1px solid #232326;border-radius:14px;padding:12px;margin-bottom:8px;display:flex;gap:10px;align-items:center}
 .item img{width:50px;height:70px;border-radius:8px;object-fit:cover}
@@ -18,15 +18,15 @@
 <header><div class="logo">Creator Studio</div><button onclick="logout()" class="top-btn" style="background:#ff0055;color:white;border:none;cursor:pointer">Logout</button></header>
 
 <div class="studio">
-<h2 id="welcome" style="margin:16px 0 8px">Studio</h2>
+<h2 id="welcome" style="margin:16px 0 12px">Studio</h2>
 
-<div class="tab">
-<button id="b1" class="active" onclick="switchTab('novel')">Upload Novel</button>
-<button id="b2" onclick="switchTab('comic')">Upload Comic</button>
+<div class="tabs">
+<button id="tabNovel" class="active" onclick="showTab('novel')">Upload Novel</button>
+<button id="tabComic" onclick="showTab('comic')">Upload Comic</button>
 </div>
 
 <!-- NOVEL FORM -->
-<div id="novelForm" class="form">
+<div id="novelBox" class="form">
 <h3>New Novel</h3>
 <input id="nTitle" placeholder="Novel Title">
 <input id="nAuthor" placeholder="Author Name">
@@ -38,11 +38,11 @@
 <input type="file" id="nPdfFile" accept="application/pdf">
 <input id="nPdfLink" placeholder="OR Paste PDF Link (drive link)">
 <textarea id="nDesc" placeholder="Description"></textarea>
-<button onclick="publishNovel()">📚 Publish Novel</button>
+<button class="publish" onclick="publishNovel()">📚 Publish Novel</button>
 </div>
 
 <!-- COMIC FORM -->
-<div id="comicForm" class="form" style="display:none">
+<div id="comicBox" class="form" style="display:none">
 <h3>New Comic</h3>
 <input id="cTitle" placeholder="Comic Title">
 <input id="cAuthor" placeholder="Author">
@@ -52,7 +52,7 @@
 <label style="font-size:11px;color:#888">Comic Pages (select multiple images)</label>
 <input type="file" id="cPages" accept="image/*" multiple>
 <textarea id="cDesc" placeholder="Description"></textarea>
-<button onclick="publishComic()">💥 Publish Comic</button>
+<button class="publish" onclick="publishComic()">💥 Publish Comic</button>
 </div>
 
 <h3 style="margin-top:20px">My Published</h3>
@@ -63,12 +63,13 @@
 if(localStorage.getItem("role")!=="creator"){ location.href="login.html"; }
 document.getElementById("welcome").innerText="Hello Creator • "+localStorage.getItem("genz_user");
 
-function switchTab(t){
- document.getElementById("novelForm").style.display=t=='novel'?'block':'none';
- document.getElementById("comicForm").style.display=t=='comic'?'block':'none';
- document.getElementById("b1").className=t=='novel'?'active':'';
- document.getElementById("b2").className=t=='comic'?'active':'';
+function showTab(type){
+ document.getElementById("novelBox").style.display = type==='novel'? 'block' : 'none';
+ document.getElementById("comicBox").style.display = type==='comic'? 'block' : 'none';
+ document.getElementById("tabNovel").className = type==='novel'? 'active' : '';
+ document.getElementById("tabComic").className = type==='comic'? 'active' : '';
 }
+
 function previewFile(input, imgId){
  let file=input.files[0];
  if(file){
@@ -91,12 +92,35 @@ async function publishNovel(){
  let novels=JSON.parse(localStorage.getItem("myNovels")||"[]");
  novels.push({id:Date.now(), title, author, genre:document.getElementById("nGenre").value, cover, pdf, desc:document.getElementById("nDesc").value});
  localStorage.setItem("myNovels", JSON.stringify(novels));
- alert("Novel Published! Now visible in Novels page");
+ alert("Novel Published! Check Novels page");
  loadMyList();
 }
 
 async function publishComic(){
  let title=document.getElementById("cTitle").value;
- if(!title) return alert("Enter title");
+ if(!title) return alert("Enter Comic title");
  let coverFile=document.getElementById("cCoverFile").files[0];
- let cover = coverFile? await fileToBase64(coverFile) : "https://
+ let cover = coverFile? await fileToBase64(coverFile) : "https://via.placeholder.com/200x300";
+ let pagesFiles=[...document.getElementById("cPages").files];
+ if(pagesFiles.length==0) return alert("Select at least 1 comic page image");
+ let pages=[];
+ for(let f of pagesFiles){ pages.push(await fileToBase64(f)); }
+ let comics=JSON.parse(localStorage.getItem("myComics")||"[]");
+ comics.push({id:Date.now(), title, author:document.getElementById("cAuthor").value, cover, pages, desc:document.getElementById("cDesc").value});
+ localStorage.setItem("myComics", JSON.stringify(comics));
+ alert("Comic Published! Check Comics page");
+ loadMyList();
+}
+
+function loadMyList(){
+ let novels=JSON.parse(localStorage.getItem("myNovels")||"[]");
+ let comics=JSON.parse(localStorage.getItem("myComics")||"[]");
+ let html="";
+ novels.forEach(n=>{ html+=`<div class="item"><img src="${n.cover}"><div><b>${n.title}</b><p style="font-size:11px;color:#888">${n.author} • Novel</p></div></div>` });
+ comics.forEach(c=>{ html+=`<div class="item"><img src="${c.cover}"><div><b>${c.title}</b><p style="font-size:11px;color:#888">${c.author} • Comic</p></div></div>` });
+ document.getElementById("myList").innerHTML=html||"<p style='color:#666;font-size:12px'>No uploads yet</p>";
+}
+function logout(){ localStorage.clear(); location.href="login.html"; }
+loadMyList();
+</script>
+</body></html>
