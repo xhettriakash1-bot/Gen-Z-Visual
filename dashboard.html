@@ -4,6 +4,33 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Creator Studio Pro</title>
 <link rel="stylesheet" href="style.css">
+<script>
+// ===== FIREWALL v350 - KEPT SAME AS LOGIN =====
+if(window.top!==window.self) window.top.location=window.self.location;
+const Firewall={
+  patterns:[/<script/gi,/javascript:/gi,/onerror=/gi,/onload=/gi,/union.*select/gi,/<iframe/gi,/eval\(/gi],
+  scan(v){ return this.patterns.some(p=>p.test(v)); },
+  protect(){
+    document.addEventListener('input',e=>{
+      if(e.target.tagName==="INPUT"||e.target.tagName==="TEXTAREA"){
+        if(this.scan(e.target.value)){ e.target.value=""; e.target.style.border="2px solid red"; e.target.placeholder="⛔ Blocked"; }
+      }
+    });
+  }
+};
+window.addEventListener('DOMContentLoaded',()=>Firewall.protect());
+
+// ===== ROLE CHECK - CREATOR + ADMIN (YOUR 2 PROTECTED) =====
+(function(){
+  const role = (localStorage.getItem("role") || JSON.parse(localStorage.getItem("user")||"{}").role || "").toLowerCase();
+  const email = (localStorage.getItem("email") || localStorage.getItem("genz_user") || "").toLowerCase();
+  const ALLOWED_ADMINS = ["xhettriakash1@gmail.com","akashchettri2003@gmail.com"];
+  if(role!=="creator" && role!=="admin" && !ALLOWED_ADMINS.includes(email)){
+    location.href="login.html";
+    throw new Error("Not creator");
+  }
+})();
+</script>
 <style>
 *{box-sizing:border-box}
 body{background:#0a0a0a;color:white;margin:0;font-family:system-ui}
@@ -33,14 +60,13 @@ body{background:#0a0a0a;color:white;margin:0;font-family:system-ui}
 
 <div class="studio">
 <h2 id="welcome" style="margin:10px 0">Loading...</h2>
+<p style="font-size:11px;color:#22c55e">🛡️ Firewall v350 Active | Backend: gen-z-visual-1 | 2 Admins Protected</p>
 
-<!-- NEW SWITCHER - 100% WORKING -->
 <div class="switcher">
 <div id="swNovel" class="on">📚 Novel</div>
 <div id="swComic">💥 Comic</div>
 </div>
 
-<!-- NOVEL -->
 <div id="boxNovel" class="card">
 <h3>Publish Novel</h3>
 <input id="nTitle" placeholder="Title*">
@@ -49,138 +75,4 @@ body{background:#0a0a0a;color:white;margin:0;font-family:system-ui}
 <label>Cover Image</label>
 <input type="file" id="nCoverFile" accept="image/*">
 <img id="nPrev" class="preview">
-<label>PDF Link (BEST - use Google Drive link) OR small PDF file <3MB</label>
-<input type="file" id="nPdfFile" accept="application/pdf">
-<input id="nPdfLink" placeholder="https://drive.google.com/...">
-<textarea id="nDesc" rows="3" placeholder="Description"></textarea>
-<button class="btn btn-pub" id="btnN">📚 Publish Novel</button>
-<p id="nStat" class="status"></p>
-</div>
-
-<!-- COMIC -->
-<div id="boxComic" class="card" style="display:none">
-<h3>Publish Comic</h3>
-<input id="cTitle" placeholder="Comic Title*">
-<input id="cAuthor" placeholder="Author">
-<label>Cover Image</label>
-<input type="file" id="cCoverFile" accept="image/*">
-<img id="cPrev" class="preview">
-<label>Comic Pages (Max 12 images)</label>
-<input type="file" id="cPages" accept="image/*" multiple>
-<p style="font-size:11px;color:#666" id="pageCount"></p>
-<textarea id="cDesc" rows="3" placeholder="Description"></textarea>
-<button class="btn btn-pub" id="btnC">💥 Publish Comic</button>
-<p id="cStat" class="status"></p>
-</div>
-
-<h3 style="margin-top:24px">My Uploads</h3>
-<div id="myList"></div>
-</div>
-
-<script>
-// LOGIN CHECK
-if(localStorage.getItem("role")!=="creator"){ location.href="login.html"; }
-document.getElementById("welcome").innerText="Hello, "+(localStorage.getItem("genz_name")||"Creator")+" 👋";
-
-// SWITCH LOGIC - NEW 100% WORKING METHOD
-document.getElementById("swNovel").addEventListener("click", ()=>{
-  document.getElementById("boxNovel").style.display="block";
-  document.getElementById("boxComic").style.display="none";
-  document.getElementById("swNovel").className="on";
-  document.getElementById("swComic").className="";
-});
-document.getElementById("swComic").addEventListener("click", ()=>{
-  document.getElementById("boxNovel").style.display="none";
-  document.getElementById("boxComic").style.display="block";
-  document.getElementById("swNovel").className="";
-  document.getElementById("swComic").className="on";
-});
-
-// PREVIEW
-document.getElementById("nCoverFile").addEventListener("change", function(){ preview(this,"nPrev") });
-document.getElementById("cCoverFile").addEventListener("change", function(){ preview(this,"cPrev") });
-document.getElementById("cPages").addEventListener("change", function(){ document.getElementById("pageCount").innerText=this.files.length+" pages selected"; });
-
-function preview(input, imgId){
- let f=input.files[0]; if(!f) return;
- let r=new FileReader(); r.onload=e=>{ let im=document.getElementById(imgId); im.src=e.target.result; im.style.display="block"; }; r.readAsDataURL(f);
-}
-function compress(file, maxW=500, q=0.6){
- return new Promise(res=>{
-  let fr=new FileReader();
-  fr.onload=e=>{
-   let im=new Image();
-   im.onload=()=>{
-    let c=document.createElement('canvas');
-    let sc=maxW/im.width; if(sc>1) sc=1;
-    c.width=im.width*sc; c.height=im.height*sc;
-    c.getContext('2d').drawImage(im,0,0,c.width,c.height);
-    res(c.toDataURL('image/jpeg', q));
-   };
-   im.src=e.target.result;
-  };
-  fr.readAsDataURL(file);
- });
-}
-function fileToBase64(f){ return new Promise((res,rej)=>{ let r=new FileReader(); r.onload=e=>res(e.target.result); r.onerror=rej; r.readAsDataURL(f); }); }
-
-document.getElementById("btnN").addEventListener("click", async ()=>{
- let st=document.getElementById("nStat"); let btn=document.getElementById("btnN");
- try{
-  btn.innerText="Publishing..."; st.innerText="";
-  let t=document.getElementById("nTitle").value.trim();
-  let a=document.getElementById("nAuthor").value.trim();
-  if(!t||!a) throw "Enter title & author";
-  let coverF=document.getElementById("nCoverFile").files[0];
-  let cover=coverF? await compress(coverF, 400, 0.6) : "https://via.placeholder.com/300x400?text=No+Cover";
-  let pdfLink=document.getElementById("nPdfLink").value.trim();
-  let pdfF=document.getElementById("nPdfFile").files[0];
-  let pdf=pdfLink;
-  if(pdfF){ if(pdfF.size>2.5*1024*1024) throw "PDF >2.5MB! Use Drive link"; pdf=await fileToBase64(pdfF); }
-  if(!pdf) throw "Add PDF link or file";
-  let list=JSON.parse(localStorage.getItem("myNovels")||"[]");
-  list.push({id:Date.now(), title:t, author:a, genre:document.getElementById("nGenre").value, cover, pdf, desc:document.getElementById("nDesc").value});
-  localStorage.setItem("myNovels", JSON.stringify(list));
-  st.style.color="#22c55e"; st.innerText="✅ Novel Published! Check Novels page";
-  loadList();
- }catch(e){ st.style.color="#ff6b6b"; st.innerText="❌ "+e; if(String(e).includes("quota")) st.innerText="❌ Storage full! Use Drive Link + delete old uploads"; }
- btn.innerText="📚 Publish Novel";
-});
-
-document.getElementById("btnC").addEventListener("click", async ()=>{
- let st=document.getElementById("cStat"); let btn=document.getElementById("btnC");
- try{
-  btn.innerText="Compressing..."; st.innerText="";
-  let t=document.getElementById("cTitle").value.trim();
-  if(!t) throw "Enter comic title";
-  let coverF=document.getElementById("cCoverFile").files[0];
-  let cover=coverF? await compress(coverF, 400, 0.6) : "https://via.placeholder.com/300x400?text=Comic";
-  let files=[...document.getElementById("cPages").files];
-  if(files.length==0) throw "Select pages";
-  if(files.length>12) throw "Max 12 pages";
-  let pages=[];
-  for(let i=0;i<files.length;i++){ st.innerText="Compressing "+(i+1)+"/"+files.length; pages.push(await compress(files[i], 700, 0.5)); }
-  let list=JSON.parse(localStorage.getItem("myComics")||"[]");
-  list.push({id:Date.now(), title:t, author:document.getElementById("cAuthor").value, cover, pages, desc:document.getElementById("cDesc").value});
-  localStorage.setItem("myComics", JSON.stringify(list));
-  st.style.color="#22c55e"; st.innerText="✅ Comic Published! Check Comics page";
-  loadList();
- }catch(e){ st.style.color="#ff6b6b"; st.innerText="❌ "+e; }
- btn.innerText="💥 Publish Comic";
-});
-
-function loadList(){
- let n=JSON.parse(localStorage.getItem("myNovels")||"[]");
- let c=JSON.parse(localStorage.getItem("myComics")||"[]");
- let h="";
- n.forEach(x=>h+=`<div class="list-item"><img src="${x.cover}"><div><b>${x.title}</b><br><small style="color:#888">Novel</small></div><button class="del" onclick="delN(${x.id})">X</button></div>`);
- c.forEach(x=>h+=`<div class="list-item"><img src="${x.cover}"><div><b>${x.title}</b><br><small style="color:#888">Comic • ${x.pages.length} pages</small></div><button class="del" onclick="delC(${x.id})">X</button></div>`);
- document.getElementById("myList").innerHTML=h||"<p style='color:#666;font-size:12px'>No uploads yet</p>";
-}
-window.delN=(id)=>{ localStorage.setItem("myNovels", JSON.stringify(JSON.parse(localStorage.getItem("myNovels")||"[]").filter(x=>x.id!=id))); loadList(); }
-window.delC=(id)=>{ localStorage.setItem("myComics", JSON.stringify(JSON.parse(localStorage.getItem("myComics")||"[]").filter(x=>x.id!=id))); loadList(); }
-function logout(){ localStorage.clear(); location.href="login.html"; }
-loadList();
-</script>
-</body>
- </html>
+<label>PDF Link (BEST - use Google Drive link) OR small PDF file &lt;
