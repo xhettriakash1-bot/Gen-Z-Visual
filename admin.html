@@ -1,62 +1,171 @@
 <!DOCTYPE html>
-<html><head>
+<html>
+<head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Admin Panel</title>
+<title>Admin Panel - Gen-Z Visual</title>
 <link rel="stylesheet" href="style.css">
+<!-- ===== ADVANCE FIREWALL v3 + ADMIN LOCK ===== -->
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta http-equiv="X-Frame-Options" content="DENY">
+<script>
+// FIREWALL 1: DOMAIN LOCK
+(function(){
+  const ALLOWED = ["xhettriakash1.github.io","localhost","127.0.0.1"];
+  if(location.protocol!=="file:" && !ALLOWED.some(h=>location.hostname.includes(h)) && location.hostname!==""){
+    document.documentElement.innerHTML="<h1 style='color:red;text-align:center;margin-top:20%'>⛔ Unauthorized Domain</h1>"; throw new Error("Blocked");
+  }
+  if(window.top!==window.self) window.top.location=window.self.location;
+})();
+// FIREWALL 2: ADMIN LOCK - ONLY ADMIN CAN OPEN
+(function(){
+  const role = localStorage.getItem("role");
+  const user = localStorage.getItem("genz_user");
+  const ALLOWED_ADMINS = ["xhettriakash1@gmail.com","akashchettri2003@gmail.com"];
+  if(role!=="admin" || !ALLOWED_ADMINS.includes(user)){
+    document.addEventListener('DOMContentLoaded', ()=>{
+      document.body.innerHTML = `
+      <div style="background:#000;color:white;height:100vh;display:flex;align-items:center;justify-content:center;flex-direction:column;font-family:system-ui;text-align:center">
+        <h1 style="color:red;font-size:40px">⛔ ACCESS DENIED</h1>
+        <p style="color:#888">You are not admin. This attempt is logged.</p>
+        <p style="color:#555;font-size:12px">Logged User: ${user||'unknown'}</p>
+        <a href="login.html" style="margin-top:20px;background:white;color:black;padding:12px 24px;border-radius:99px;text-decoration:none;font-weight:900">Go to Login</a>
+      </div>`;
+    });
+    throw new Error("Not Admin");
+  }
+})();
+document.addEventListener('contextmenu',e=>e.preventDefault());
+document.addEventListener('keydown',e=>{
+  if(e.keyCode==123 || (e.ctrlKey&&e.shiftKey&&(e.keyCode==73||e.keyCode==74)) || (e.ctrlKey&&e.keyCode==85)){ e.preventDefault(); return false; }
+});
+// INPUT PROTECTION
+document.addEventListener('DOMContentLoaded',()=>{
+  const patterns=[/<script/gi,/javascript:/gi,/union.*select/gi];
+  document.addEventListener('input',e=>{
+    if(e.target.tagName==="INPUT"){
+      for(let p of patterns){ if(p.test(e.target.value)){ e.target.value=""; e.target.style.border="2px solid red"; break; } }
+    }
+  });
+});
+</script>
 <style>
 *{box-sizing:border-box}body{background:#0a0a0a;color:white;margin:0;font-family:system-ui}
 header{display:flex;justify-content:space-between;padding:12px 16px;border-bottom:1px solid #222;position:sticky;top:0;background:#0a0a0a;z-index:10}
 .logo{font-weight:900}.logo span{color:#a855f7}
-.wrap{max-width:1000px;margin:0 auto;padding:16px}
+.wrap{max-width:1100px;margin:20px auto;padding:16px}
 .card{background:#141417;border:1px solid #232326;border-radius:20px;padding:16px;margin-bottom:16px}
-.row{display:flex;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid #222;flex-wrap:wrap}
-.badge{font-size:10px;padding:3px 8px;border-radius:99px;font-weight:800}
-.badge-reader{background:#1e293b;color:#60a5fa}.badge-creator{background:#2a1e3b;color:#c084fc}
-.btn{padding:7px 14px;border-radius:99px;border:none;font-weight:800;cursor:pointer;font-size:12px}
-.btn-del{background:#ff0055;color:white}.btn-approve{background:#22c55e;color:black}
-.tabs{display:flex;gap:6px;background:#141417;border:1px solid #232326;padding:4px;border-radius:99px;width:fit-content;margin:18px 0;flex-wrap:wrap}
-.tabs div{padding:9px 14px;border-radius:99px;font-weight:800;font-size:12px;cursor:pointer;color:#888}.tabs div.on{background:white;color:black}
-.small{font-size:11px;color:#666}
+h2{margin:0 0 12px 0;font-size:18px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;color:#888;padding:8px;border-bottom:1px solid #222}
+td{padding:8px;border-bottom:1px solid #1a1a1a}
+.btn{padding:8px 14px;border:none;border-radius:99px;font-weight:800;cursor:pointer;font-size:12px}
+.btn-a{background:#22c55e;color:black}
+.btn-d{background:#ef4444;color:white}
+.badge{padding:4px 8px;border-radius:99px;font-size:10px;font-weight:800}
+.badge-reader{background:#222;color:#aaa}
+.badge-creator{background:#a855f7;color:white}
+.badge-admin{background:#22c55e;color:black}
 </style>
 </head>
 <body>
-<header><div class="logo">ADMIN <span>PANEL</span></div><div style="display:flex;gap:6px"><a href="index.html" style="background:#222;color:white;text-decoration:none;padding:8px 14px;border-radius:99px">Home</a><button onclick="logout()" style="background:#ff0055;color:white;border:none;padding:8px 14px;border-radius:99px;font-weight:700">Logout</button></div></header>
-<div class="wrap">
-<h2>Admin Panel 👑</h2>
-<p class="small" id="adminInfo"></p>
-<div class="tabs"><div id="tUsers" class="on">👥 Users</div><div id="tPending">⏳ Pending</div></div>
-<div id="boxUsers" class="card"></div>
-<div id="boxPending" class="card" style="display:none"></div>
+<header>
+<div class="logo">Gen-Z <span>Visual</span> <span style="font-size:12px;color:#22c55e">ADMIN</span></div>
+<div>
+<span id="adminEmail" style="font-size:12px;color:#888"></span>
+<a href="index.html" style="background:#222;color:white;text-decoration:none;padding:8px 14px;border-radius:99px;font-size:12px;margin-left:8px">Home</a>
+<button onclick="logout()" style="background:#ef4444;color:white;border:none;padding:8px 14px;border-radius:99px;font-size:12px;margin-left:6px;cursor:pointer">Logout</button>
 </div>
+</header>
+
+<div class="wrap">
+<div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+<div class="card" style="flex:1;min-width:150px;text-align:center"><div style="font-size:28px;font-weight:900" id="totalUsers">0</div><div style="font-size:12px;color:#888">Total Users</div></div>
+<div class="card" style="flex:1;min-width:150px;text-align:center"><div style="font-size:28px;font-weight:900;color:#f59e0b" id="pendingCount">0</div><div style="font-size:12px;color:#888">Pending Creators</div></div>
+<div class="card" style="flex:1;min-width:150px;text-align:center"><div style="font-size:28px;font-weight:900;color:#22c55e">🔥</div><div style="font-size:12px;color:#888">Firewall Active</div></div>
+</div>
+
+<div class="card">
+<h2>⏳ Pending Creator Approvals</h2>
+<div style="overflow:auto">
+<table id="pendingTable"><thead><tr><th>Name</th><th>Email</th><th>Portfolio</th><th>Bio</th><th>Action</th></tr></thead><tbody></tbody></table>
+</div>
+</div>
+
+<div class="card">
+<h2>👥 All Users (Readers + Creators + Admins)</h2>
+<div style="overflow:auto">
+<table id="usersTable"><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Verified</th><th>Date</th><th>Action</th></tr></thead><tbody></tbody></table>
+</div>
+</div>
+</div>
+
 <script>
-const API="http://localhost:3000/api";
-if(localStorage.getItem("role")!=="admin"){alert("Admin only");location.href="login.html";}
-document.getElementById("adminInfo").innerText=localStorage.getItem("genz_user");
+// CHANGE THIS AFTER RENDER DEPLOY
+const API = "http://localhost:3000/api";
+// For live: const API = "https://YOUR-RENDER-LINK.onrender.com/api";
 
-document.getElementById("tUsers").onclick=()=>{document.getElementById("boxUsers").style.display="block";document.getElementById("boxPending").style.display="none";document.getElementById("tUsers").className="on";document.getElementById("tPending").className=""; loadUsers();};
-document.getElementById("tPending").onclick=()=>{document.getElementById("boxUsers").style.display="none";document.getElementById("boxPending").style.display="block";document.getElementById("tPending").className="on";document.getElementById("tUsers").className=""; loadPending();};
+document.getElementById("adminEmail").innerText = localStorage.getItem("genz_user") || "Admin";
 
-async function loadUsers(){
- let r=await fetch(API+"/users"); let users=await r.json();
- let h=`<h3>All Users (${users.length})</h3>`;
- users.forEach(u=>{
-  h+=`<div class="row"><div style="flex:1"><b>${u.name}</b> <span class="badge ${u.role=='creator'?'badge-creator':'badge-reader'}">${u.role}</span> ${u.verified?'':'(pending)'}<br><span class="small">${u.email} • ${u.password}</span></div><div style="display:flex;gap:5px">${!u.verified?`<button class="btn btn-approve" onclick="approve('${u.email}')">Approve</button>`:""}<button class="btn btn-del" onclick="del('${u.email}')">Delete</button></div></div>`;
- });
- document.getElementById("boxUsers").innerHTML=h;
-}
-async function loadPending(){
- let r=await fetch(API+"/pending"); let pending=await r.json();
- let h=`<h3>Pending Creators (${pending.length})</h3>`;
- if(pending.length==0) h+="<p class='small'>No pending</p>";
- pending.forEach(p=>{
-  h+=`<div class="row" style="flex-direction:column;align-items:flex-start"><b>${p.name}</b><span class="small">${p.email}</span><span class="small">${p.portfolio}</span><span class="small">${p.bio}</span><div style="display:flex;gap:6px;margin-top:8px"><button class="btn btn-approve" onclick="approve('${p.email}')">Approve</button><button class="btn btn-del" onclick="del('${p.email}')">Reject</button></div></div>`;
- });
- document.getElementById("boxPending").innerHTML=h;
-}
-async function approve(email){ await fetch(API+"/approve",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email})}); loadUsers(); loadPending(); }
-async function del(email){ if(!confirm("Delete "+email+"?"))return; await fetch(API+"/delete",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email})}); loadUsers(); loadPending(); }
 function logout(){ localStorage.clear(); location.href="login.html"; }
-loadUsers();
+
+async function loadData(){
+  try{
+    // Load users
+    let r1 = await fetch(API+"/users");
+    let users = await r1.json();
+    document.getElementById("totalUsers").innerText = users.length;
+    let tbody = document.querySelector("#usersTable tbody");
+    tbody.innerHTML = "";
+    users.forEach(u=>{
+      let roleBadge = u.role==="creator"?`<span class="badge badge-creator">CREATOR</span>`:u.role==="admin"?`<span class="badge badge-admin">ADMIN</span>`:`<span class="badge badge-reader">READER</span>`;
+      tbody.innerHTML += `<tr>
+        <td>${u.name}</td>
+        <td>${u.email}</td>
+        <td>${roleBadge}</td>
+        <td>${u.verified?"✅":"❌"}</td>
+        <td style="color:#666;font-size:11px">${u.date||""}</td>
+        <td><button class="btn btn-d" onclick="deleteUser('${u.email}')">Delete</button></td>
+      </tr>`;
+    });
+
+    // Load pending
+    let r2 = await fetch(API+"/pending");
+    let pending = await r2.json();
+    document.getElementById("pendingCount").innerText = pending.length;
+    let pBody = document.querySelector("#pendingTable tbody");
+    pBody.innerHTML = "";
+    if(pending.length===0){ pBody.innerHTML="<tr><td colspan=5 style='text-align:center;color:#555'>No pending requests</td></tr>"; }
+    pending.forEach(p=>{
+      pBody.innerHTML += `<tr>
+        <td>${p.name}</td>
+        <td>${p.email}</td>
+        <td><a href="${p.portfolio}" target="_blank" style="color:#a855f7">${p.portfolio||'No link'}</a></td>
+        <td style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.bio||''}</td>
+        <td><button class="btn btn-a" onclick="approveUser('${p.email}')">Approve</button> <button class="btn btn-d" onclick="deleteUser('${p.email}')">Reject</button></td>
+      </tr>`;
+    });
+
+  }catch(err){
+    alert("Backend not running! Run node server.js in backend folder");
+  }
+}
+
+async function approveUser(email){
+  if(!confirm("Approve "+email+" ?")) return;
+  await fetch(API+"/approve",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email})});
+  loadData();
+}
+async function deleteUser(email){
+  if(email==="xhettriakash1@gmail.com" || email==="akashchettri2003@gmail.com"){
+    alert("⛔ Cannot delete admin!");
+    return;
+  }
+  if(!confirm("Delete "+email+" ? This cannot be undone")) return;
+  await fetch(API+"/delete",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email})});
+  loadData();
+}
+
+loadData();
 </script>
 </body>
 </html>
