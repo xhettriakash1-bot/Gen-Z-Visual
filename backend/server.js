@@ -1,4 +1,4 @@
-// GEN-Z VISUAL - v650 FIXED FINAL
+// GEN-Z VISUAL - v700 FINAL BACKEND - FIREWALL + ADMIN PANEL
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -6,8 +6,6 @@ const rateLimit = require('express-rate-limit');
 const hpp = require('hpp');
 const mongoSanitize = require('express-mongo-sanitize');
 const mongoose = require('mongoose');
-const fs = require('fs');
-const path = require('path');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
@@ -16,134 +14,183 @@ const app = express();
 app.set('trust proxy', 1);
 app.disable('x-powered-by');
 
-// FIXED MONGO - supports both MONGO_URI and MONGODB_URI
+// ====== MONGO DB - FIXED v700 ======
 const MONGO_URI = process.env.MONGO_URI || process.env.MONGODB_URI || "";
-console.log("MONGO_URI exists?", MONGO_URI? "YES" : "NO");
+console.log("MONGO_URI Check:", MONGO_URI? "FOUND ✅" : "NOT FOUND ❌");
 
-if(MONGO_URI){
-  mongoose.connect(MONGO_URI, { dbName: "genzvisual" }).then(()=>{
-    console.log("✅ Mongo Connected v650");
-    console.log("v650 LIVE");
-    ensureAdmins();
-  }).catch(e=> console.log("❌ Mongo fail:", e.message));
-} else {
-  console.log("⚠️ File mode v650");
-  console.log("v650 LIVE");
+if (!MONGO_URI) {
+  console.log("❌ CRITICAL: Add MONGO_URI in Render Environment!");
 }
 
+mongoose.connect(MONGO_URI, { dbName: "genzvisual" })
+ .then(() => {
+    console.log("✅ Mongo Connected v700 SUCCESS");
+    console.log("🟢 v700 LIVE - Mongo Connected");
+    ensureAdmins();
+  })
+ .catch(e => console.log("❌ Mongo Fail v700:", e.message));
+
+// ====== SCHEMAS ======
 const userSchema = new mongoose.Schema({
-  email: {type:String, unique:true, lowercase:true},
+  email: { type: String, unique: true, lowercase: true },
   password: String,
-  role: {type:String, enum:['reader','creator','admin'], default:'reader'},
+  role: { type: String, enum: ['reader', 'creator', 'admin'], default: 'reader' },
   name: String,
-  createdAt: {type:Date, default:Date.now}
+  createdAt: { type: Date, default: Date.now }
 });
 const User = mongoose.models.User || mongoose.model('User', userSchema);
 
-app.use(helmet({contentSecurityPolicy:false}));
-app.use(cors({origin:true, credentials:true}));
-app.use(express.json({limit:"15mb"}));
+const novelSchema = new mongoose.Schema({
+  title: String,
+  author: String,
+  genre: String,
+  description: String,
+  cover: String,
+  content: String,
+  createdAt: { type: Date, default: Date.now }
+});
+const Novel = mongoose.models.Novel || mongoose.model('Novel', novelSchema);
+
+// ====== FIREWALL PROTECTION - ALL ACTIVE ======
+app.use(helmet({ contentSecurityPolicy: false, crossOriginEmbedderPolicy: false }));
+app.use(cors({ origin: true, credentials: true }));
+app.use(express.json({ limit: "15mb" }));
 app.use(mongoSanitize());
 app.use(hpp());
-app.use('/api/', rateLimit({windowMs:15*60*1000, max:500}));
+app.use('/api/', rateLimit({ windowMs: 15 * 60 * 1000, max: 500, message: "Too many requests" }));
 
-const readJSON = (f)=>{ try{return JSON.parse(fs.readFileSync(path.join(__dirname,f),'utf8'))}catch{return []} };
-const writeJSON = (f,d)=>{ try{fs.writeFileSync(path.join(__dirname,f), JSON.stringify(d,null,2))}catch{} };
-if(!fs.existsSync(path.join(__dirname,'users.json'))) writeJSON('users.json',[]);
-if(!fs.existsSync(path.join(__dirname,'novels.json'))) writeJSON('novels.json',[]);
-
+// ====== ADMIN EMAILS - FIXED - NEVER DELETE ======
 const DEFAULT_ADMINS = [
-  { email: (process.env.ADMIN1_EMAIL || "xhettriakash1@gmail.com").toLowerCase(), password: process.env.ADMIN1_PASS || "Akash123" },
-  { email: (process.env.ADMIN2_EMAIL || "akashchettri2003@gmail.com").toLowerCase(), password: process.env.ADMIN2_PASS || "Akashchettri2003" }
+  { email: "xhettriakash1@gmail.com", password: "Akash123", name: "Akash Main Admin" },
+  { email: "akashchettri2003@gmail.com", password: "Akashchettri2003", name: "Akash Second Admin" }
 ];
 
-async function ensureAdmins(){
-  let users = readJSON('users.json');
-  for(let adm of DEFAULT_ADMINS){
-    if(!users.find(u=>u.email===adm.email)){
-      users.push({id:Date.now()+Math.random(), email:adm.email, password:await bcrypt.hash(adm.password,10), role:'admin', name:'Admin'});
-    }
-  }
-  writeJSON('users.json', users);
-  if(mongoose.connection.readyState===1){
-    for(let adm of DEFAULT_ADMINS){
-      if(!await User.findOne({email:adm.email})){
-        await User.create({email:adm.email, password:await bcrypt.hash(adm.password,10), role:'admin', name:'Admin'});
+async function ensureAdmins() {
+  try {
+    for (let adm of DEFAULT_ADMINS) {
+      const exists = await User.findOne({ email: adm.email });
+      if (!exists) {
+        const hashed = await bcrypt.hash(adm.password, 10);
+        await User.create({ email: adm.email.toLowerCase(), password: hashed, role: 'admin', name: adm.name });
+        console.log("✅ Admin Created:", adm.email);
+      } else {
+        console.log("✅ Admin Already Exists:", adm.email);
       }
     }
+  } catch (e) {
+    console.log("Admin Ensure Error:", e.message);
   }
 }
 
-const protect = async (req,res,next)=>{
-  try{
-    const token = req.headers.authorization?.split(" ")[1];
-    if(!token) return res.status(401).json({error:"Login required"});
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || "GENZ_SECRET_2026");
-    req.user = decoded; next();
-  }catch{ res.status(401).json({error:"Invalid token"}); }
-};
-const isAdmin = (req,res,next)=>{ if(req.user.role!=='admin') return res.status(403).json({error:"Admin only"}); next(); };
+// ====== JWT PROTECTION ======
+const JWT_SECRET = process.env.JWT_SECRET || "GENZ_SECRET_2026_SECURE";
 
-app.get('/api/health', (req,res)=>res.json({ok:true, v:"v650", mongo: mongoose.connection.readyState===1?"connected":"disconnected"}));
-app.post('/api/register', async (req,res)=>{
-  const {email,password,name} = req.body;
-  if(!email||!password) return res.status(400).json({error:"Required"});
-  const emailL = email.toLowerCase();
-  if(mongoose.connection.readyState===1){
-    if(await User.findOne({email:emailL})) return res.status(409).json({error:"Exists"});
-    await User.create({email:emailL, password:await bcrypt.hash(password,10), role:DEFAULT_ADMINS.some(a=>a.email===emailL)?'admin':'reader', name});
-  }else{
-    let users = readJSON('users.json');
-    if(users.find(u=>u.email===emailL)) return res.status(409).json({error:"Exists"});
-    users.push({id:Date.now(), email:emailL, password:await bcrypt.hash(password,10), role:DEFAULT_ADMINS.some(a=>a.email===emailL)?'admin':'reader', name});
-    writeJSON('users.json', users);
+const protect = (req, res, next) => {
+  try {
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) return res.status(401).json({ error: "Login required" });
+    const decoded = jwt.verify(token, JWT_SECRET);
+    req.user = decoded;
+    next();
+  } catch {
+    res.status(401).json({ error: "Invalid token" });
   }
-  res.json({success:true, msg:"Registered"});
+};
+
+const isAdmin = (req, res, next) => {
+  if (req.user.role!== 'admin') return res.status(403).json({ error: "Admin only" });
+  next();
+};
+
+// ====== API ROUTES ======
+app.get('/api/health', (req, res) => res.json({
+  ok: true,
+  v: "v700 FINAL",
+  firewall: "Active",
+  mongo: mongoose.connection.readyState === 1? "connected" : "disconnected",
+  admins: DEFAULT_ADMINS.map(a => a.email)
+}));
+
+app.get('/', (req, res) => res.send("🟢 v700 FINAL LIVE - Firewall Active - Mongo Connected - Admin Panel Ready"));
+
+// AUTH
+app.post('/api/register', async (req, res) => {
+  try {
+    const { email, password, name } = req.body;
+    if (!email ||!password) return res.status(400).json({ error: "Email and Password Required" });
+    const emailL = email.toLowerCase();
+    if (await User.findOne({ email: emailL })) return res.status(409).json({ error: "User Already Exists" });
+
+    const isDefaultAdmin = DEFAULT_ADMINS.some(a => a.email === emailL);
+    const hashed = await bcrypt.hash(password, 10);
+    await User.create({ email: emailL, password: hashed, role: isDefaultAdmin? 'admin' : 'reader', name: name || "User" });
+    res.json({ success: true, msg: "Registered Successfully" });
+  } catch (e) { res.status(500).json({ error: e.message }); }
 });
-app.post('/api/login', async (req,res)=>{
-  const {email,password} = req.body;
-  const emailL = email.toLowerCase();
-  let user = mongoose.connection.readyState===1? await User.findOne({email:emailL}) : readJSON('users.json').find(u=>u.email===emailL);
-  if(!user) return res.status(401).json({error:"Not found"});
-  if(!(await bcrypt.compare(password, user.password))) return res.status(401).json({error:"Wrong password"});
-  const token = jwt.sign({id:user._id||user.id, email:user.email, role:user.role}, process.env.JWT_SECRET||"GENZ_SECRET_2026", {expiresIn:"7d"});
-  res.json({success:true, token, user:{email:user.email, role:user.role, name:user.name}});
+
+app.post('/api/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const emailL = email.toLowerCase();
+    const user = await User.findOne({ email: emailL });
+    if (!user) return res.status(401).json({ error: "User Not Found" });
+    if (!(await bcrypt.compare(password, user.password))) return res.status(401).json({ error: "Wrong Password" });
+
+    const token = jwt.sign({ id: user._id, email: user.email, role: user.role }, JWT_SECRET, { expiresIn: "7d" });
+    res.json({ success: true, token, user: { email: user.email, role: user.role, name: user.name, id: user._id } });
+  } catch (e) { res.status(500).json({ error: e.message }); }
 });
-app.post('/api/admin/change-password', protect, isAdmin, async (req,res)=>{
-  const {oldPassword, newPassword} = req.body;
-  let user = mongoose.connection.readyState===1? await User.findById(req.user.id) : null;
-  if(!user){
-    let users = readJSON('users.json');
-    let idx = users.findIndex(u=>u.email===req.user.email);
-    if(idx===-1) return res.json({ok:false, msg:"Not found"});
-    if(!(await bcrypt.compare(oldPassword, users[idx].password))) return res.json({ok:false, msg:"Old password wrong"});
-    users[idx].password = await bcrypt.hash(newPassword,10);
-    writeJSON('users.json', users);
-    return res.json({ok:true, msg:"Password changed!"});
-  }
-  if(!(await bcrypt.compare(oldPassword, user.password))) return res.json({ok:false, msg:"Old password wrong"});
-  user.password = await bcrypt.hash(newPassword,10);
-  await user.save();
-  res.json({ok:true, msg:"Password changed!"});
+
+// ADMIN PANEL
+app.post('/api/admin/change-password', protect, isAdmin, async (req, res) => {
+  try {
+    const { oldPassword, newPassword } = req.body;
+    const user = await User.findById(req.user.id);
+    if (!user) return res.json({ ok: false, msg: "Admin not found" });
+    if (!(await bcrypt.compare(oldPassword, user.password))) return res.json({ ok: false, msg: "Old password wrong" });
+    user.password = await bcrypt.hash(newPassword, 10);
+    await user.save();
+    res.json({ ok: true, msg: "Password Changed Successfully!" });
+  } catch (e) { res.json({ ok: false, msg: e.message }); }
 });
-app.post('/api/admin/make-admin', protect, isAdmin, async (req,res)=>{
-  const {email} = req.body;
-  const emailL = email.toLowerCase();
-  if(mongoose.connection.readyState===1){
-    const target = await User.findOne({email:emailL});
-    if(!target) return res.json({ok:false, msg:"User must signup first"});
-    target.role = "admin"; await target.save();
-  }else{
-    let users = readJSON('users.json');
-    let u = users.find(x=>x.email===emailL);
-    if(!u) return res.json({ok:false, msg:"User must signup first"});
-    u.role = "admin"; writeJSON('users.json', users);
-  }
-  res.json({ok:true, msg:`${email} is now ADMIN`});
+
+app.post('/api/admin/make-admin', protect, isAdmin, async (req, res) => {
+  try {
+    const { email } = req.body;
+    const target = await User.findOne({ email: email.toLowerCase() });
+    if (!target) return res.json({ ok: false, msg: "User must signup first" });
+    target.role = "admin";
+    await target.save();
+    res.json({ ok: true, msg: `${email} is now ADMIN` });
+  } catch (e) { res.json({ ok: false, msg: e.message }); }
 });
-app.get('/api/users', protect, isAdmin, async (req,res)=>{
-  if(mongoose.connection.readyState===1) res.json(await User.find().select('-password'));
-  else res.json(readJSON('users.json').map(u=>({email:u.email, role:u.role, name:u.name})));
+
+app.get('/api/users', protect, isAdmin, async (req, res) => {
+  const users = await User.find().select('-password').sort({ createdAt: -1 });
+  res.json(users);
 });
-app.get('/', (req,res)=>res.send("🟢 v650 LIVE - Mongo Connected"));
-app.listen(process.env.PORT || 10000, ()=>console.log("v650 LIVE"));
+
+app.delete('/api/admin/delete-user/:id', protect, isAdmin, async (req, res) => {
+  try {
+    const userToDelete = await User.findById(req.params.id);
+    if (DEFAULT_ADMINS.some(a => a.email === userToDelete.email)) {
+      return res.json({ ok: false, msg: "Cannot delete Default Admin" });
+    }
+    await User.findByIdAndDelete(req.params.id);
+    res.json({ ok: true, msg: "User Deleted" });
+  } catch (e) { res.json({ ok: false, msg: e.message }); }
+});
+
+// NOVELS
+app.get('/api/novels', async (req, res) => {
+  const novels = await Novel.find().sort({ createdAt: -1 });
+  res.json(novels);
+});
+
+app.post('/api/novels', protect, isAdmin, async (req, res) => {
+  const novel = await Novel.create(req.body);
+  res.json({ ok: true, novel });
+});
+
+const PORT = process.env.PORT || 10000;
+app.listen(PORT, () => console.log(`v700 FINAL LIVE on ${PORT}`));
