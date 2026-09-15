@@ -1,36 +1,26 @@
 <!DOCTYPE html>
 <html><head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Login - Gen-Z Visual</title>
-<link rel="stylesheet" href="style.css">
-<!-- ===== ADVANCE FIREWALL v3 - PROTECTED ===== -->
+<title>Login - Gen-Z Visual v350</title>
+<link rel="stylesheet" href="style.css?v=350">
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
-<meta http-equiv="X-Frame-Options" content="DENY">
 <script>
-// FIREWALL 1: DOMAIN LOCK
-(function(){
-  const ALLOWED = ["xhettriakash1.github.io","localhost","127.0.0.1"];
-  if(location.protocol!=="file:" && !ALLOWED.some(h=>location.hostname.includes(h)) && location.hostname!==""){
-    document.documentElement.innerHTML="<h1 style='color:red;text-align:center;margin-top:20%'>⛔ Unauthorized Domain Blocked</h1>"; throw new Error("Blocked");
-  }
-  if(window.top!==window.self) window.top.location=window.self.location;
-})();
-// FIREWALL 2: ANTI-DEVTOOLS + RIGHT CLICK
-document.addEventListener('contextmenu',e=>e.preventDefault());
-document.addEventListener('keydown',e=>{
-  if(e.keyCode==123 || (e.ctrlKey&&e.shiftKey&&(e.keyCode==73||e.keyCode==74)) || (e.ctrlKey&&e.keyCode==85)){
-    e.preventDefault(); return false;
-  }
-});
-// FIREWALL 3: INPUT PROTECTION
+// v350 SMART FIREWALL - PROTECTED but OPEN FOR ALL
+// 1. ANTI-CLICKJACK - Keep
+if(window.top!==window.self) window.top.location=window.self.location;
+
+// 2. INPUT PROTECTION - Keep (blocks <script>, javascript:, onerror etc)
 const Firewall={
   patterns:[/<script/gi,/javascript:/gi,/onerror=/gi,/onload=/gi,/union.*select/gi,/<iframe/gi,/eval\(/gi],
+  scan(v){ return this.patterns.some(p=>p.test(v)); },
   protect(){
     document.addEventListener('input',e=>{
       if(e.target.tagName==="INPUT"||e.target.tagName==="TEXTAREA"){
-        for(let p of this.patterns){ if(p.test(e.target.value)){
-          e.target.value=""; e.target.style.border="2px solid red"; e.target.placeholder="⛔ Hack blocked!"; break;
-        }}
+        if(this.scan(e.target.value)){
+          e.target.value=""; e.target.style.border="2px solid red"; 
+          e.target.placeholder="⛔ Malicious code blocked!";
+        }
       }
     });
   }
@@ -42,6 +32,7 @@ window.FirewallCheck=()=>{
   if(now-lastSubmit<3000){alert("⛔ Too fast - wait 3 sec"); return false;} 
   lastSubmit=now; return true;
 };
+console.log("🛡️ Firewall v350 Active - Public Access Allowed");
 </script>
 <style>
 *{box-sizing:border-box}body{background:#0a0a0a;color:white;margin:0;font-family:system-ui}
@@ -69,7 +60,7 @@ input,textarea{width:100%;padding:13px;margin:7px 0;background:#0e0e10;border:1p
 <input id="lPass" type="password" placeholder="Password">
 <button class="btn" id="btnLogin">Login</button>
 <p id="lMsg" class="msg"></p>
-<p style="font-size:11px;color:#555;text-align:center;margin-top:10px">Admin: xhettriakash1@gmail.com / akashchettri2003@gmail.com</p>
+<p style="font-size:11px;color:#22c55e;text-align:center;margin-top:10px">🛡️ Firewall v350 Active - Public Access</p>
 </div>
 <div id="signupBox" style="display:none">
 <div class="role"><div id="rReader" class="on">📚 Reader</div><div id="rCreator">🎨 Creator</div></div>
@@ -89,53 +80,24 @@ input,textarea{width:100%;padding:13px;margin:7px 0;background:#0e0e10;border:1p
 </div>
 </div>
 <script>
-// CHANGE THIS AFTER RENDER DEPLOY
-const API = "http://localhost:3000/api";
-// For live: const API = "https://YOUR-RENDER-LINK.onrender.com/api";
-
+const API = "https://gen-z-visual-i630.onrender.com/api";
 let curRole="reader";
 let rR=document.getElementById("rReader"), rC=document.getElementById("rCreator"), cExtra=document.getElementById("creatorExtra");
 rR.onclick=()=>{curRole="reader"; rR.className="on"; rC.className=""; cExtra.style.display="none";};
 rC.onclick=()=>{curRole="creator"; rC.className="on"; rR.className=""; cExtra.style.display="block";};
 document.getElementById("tLogin").onclick=()=>{document.getElementById("loginBox").style.display="block";document.getElementById("signupBox").style.display="none";document.getElementById("tLogin").className="on";document.getElementById("tSignup").className="";};
 document.getElementById("tSignup").onclick=()=>{document.getElementById("loginBox").style.display="none";document.getElementById("signupBox").style.display="block";document.getElementById("tSignup").className="on";document.getElementById("tLogin").className="";};
-
 document.getElementById("btnSignup").onclick=async function(){
  if(!window.FirewallCheck()) return;
- let n=document.getElementById("sName").value.trim();
- let e=document.getElementById("sEmail").value.trim().toLowerCase();
- let p=document.getElementById("sPass").value.trim();
- let p2=document.getElementById("sPass2").value.trim();
- let agree=document.getElementById("agree").checked;
- let m=document.getElementById("sMsg");
+ let n=document.getElementById("sName").value.trim(), e=document.getElementById("sEmail").value.trim().toLowerCase(), p=document.getElementById("sPass").value.trim(), p2=document.getElementById("sPass2").value.trim(), agree=document.getElementById("agree").checked, m=document.getElementById("sMsg");
+ if(Firewall.scan(n+e+p)){m.style.color="red";m.innerText="⛔ Malicious code blocked";return;}
  if(!n||!e||!p||!p2){m.style.color="red";m.innerText="Fill all";return;}
  if(!agree){m.style.color="red";m.innerText="Agree terms";return;}
  if(p.length<6){m.style.color="red";m.innerText="Min 6 chars";return;}
  if(p!==p2){m.style.color="red";m.innerText="Not match";return;}
  let payload={name:n,email:e,password:p,role:curRole,code:document.getElementById("sCode").value.trim(),portfolio:document.getElementById("sPortfolio").value.trim(),bio:document.getElementById("sBio").value.trim()};
- try{
-  let r=await fetch(API+"/signup",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
-  let d=await r.json();
-  m.style.color=d.ok?"#22c55e":"red"; m.innerText=d.msg;
-  if(d.ok) setTimeout(()=>{document.getElementById("tLogin").click(); document.getElementById("lEmail").value=e;},1000);
- }catch(err){ m.style.color="red"; m.innerText="Backend not running! Run node server.js"; }
+ try{let r=await fetch(API+"/signup",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});let d=await r.json();m.style.color=d.ok?"#22c55e":"red"; m.innerText=d.msg; if(d.ok) setTimeout(()=>{document.getElementById("tLogin").click(); document.getElementById("lEmail").value=e;},1000);}catch(err){ m.style.color="red"; m.innerText="Backend offline"; }
 };
-
 document.getElementById("btnLogin").onclick=async function(){
  if(!window.FirewallCheck()) return;
- let email=document.getElementById("lEmail").value.trim().toLowerCase();
- let password=document.getElementById("lPass").value.trim();
- let m=document.getElementById("lMsg");
- if(!email||!password){m.style.color="red";m.innerText="Enter email/pass";return;}
- try{
-  let r=await fetch(API+"/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email,password})});
-  let d=await r.json();
-  if(!d.ok){m.style.color="red";m.innerText=d.msg;return;}
-  localStorage.setItem("isLoggedIn","true"); localStorage.setItem("role",d.role); localStorage.setItem("genz_user",email); localStorage.setItem("genz_name",d.name);
-  m.style.color="#22c55e"; m.innerText="Welcome "+d.name;
-  setTimeout(()=>{ if(d.role=="admin") location.href="admin.html"; else if(d.role=="creator") location.href="dashboard.html"; else location.href="index.html"; },600);
- }catch(err){ m.style.color="red"; m.innerText="Backend not running! Run node server.js"; }
-};
-</script>
-</body>
-  </html>
+ let email=document.getElementById("lEmail").value.trim().toLowerCase(), password=document.getElementById("lPass").value.trim
