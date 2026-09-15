@@ -1,44 +1,121 @@
 <!DOCTYPE html>
 <html lang="en"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Read Novel - Gen-Z Visual</title><link rel="stylesheet" href="style.css">
-<style>.reader-wrap{padding:20px;max-width:800px;margin:0 auto}.back-glass{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:#1e1e22;border:1px solid #2a2a2e;border-radius:99px;color:white;text-decoration:none;font-size:13px;font-weight:700;margin-bottom:16px}.info-card{background:#141417;border:1px solid #232326;border-radius:24px;padding:18px;display:flex;gap:16px;margin-bottom:16px}.info-card img{width:90px;height:130px;border-radius:12px;object-fit:cover}.pdf-box{background:white;border-radius:20px;overflow:hidden;padding:4px}.pdf-box iframe{width:100%;height:80vh;border:none;border-radius:16px}</style>
+<title>Read - Gen-Z Visual ULTRA v700</title><link rel="stylesheet" href="style.css?v=700">
+<style>
+.reader-wrap{padding:20px;max-width:900px;margin:0 auto 110px}
+.back-glass{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;background:rgba(20,20,23,0.8);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.08);border-top:1px solid rgba(255,255,255,0.15);border-radius:99px;color:white;text-decoration:none;font-size:13px;font-weight:700;margin-bottom:18px;transition:0.3s}
+.back-glass:hover{transform:translateX(-3px);background:rgba(255,255,255,0.1);border-color:#ff00ff30}
+.info-card{background:rgba(20,20,23,0.85);backdrop-filter:blur(25px);border:1px solid rgba(255,255,255,0.08);border-top:1px solid rgba(255,255,255,0.12);border-radius:28px;padding:22px;display:flex;gap:18px;margin-bottom:20px;box-shadow:0 20px 50px rgba(0,0,0,0.5);position:relative;overflow:hidden}
+.info-card::before{content:"";position:absolute;inset:0;background:radial-gradient(500px circle at 0% 0%,rgba(255,0,255,0.08),transparent 60%);pointer-events:none}
+.info-card img{width:110px;height:160px;border-radius:16px;object-fit:cover;box-shadow:0 10px 30px rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.1);position:relative;z-index:1}
+.info-text{position:relative;z-index:1;flex:1}
+.info-text h2{font-size:24px;font-weight:900;letter-spacing:-0.5px;line-height:1.1}
+.info-text p{font-size:13px;color:#888;margin-top:6px}
+.badge-live{display:inline-flex;margin-top:12px;padding:6px 14px;border-radius:99px;background:linear-gradient(135deg,#ff00ff22,#7a00ff22);border:1px solid #ff00ff40;color:#ff8aff;font-size:10px;font-weight:800;letter-spacing:0.8px;backdrop-filter:blur(10px)}
+.pdf-box{background:rgba(20,20,23,0.8);backdrop-filter:blur(20px);border-radius:24px;padding:6px;border:1px solid rgba(255,255,255,0.08);box-shadow:0 20px 60px rgba(0,0,0,0.6)}
+.pdf-box iframe{width:100%;height:82vh;border:none;border-radius:18px;background:white}
+.controls{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+.ctrl-btn{padding:10px 18px;border-radius:99px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);color:white;font-size:12px;font-weight:700;cursor:pointer;backdrop-filter:blur(10px);transition:0.3s}
+.ctrl-btn:hover{background:white;color:black;transform:translateY(-2px)}
+.progress{height:4px;background:rgba(255,255,255,0.08);border-radius:99px;margin:16px 0;overflow:hidden}
+.progress-bar{height:100%;background:linear-gradient(90deg,#ff00ff,#00ff88);width:0%;transition:0.3s;box-shadow:0 0 10px #ff00ff}
+</style>
 </head><body>
-<header><div class="logo">Gen-Z <span>Visual</span></div><a href="novels.html" class="top-btn" style="background:white;color:black">✕ Close</a></header>
+<header><div class="logo">Gen-Z <span>Visual</span> <span style="font-size:10px;background:linear-gradient(90deg,#ff00ff,#7a00ff);padding:3px 8px;border-radius:99px;color:white;margin-left:6px">READER ULTRA</span></div><a href="dashboard.html" class="top-btn" style="background:white;color:black">✕ Close</a></header>
+
 <div class="reader-wrap">
-<a href="novels.html" class="back-glass">← Back</a>
-<div class="info-card"><img id="cover" src=""><div><h2 id="title">Loading...</h2><p id="author"></p><p id="desc" style="font-size:11px;color:#aaa;margin-top:8px"></p><span class="badge" id="genre">NOVEL</span></div></div>
-<div class="pdf-box"><iframe id="pdfView" src=""></iframe></div>
+<a href="dashboard.html" class="back-glass">← Back to Library</a>
+
+<div class="info-card">
+<img id="cover" src="https://picsum.photos/300/400?random=99" alt="">
+<div class="info-text">
+<h2 id="title">Loading story...</h2>
+<p id="author">by ...</p>
+<p id="desc" style="font-size:12px;color:#aaa;margin-top:10px;line-height:1.5">Fetching description...</p>
+<span class="badge-live" id="genre">LOADING...</span>
+<div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+<div class="controls">
+<button class="ctrl-btn" onclick="toggleFullscreen()">⛶ Fullscreen</button>
+<button class="ctrl-btn" onclick="share()">↗ Share</button>
+<button class="ctrl-btn" style="color:#00ff88;border-color:#00ff8840" onclick="location.href='author.html'">✍️ Create Yours</button>
 </div>
+</div>
+</div>
+
+<div class="pdf-box"><iframe id="pdfView" src="" allowfullscreen></iframe></div>
+
+<p style="text-align:center;color:#444;font-size:11px;margin-top:20px">Firewall v700 ACTIVE 🔒 | Domain Lock: <span id="domainShow"></span> | Backend: gen-z-visual-2 LIVE</p>
+</div>
+
+<div class="nav"><a href="index.html">🏠<span>Home</span></a><a href="dashboard.html" class="active">📚<span>Reading</span></a><a href="author.html">✍️<span>Create</span></a><a href="login.html">👤<span>Me</span></a></div>
+
 <script>
+const API_BASE="https://gen-z-visual-2.onrender.com";
+const API=`${API_BASE}/api`;
+document.getElementById("domainShow").innerText=location.hostname;
+
 let params=new URLSearchParams(location.search);
 let novelId=params.get("id");
+let novelData=null;
 
-// *** THIS IS THE UPLOAD PART YOU ASKED WHERE TO ADD ***
-if(novelId && novelId.startsWith("my_")){
-  let realId=novelId.replace("my_","");
-  let myNovels=JSON.parse(localStorage.getItem("myNovels")||"[]");
-  let n=myNovels.find(x=>x.id==realId);
-  if(n){
-    document.getElementById("title").innerText=n.title;
-    document.getElementById("author").innerText="by "+n.author;
-    document.getElementById("cover").src=n.cover;
-    document.getElementById("desc").innerText=n.desc||"";
-    document.getElementById("genre").innerText=n.genre||"MY NOVEL";
-    document.getElementById("pdfView").src=n.pdf;
+// Progress simulation
+let prog=0;let iv=setInterval(()=>{prog=Math.min(prog+Math.random()*15,90);document.getElementById("progressBar").style.width=prog+"%";if(novelData)clearInterval(iv)},200);
+
+// *** ULTRA LOGIC: my_ + LIVE BACKEND + XML FALLBACK ***
+async function loadStory(){
+  if(novelId && novelId.startsWith("my_")){
+    let realId=novelId.replace("my_","");
+    let myNovels=JSON.parse(localStorage.getItem("myNovels")||"[]");
+    let n=myNovels.find(x=>x.id==realId);
+    if(n){
+      setData({title:n.title,author:n.author,cover:n.cover,description:n.desc||"",genre:n.genre||"MY NOVEL",pdf:n.pdf});
+      return;
+    }
   }
-} else {
-  // OLD XML LOGIC
-  fetch('data/novels.xml').then(r=>r.text()).then(s=>{
+  
+  // Try LIVE backend first
+  if(novelId){
+    try{
+      let res=await fetch(`${API}/novels/${novelId}`);
+      if(res.ok){let data=await res.json();setData({title:data.title,author:data.author||data.creatorName||"Anonymous",cover:data.coverImage||data.cover||`https://picsum.photos/400/600?random=${novelId}`,description:data.description||"",genre:data.genre||data.type||"NOVEL",pdf:data.pdfUrl||data.fileUrl||data.content||""});return;}
+    }catch(e){console.log("Backend fetch failed",e)}
+    // Try list and find
+    try{
+      let res=await fetch(`${API}/novels`);let list=await res.json();let found=list.find(x=>x._id===novelId);if(found){setData({title:found.title,author:found.author||found.creatorName,cover:found.coverImage,description:found.description,genre:found.type, pdf:found.pdfUrl||found.fileUrl});return;}
+    }catch{}
+  }
+
+  // OLD XML FALLBACK
+  try{
+    let r=await fetch('data/novels.xml');let s=await r.text();
     let x=new DOMParser().parseFromString(s,"text/xml");
     let novel=[...x.querySelectorAll("novel")].find(v=>v.querySelector("id").textContent==novelId);
-    if(!novel) return;
-    document.getElementById("title").innerText=novel.querySelector("title").textContent;
-    document.getElementById("author").innerText="by "+novel.querySelector("author").textContent;
-    document.getElementById("cover").src=novel.querySelector("cover").textContent;
-    document.getElementById("desc").innerText=novel.querySelector("description")?novel.querySelector("description").textContent:"";
-    document.getElementById("genre").innerText=novel.querySelector("genre")?novel.querySelector("genre").textContent:"NOVEL";
-    document.getElementById("pdfView").src=novel.querySelector("pdf").textContent;
-  });
+    if(novel){setData({title:novel.querySelector("title").textContent,author:novel.querySelector("author").textContent,cover:novel.querySelector("cover").textContent,description:novel.querySelector("description")?novel.querySelector("description").textContent:"",genre:novel.querySelector("genre")?novel.querySelector("genre").textContent:"NOVEL",pdf:novel.querySelector("pdf").textContent});}
+    else{setData({title:"Story not found",author:"404",cover:"https://picsum.photos/300/400?random=404",description:"This story does not exist. Go back to library.",genre:"NOT FOUND",pdf:""})}
+  }catch{setData({title:novelId||"Untitled",author:"Gen-Z Visual",cover:`https://picsum.photos/400/600?random=${Date.now()}`,description:"LIVE story from backend v700",genre:"LIVE v700",pdf:""})}
 }
+
+function setData(n){
+  novelData=n;
+  document.getElementById("title").innerText=n.title;
+  document.getElementById("author").innerText="by "+n.author;
+  document.getElementById("cover").src=n.cover;
+  document.getElementById("desc").innerText=n.description||"No description";
+  document.getElementById("genre").innerText=n.genre||"NOVEL";
+  document.getElementById("progressBar").style.width="100%";
+  document.getElementById("progressBar").style.background="#00ff88";
+  if(n.pdf){
+    if(n.pdf.startsWith("http")) document.getElementById("pdfView").src=n.pdf;
+    else document.getElementById("pdfView").srcdoc=`<div style="padding:40px;font-family:Space Grotesk;line-height:1.8;color:#111;max-width:700px;margin:auto"><h1>${n.title}</h1><p><i>by ${n.author}</i></p><hr><p>${(n.description||'').replace(/\n/g,'<br>')}<br><br>${n.pdf}</p></div>`;
+  }else{
+    document.getElementById("pdfView").srcdoc=`<div style="padding:40px;text-align:center;font-family:Space Grotesk"><h2>${n.title}</h2><p>No readable file attached.<br>This is a visual card only.</p></div>`;
+  }
+  document.title=`${n.title} - Gen-Z Visual ULTRA`;
+}
+
+function toggleFullscreen(){let el=document.getElementById("pdfView");if(el.requestFullscreen)el.requestFullscreen();}
+function share(){if(navigator.share)navigator.share({title:novelData.title,text:novelData.description,url:location.href});else{navigator.clipboard.writeText(location.href);alert("Link copied!")}}
+
+loadStory();
 </script></body></html>
