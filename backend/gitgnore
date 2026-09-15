@@ -1,0 +1,6 @@
+users.json
+novels.json
+pending.json
+node_modules
+.env
+dist
