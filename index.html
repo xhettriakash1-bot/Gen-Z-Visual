@@ -1,60 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="stylesheet" href="style.css">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Gen-Z Visual - Read Comics & Novels</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif}
-body{background:#080808;color:#fff;overflow-x:hidden}
-header{padding:15px 20px;display:flex;justify-content:space-between;align-items:center;background:rgba(20,20,20,0.8);backdrop-filter:blur(10px);position:sticky;top:0;z-index:100;border-bottom:1px solid #222}
-.logo{font-size:22px;font-weight:900;letter-spacing:1px}
-.logo span{color:#ff00ff}
-.search{width:100%;margin:15px 20px;background:#1a1a1a;border:1px solid #333;border-radius:30px;padding:12px 18px;color:white;outline:none;display:block}
-.hero{margin:15px 20px;background:linear-gradient(135deg,#ff00ff,#7000ff);border-radius:20px;padding:25px}
-.hero h1{font-size:28px;line-height:1.1}
-.hero p{opacity:0.9;margin:10px 0 15px;font-size:14px}
-.hero-btn{background:#fff;color:#000;border:none;padding:10px 20px;border-radius:30px;font-weight:700}
-.section{padding:15px 20px}
-.section-head{display:flex;justify-content:space-between;margin-bottom:12px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.card{background:#151515;border:1px solid #262626;border-radius:16px;overflow:hidden;transition:0.3s}
-.card:hover{transform:translateY(-3px);border-color:#ff00ff}
-.card img{width:100%;height:200px;object-fit:cover}
-.card-info{padding:10px}
-.card-info b{font-size:14px}
-.card-info small{color:#888;font-size:11px}
-.badge{display:inline-block;background:#ff00ff22;color:#ff00ff;border:1px solid #ff00ff44;font-size:10px;padding:2px 8px;border-radius:20px;margin-top:5px}
-.nav{position:fixed;bottom:0;left:0;right:0;background:#111;border-top:1px solid #222;display:flex;justify-content:space-around;padding:10px 0;z-index:100}
-.nav a{color:#666;text-decoration:none;font-size:11px;text-align:center}
-.nav a.active{color:#ff00ff}
-</style>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <header>
 <div class="logo">Gen-Z <span>Visual</span></div>
-<div style="display:flex;gap:10px">
-<a href="login.html" style="color:white;text-decoration:none;background:#222;padding:8px 14px;border-radius:20px;font-size:12px">Login</a>
-<a href="dashboard.html" style="color:black;text-decoration:none;background:#00ff88;padding:8px 14px;border-radius:20px;font-size:12px;font-weight:700">Dashboard</a>
+<div style="display:flex;gap:8px">
+<a href="login.html" class="top-btn" style="background:#1e1e22;color:white;">Login</a>
+<a href="dashboard.html" class="top-btn" style="background:#00ff88;color:black;">Dashboard</a>
 </div>
 </header>
 
+<div class="search-wrap">
 <input class="search" id="searchBox" placeholder="🔍 Search novels, comics, creators..." onkeyup="searchNow()">
+</div>
 
 <div class="hero">
 <h1>Read What<br>Gen-Z Loves.</h1>
-<p>1000+ Comics & Novels. Creator-first platform.</p>
+<p>1000+ Comics & Novels. Creator-first platform built with XML.</p>
 <button class="hero-btn" onclick="location.href='novels.html'">Start Reading →</button>
 </div>
 
 <div class="section">
-<div class="section-head"><h3>🔥 Trending Novels</h3><a href="novels.html" style="color:#ff00ff;text-decoration:none;font-size:12px">View All</a></div>
+<div class="section-head"><h3>🔥 Trending Novels</h3><a href="novels.html" class="viewall">VIEW ALL</a></div>
 <div class="grid" id="novelGrid">
-<div class="card"><img src="https://via.placeholder.com/300x400/ff00ff/ffffff?text=Loading..."><div class="card-info"><b>Loading...</b></div></div>
+<div class="card skeleton" style="height:280px"></div><div class="card skeleton" style="height:280px"></div>
 </div>
 </div>
 
-<div class="section" style="margin-bottom:80px">
-<div class="section-head"><h3>🎨 Top Comics</h3><a href="novels.html" style="color:#00
+<div class="section" style="margin-bottom:100px">
+<div class="section-head"><h3>🎨 Top Comics</h3><a href="comic.html" class="viewall" style="color:#00ff88">VIEW ALL</a></div>
+<div class="grid" id="comicGrid"></div>
+</div>
+
+<div class="nav">
+<a class="active" href="index.html">🏠<br>Home</a>
+<a href="novels.html">📖<br>Novels</a>
+<a href="comic.html">🎨<br>Comics</a>
+<a href="dashboard.html">👤<br>You</a>
+</div>
+
+<script>
+// LOAD FROM XML - PURE JS + XML
+async function loadAll(){
+  try{
+    // NOVELS
+    let r1 = await fetch('data/novels.xml');
+    let t1 = await r1.text();
+    let x1 = new DOMParser().parseFromString(t1,"text/xml");
+    let grid = document.getElementById("novelGrid");
+    grid.innerHTML="";
+    [...x1.querySelectorAll("novel")].forEach(n=>{
+      let id=n.querySelector("id")?.textContent||"1";
+      let title=n.querySelector("title")?.textContent||"Untitled";
+      let author=n.querySelector("author")?.textContent||"Unknown";
+      let cover=n.querySelector("cover")?.textContent||`https://via.placeholder.com/300x400/222/fff?text=${encodeURIComponent(title)}`;
+      grid.innerHTML+=`<div class="card" onclick="location.href='read.html?id=${id}'"><img src="${cover}" onerror="this.src='https://via.placeholder.com/300x400/222/fff?text=No+Cover'"><div class="card-info"><b>${title}</b><small>by ${author}</small><br><span class="badge">NOVEL</span></div></div>`;
+    });
+
+    // COMICS
+    let r2 = await fetch('data/comics.xml');
+    let t2 = await r2.text();
+    let x2 = new DOMParser().parseFromString(t2,"text/xml");
+    let cGrid = document.getElementById("comicGrid");
+    cGrid.innerHTML="";
+    [...x2.querySelectorAll("comic")].slice(0,4).forEach(c=>{
+      let id=c.querySelector("id")?.textContent||"1";
+      let title=c.querySelector("title")?.textContent||"Untitled";
+      let author=c.querySelector("author")?.textContent||"Unknown";
+      let cover=c.querySelector("cover")?.textContent||"";
+      cGrid.innerHTML+=`<div class="card" onclick="location.href='read-comic.html?id=${id}'"><img src="${cover}"><div class="card-info"><b>${title}</b><small>by ${author}</small><br><span class="badge" style="background:#00ff8822;border-color:#00ff8844;color:#00ff88">COMIC</span></div></div>`;
+    });
+  }catch(e){
+    document.getElementById("novelGrid").innerHTML="<p style='color:#666;padding:10px'>Make sure data/novels.xml and data/comics.xml exist</p>";
+  }
+}
+
+function searchNow(){
+  let q=document.getElementById("searchBox").value.toLowerCase();
+  document.querySelectorAll(".card").forEach(c=>{
+    c.style.display=c.innerText.toLowerCase().includes(q)?"block":"none";
+  });
+}
+loadAll();
+</script>
+</body>
+  </html>
