@@ -6,11 +6,8 @@
 <link rel="stylesheet" href="style.css?v=350">
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
 <script>
-// v350 SMART FIREWALL - PROTECTED but OPEN FOR ALL
-// 1. ANTI-CLICKJACK - Keep
+// v350 SMART FIREWALL - PROTECTED but OPEN FOR ALL - KEPT
 if(window.top!==window.self) window.top.location=window.self.location;
-
-// 2. INPUT PROTECTION - Keep (blocks <script>, javascript:, onerror etc)
 const Firewall={
   patterns:[/<script/gi,/javascript:/gi,/onerror=/gi,/onload=/gi,/union.*select/gi,/<iframe/gi,/eval\(/gi],
   scan(v){ return this.patterns.some(p=>p.test(v)); },
@@ -29,7 +26,7 @@ window.addEventListener('DOMContentLoaded',()=>Firewall.protect());
 let lastSubmit=0;
 window.FirewallCheck=()=>{ 
   const now=Date.now(); 
-  if(now-lastSubmit<3000){alert("⛔ Too fast - wait 3 sec"); return false;} 
+  if(now-lastSubmit<2000){alert("⛔ Too fast - wait 2 sec"); return false;} 
   lastSubmit=now; return true;
 };
 console.log("🛡️ Firewall v350 Active - Public Access Allowed");
@@ -60,7 +57,7 @@ input,textarea{width:100%;padding:13px;margin:7px 0;background:#0e0e10;border:1p
 <input id="lPass" type="password" placeholder="Password">
 <button class="btn" id="btnLogin">Login</button>
 <p id="lMsg" class="msg"></p>
-<p style="font-size:11px;color:#22c55e;text-align:center;margin-top:10px">🛡️ Firewall v350 Active - Public Access</p>
+<p style="font-size:11px;color:#22c55e;text-align:center;margin-top:10px">🛡️ Firewall v350 Active - Backend: gen-z-visual-1</p>
 </div>
 <div id="signupBox" style="display:none">
 <div class="role"><div id="rReader" class="on">📚 Reader</div><div id="rCreator">🎨 Creator</div></div>
@@ -80,13 +77,15 @@ input,textarea{width:100%;padding:13px;margin:7px 0;background:#0e0e10;border:1p
 </div>
 </div>
 <script>
-const API = "https://gen-z-visual-i630.onrender.com/api";
+// ===== FIXED API - YOUR LIVE BACKEND =====
+const API = "https://gen-z-visual-1.onrender.com/api";
 let curRole="reader";
 let rR=document.getElementById("rReader"), rC=document.getElementById("rCreator"), cExtra=document.getElementById("creatorExtra");
 rR.onclick=()=>{curRole="reader"; rR.className="on"; rC.className=""; cExtra.style.display="none";};
 rC.onclick=()=>{curRole="creator"; rC.className="on"; rR.className=""; cExtra.style.display="block";};
 document.getElementById("tLogin").onclick=()=>{document.getElementById("loginBox").style.display="block";document.getElementById("signupBox").style.display="none";document.getElementById("tLogin").className="on";document.getElementById("tSignup").className="";};
 document.getElementById("tSignup").onclick=()=>{document.getElementById("loginBox").style.display="none";document.getElementById("signupBox").style.display="block";document.getElementById("tSignup").className="on";document.getElementById("tLogin").className="";};
+
 document.getElementById("btnSignup").onclick=async function(){
  if(!window.FirewallCheck()) return;
  let n=document.getElementById("sName").value.trim(), e=document.getElementById("sEmail").value.trim().toLowerCase(), p=document.getElementById("sPass").value.trim(), p2=document.getElementById("sPass2").value.trim(), agree=document.getElementById("agree").checked, m=document.getElementById("sMsg");
@@ -95,9 +94,42 @@ document.getElementById("btnSignup").onclick=async function(){
  if(!agree){m.style.color="red";m.innerText="Agree terms";return;}
  if(p.length<6){m.style.color="red";m.innerText="Min 6 chars";return;}
  if(p!==p2){m.style.color="red";m.innerText="Not match";return;}
- let payload={name:n,email:e,password:p,role:curRole,code:document.getElementById("sCode").value.trim(),portfolio:document.getElementById("sPortfolio").value.trim(),bio:document.getElementById("sBio").value.trim()};
- try{let r=await fetch(API+"/signup",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});let d=await r.json();m.style.color=d.ok?"#22c55e":"red"; m.innerText=d.msg; if(d.ok) setTimeout(()=>{document.getElementById("tLogin").click(); document.getElementById("lEmail").value=e;},1000);}catch(err){ m.style.color="red"; m.innerText="Backend offline"; }
+ if(curRole==="creator"){
+   let code=document.getElementById("sCode").value.trim();
+   if(code!=="CREATOR2026"){ m.style.color="red"; m.innerText="Wrong Creator Code! Use CREATOR2026"; return; }
+ }
+ let payload={name:n,email:e,password:p,role:curRole};
+ try{
+   let r=await fetch(API+"/register",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+   let d=await r.json();
+   m.style.color=d.success?"#22c55e":"red"; 
+   m.innerText=d.msg || d.error || "Done";
+   if(d.success) setTimeout(()=>{document.getElementById("tLogin").click(); document.getElementById("lEmail").value=e;},1000);
+ }catch(err){ m.style.color="red"; m.innerText="Backend offline - check internet"; }
 };
+
 document.getElementById("btnLogin").onclick=async function(){
  if(!window.FirewallCheck()) return;
- let email=document.getElementById("lEmail").value.trim().toLowerCase(), password=document.getElementById("lPass").value.trim
+ let email=document.getElementById("lEmail").value.trim().toLowerCase(), password=document.getElementById("lPass").value.trim();
+ let m=document.getElementById("lMsg");
+ if(!email||!password){ m.style.color="red"; m.innerText="Fill all"; return; }
+ try{
+   let r=await fetch(API+"/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email,password})});
+   let d=await r.json();
+   if(d.success){
+     m.style.color="#22c55e"; m.innerText="✅ "+d.msg;
+     localStorage.setItem("user", JSON.stringify(d.user));
+     localStorage.setItem("email", d.user.email);
+     localStorage.setItem("role", d.user.role);
+     localStorage.setItem("name", d.user.name);
+     setTimeout(()=>{
+       if(d.user.role==="admin") location.href="admin.html";
+       else location.href="index.html";
+     },600);
+   }else{
+     m.style.color="red"; m.innerText=d.error || "Login failed";
+   }
+ }catch(e){ m.style.color="red"; m.innerText="Backend offline"; }
+};
+</script>
+</body></html>
