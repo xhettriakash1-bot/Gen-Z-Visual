@@ -1,129 +1,65 @@
 <!DOCTYPE html>
 <html><head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Login - Gen-Z Visual
- <!-- ===== ADVANCE FRONTEND FIREWALL v3 ===== -->
+<title>Login - Gen-Z Visual</title>
+<link rel="stylesheet" href="style.css">
+<!-- ===== ADVANCE FRONTEND FIREWALL v3 ===== -->
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
 <meta http-equiv="X-Frame-Options" content="DENY">
 <meta http-equiv="X-XSS-Protection" content="1; mode=block">
 <script>
-// ===== FRONTEND FIREWALL 1: DOMAIN LOCK + ANTI-IFRAME =====
+// ===== FIREWALL 1: DOMAIN LOCK + ANTI-IFRAME =====
 (function(){
   const ALLOWED_HOST = ["xhettriakash1.github.io", "localhost", "127.0.0.1"];
   const currentHost = window.location.hostname;
   const isAllowed = ALLOWED_HOST.some(h => currentHost.includes(h)) || currentHost === "";
-  // Allow file:// for local testing
   if(window.location.protocol !== "file:" && !isAllowed){
-    document.documentElement.innerHTML = "<h1 style='color:red;text-align:center;margin-top:20%'>⛔ DOMAIN NOT AUTHORIZED - BLOCKED BY FIREWALL</h1>";
+    document.documentElement.innerHTML = "<h1 style='color:red;text-align:center;margin-top:20%'>⛔ DOMAIN NOT AUTHORIZED</h1>";
     throw new Error("Unauthorized Domain");
   }
-  // Block if site is loaded inside iframe (clickjacking)
   if(window.top !== window.self){
     window.top.location = window.self.location;
   }
 })();
 
-// ===== FRONTEND FIREWALL 2: ANTI-DEVTOOLS + RIGHT CLICK + VIEW SOURCE =====
+// ===== FIREWALL 2: ANTI-DEVTOOLS =====
 document.addEventListener('contextmenu', e => e.preventDefault());
 document.addEventListener('keydown', function(e){
-  // Block F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U, Ctrl+S
-  if(
-    e.keyCode == 123 || // F12
-    (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74)) || // Ctrl+Shift+I/J
-    (e.ctrlKey && e.keyCode == 85) || // Ctrl+U
-    (e.ctrlKey && e.keyCode == 83)    // Ctrl+S
-  ){
-    e.preventDefault();
-    console.log("🔥 Firewall: DevTools shortcut blocked");
-    return false;
+  if(e.keyCode == 123 || (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74)) || (e.ctrlKey && e.keyCode == 85) || (e.ctrlKey && e.keyCode == 83)){
+    e.preventDefault(); return false;
   }
 });
 
-// Detect DevTools open - auto redirect
-setInterval(function(){
-  const widthDiff = window.outerWidth - window.innerWidth > 160;
-  const heightDiff = window.outerHeight - window.innerHeight > 160;
-  if(widthDiff || heightDiff){
-    // Don't block admin - only warn
-    if(!window.location.href.includes("admin.html")){
-      document.body.innerHTML = "<div style='background:#000;color:#0f0;height:100vh;display:flex;align-items:center;justify-content:center;flex-direction:column;font-family:monospace'><h1>🚨 SECURITY BREACH DETECTED</h1><p>DevTools detected - Action logged</p><p>IP: Logging...</p></div>";
-    }
-  }
-}, 1000);
-
-// ===== FRONTEND FIREWALL 3: ADVANCE INPUT SANITIZER (XSS/SQLi) =====
+// ===== FIREWALL 3: INPUT SANITIZER =====
 const Firewall = {
-  patterns: [
-    /<script.*?>.*?<\/script>/gi,
-    /javascript:/gi,
-    /onerror=/gi,
-    /onload=/gi,
-    /union.*select/gi,
-    /select.*from/gi,
-    /<iframe/gi,
-    /eval\(/gi,
-    /\.\.\//g
-  ],
-  sanitize: function(input){
-    if(!input) return input;
-    let str = String(input);
-    // Check attack
-    for(let p of this.patterns){
-      if(p.test(str)){
-        console.warn(`🚨 Firewall 3 Blocked: ${str}`);
-        alert("⛔ Malicious input blocked by Firewall!");
-        return ""; // Return empty - block attack
-      }
-    }
-    // Clean < > to prevent XSS
-    return str.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-  },
+  patterns: [/<script.*?>.*?<\/script>/gi, /javascript:/gi, /onerror=/gi, /onload=/gi, /union.*select/gi, /select.*from/gi, /<iframe/gi, /eval\(/gi, /\.\.\//g],
   protectAllInputs: function(){
     document.addEventListener('input', function(e){
       if(e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA"){
         const val = e.target.value;
         for(let p of Firewall.patterns){
           if(p.test(val)){
-            e.target.value = "";
-            e.target.style.border = "2px solid red";
-            e.target.placeholder = "⛔ Hack attempt blocked!";
-            break;
+            e.target.value = ""; e.target.style.border = "2px solid red";
+            e.target.placeholder = "⛔ Hack attempt blocked!"; break;
           }
         }
       }
     });
   }
 };
+window.addEventListener('DOMContentLoaded', () => Firewall.protectAllInputs());
 
-// Auto start input protection when page loads
-window.addEventListener('DOMContentLoaded', () => {
-  Firewall.protectAllInputs();
-  console.log("✅ Frontend Firewall 3 Active - All inputs protected");
-});
-
-// ===== EXTRA: BOT & SPAM PROTECTION =====
+// BOT PROTECTION
 let lastSubmitTime = 0;
 window.FirewallCheckSubmit = function(){
   const now = Date.now();
-  if(now - lastSubmitTime < 3000){ // Block if submitting faster than 3 seconds (bot)
-    alert("⛔ Too fast! Bot detected. Wait 3 seconds.");
-    return false;
-  }
-  lastSubmitTime = now;
-  return true;
+  if(now - lastSubmitTime < 3000){ alert("⛔ Too fast! Bot detected. Wait 3 sec."); return false; }
+  lastSubmitTime = now; return true;
 };
-
-// ===== EXTRA: DISABLE DRAG & COPY FOR SECURITY =====
 document.addEventListener('dragstart', e => e.preventDefault());
-document.addEventListener('selectstart', e => {
-  if(e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") return;
-  // Allow selection only in inputs
-});
 </script>
 <!-- ===== END FIREWALL ===== -->
-</title>
- 
-<link rel="stylesheet" href="style.css">
+
 <style>
 *{box-sizing:border-box}body{background:#0a0a0a;color:white;margin:0;font-family:system-ui}
 header{display:flex;justify-content:space-between;padding:12px 16px;border-bottom:1px solid #222}
@@ -179,6 +115,7 @@ document.getElementById("tLogin").onclick=()=>{document.getElementById("loginBox
 document.getElementById("tSignup").onclick=()=>{document.getElementById("loginBox").style.display="none";document.getElementById("signupBox").style.display="block";document.getElementById("tSignup").className="on";document.getElementById("tLogin").className="";};
 
 document.getElementById("btnSignup").onclick=async function(){
+ if(!window.FirewallCheckSubmit()) return;
  let n=document.getElementById("sName").value.trim();
  let e=document.getElementById("sEmail").value.trim().toLowerCase();
  let p=document.getElementById("sPass").value.trim();
@@ -199,6 +136,7 @@ document.getElementById("btnSignup").onclick=async function(){
 };
 
 document.getElementById("btnLogin").onclick=async function(){
+ if(!window.FirewallCheckSubmit()) return;
  let email=document.getElementById("lEmail").value.trim().toLowerCase();
  let password=document.getElementById("lPass").value.trim();
  let m=document.getElementById("lMsg");
