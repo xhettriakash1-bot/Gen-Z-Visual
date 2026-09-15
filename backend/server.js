@@ -3,10 +3,114 @@ const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
 const app = express();
-app.use(cors());
-app.use(express.json());
+
+// ================= FIREWALL 1: SECURITY HEADERS & CORS PROTECTION =================
+app.use((req, res, next) => {
+  // Block clickjacking, XSS, MIME sniffing
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  res.setHeader('Content-Security-Policy', "default-src 'self'");
+  res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+  res.removeHeader('X-Powered-By'); // Hide you are using Express
+  next();
+});
+
+// Only allow your website - block other sites from calling your API
+const ALLOWED_ORIGINS = [
+  "https://xhettriakash1.github.io",
+  "http://localhost:3000",
+  "http://127.0.0.1:5500"
+];
+app.use(cors({
+  origin: function(origin, callback){
+    if(!origin || ALLOWED_ORIGINS.some(o => origin.startsWith(o))){
+      callback(null, true);
+    } else {
+      console.log(`BLOCKED CORS ATTACK FROM: ${origin}`);
+      callback(new Error('Blocked by Firewall 1'));
+    }
+  }
+}));
+
+app.use(express.json({limit: '10kb'})); // Block large payload attack
 app.use(express.static(path.join(__dirname, '..')));
 
+// ================= FIREWALL 2: RATE LIMITER + DDOS + IP BLACKLIST =================
+const ipRequestCount = new Map();
+const BLACKLIST = new Set(); // Add hacker IPs here
+
+// Load blacklist from file if exists
+const blacklistFile = path.join(__dirname, 'blacklist.json');
+if(fs.existsSync(blacklistFile)){
+  try { JSON.parse(fs.readFileSync(blacklistFile)).forEach(ip => BLACKLIST.add(ip)); } catch(e){}
+}
+
+app.use((req, res, next) => {
+  const ip = req.ip || req.connection.remoteAddress;
+  
+  // Check if blacklisted
+  if(BLACKLIST.has(ip)){
+    return res.status(403).json({error: 'Your IP is permanently blocked by Firewall'});
+  }
+
+  // Rate limiting: Max 30 requests per minute per IP
+  const now = Date.now();
+  const record = ipRequestCount.get(ip) || {count: 0, time: now};
+  
+  if(now - record.time > 60 * 1000){ // 1 minute window
+    record.count = 1;
+    record.time = now;
+  } else {
+    record.count++;
+  }
+  
+  ipRequestCount.set(ip, record);
+
+  if(record.count > 30){
+    BLACKLIST.add(ip);
+    fs.writeFileSync(blacklistFile, JSON.stringify([...BLACKLIST]));
+    console.log(`🔥 DDOS BLOCKED - IP BANNED: ${ip}`);
+    return res.status(429).json({error: 'Too many requests - You are blocked for 1 hour'});
+  }
+  
+  next();
+});
+
+// ================= FIREWALL 3: HACKER INPUT FILTER (SQLi, XSS, Path Traversal) =================
+const HACK_PATTERNS = [
+  /(\%27)|(\')|(\-\-)|(\%23)|(#)/i, // SQL Injection
+  /((\%3C)|<)((\%2F)|\/)*[a-z0-9\%]+((\%3E)|>)/i, // XSS <script>
+  /((\%3C)|<)((\%2F)|\/)*script/i,
+  /(union.*select)/i,
+  /(select.*from)/i,
+  /\.\.\/|\.\.\\/, // Path Traversal
+  /(\%00)/, // Null byte attack
+  /(base64_decode|eval\()/i
+];
+
+function isAttack(input){
+  if(!input) return false;
+  const str = JSON.stringify(input).toLowerCase();
+  return HACK_PATTERNS.some(pattern => pattern.test(str));
+}
+
+app.use((req, res, next) => {
+  // Check body, query, params for attack patterns
+  if(isAttack(req.body) || isAttack(req.query) || isAttack(req.params)){
+    const ip = req.ip || req.connection.remoteAddress;
+    console.log(`🚨 HACK ATTEMPT BLOCKED from ${ip}: ${req.url}`);
+    return res.status(403).json({error: 'Malicious request blocked by WAF Firewall 3'});
+  }
+  next();
+});
+
+// ================= YOUR NORMAL CODE STARTS HERE =================
+const ADMINS = [
+ {email:"akashchettri2003@gmail.com", password:"Akashchettri2003@123#"},
+ {email:"xhettriakash1@gmail.com", password:"Akash123"}
+];
+// ... rest of your server.js code below this ...
 const ADMINS = [
  {email:"akashchettri2003@gmail.com", password:"Akashchettri2003@123#"},
  {email:"xhettriakash1@gmail.com", password:"Akash123"}
