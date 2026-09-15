@@ -23,50 +23,33 @@ input,textarea{width:100%;padding:13px;margin:7px 0;background:#0e0e10;border:1p
 </head>
 <body>
 <header><div class="logo">Gen-Z <span>Visual</span></div><a href="index.html" style="background:#222;color:white;text-decoration:none;padding:8px 14px;border-radius:99px;font-size:12px">Home</a></header>
-
 <div class="box">
 <div class="tabs"><div id="tLogin" class="on">Login</div><div id="tSignup">Sign Up</div></div>
-
 <div id="loginBox">
 <input id="lEmail" placeholder="Email">
 <input id="lPass" type="password" placeholder="Password">
 <button class="btn" id="btnLogin">Login</button>
 <p id="lMsg" class="msg"></p>
 </div>
-
 <div id="signupBox" style="display:none">
 <div class="role"><div id="rReader" class="on">📚 Reader</div><div id="rCreator">🎨 Creator</div></div>
 <input id="sName" placeholder="Full Name*">
 <input id="sEmail" placeholder="Email*">
-<input id="sPass" type="password" placeholder="Password* (min 6)">
+<input id="sPass" type="password" placeholder="Password* min 6">
 <input id="sPass2" type="password" placeholder="Confirm Password*">
 <div id="creatorExtra" class="creator-extra">
 <h4 style="margin:0;color:#c084fc">🎨 Creator Verification</h4>
-<p class="small">Creator needs secret code from admin.</p>
-<input id="sCode" placeholder="Creator Code* (CREATOR2026)">
-<input id="sPortfolio" placeholder="Portfolio / Insta link*">
+<input id="sCode" placeholder="Creator Code* CREATOR2026">
+<input id="sPortfolio" placeholder="Portfolio / Insta*">
 <textarea id="sBio" placeholder="Why you want to be creator? min 20 chars*" rows="3"></textarea>
 </div>
-<label style="display:flex;gap:8px;align-items:center;margin-top:10px"><input type="checkbox" id="agree" style="width:18px;height:18px;margin:0"><span class="small">I agree Terms*</span></label>
+<label style="display:flex;gap:8px;margin-top:10px"><input type="checkbox" id="agree" style="width:18px;height:18px;margin:0"><span class="small">Agree Terms*</span></label>
 <button class="btn" id="btnSignup">Create Account</button>
 <p id="sMsg" class="msg"></p>
 </div>
 </div>
-
 <script>
-// ===== 2 ADMINS =====
-const ADMINS = [
- {email:"akashchettri2003@gmail.com", pass:"Akashchettri2003@123#"},
- {email:"xhettriakash1@gmail.com", pass:"Akash123"}
-];
-const CREATOR_SECRET="CREATOR2026";
-
-// NO DEMO ACCOUNTS - only real
-if(!localStorage.getItem("allUsers")){
- localStorage.setItem("allUsers", JSON.stringify([]));
-}
-if(!localStorage.getItem("pendingCreators")) localStorage.setItem("pendingCreators","[]");
-
+const API = "http://localhost:3000/api";
 let curRole="reader";
 let rR=document.getElementById("rReader"), rC=document.getElementById("rCreator"), cExtra=document.getElementById("creatorExtra");
 rR.onclick=()=>{curRole="reader"; rR.className="on"; rC.className=""; cExtra.style.display="none";};
@@ -74,8 +57,7 @@ rC.onclick=()=>{curRole="creator"; rC.className="on"; rR.className=""; cExtra.st
 document.getElementById("tLogin").onclick=()=>{document.getElementById("loginBox").style.display="block";document.getElementById("signupBox").style.display="none";document.getElementById("tLogin").className="on";document.getElementById("tSignup").className="";};
 document.getElementById("tSignup").onclick=()=>{document.getElementById("loginBox").style.display="none";document.getElementById("signupBox").style.display="block";document.getElementById("tSignup").className="on";document.getElementById("tLogin").className="";};
 
-// SIGNUP
-document.getElementById("btnSignup").onclick=function(){
+document.getElementById("btnSignup").onclick=async function(){
  let n=document.getElementById("sName").value.trim();
  let e=document.getElementById("sEmail").value.trim().toLowerCase();
  let p=document.getElementById("sPass").value.trim();
@@ -85,56 +67,29 @@ document.getElementById("btnSignup").onclick=function(){
  if(!n||!e||!p||!p2){m.style.color="red";m.innerText="Fill all";return;}
  if(!agree){m.style.color="red";m.innerText="Agree terms";return;}
  if(p.length<6){m.style.color="red";m.innerText="Min 6 chars";return;}
- if(p!==p2){m.style.color="red";m.innerText="Password not match";return;}
- if(ADMINS.find(a=>a.email==e)){m.style.color="red";m.innerText="Admin email reserved";return;}
- let users=JSON.parse(localStorage.getItem("allUsers")||"[]");
- if(users.find(u=>u.email==e)){m.style.color="red";m.innerText="Email exists, login";return;}
-
- if(curRole=="creator"){
-   let code=document.getElementById("sCode").value.trim();
-   let port=document.getElementById("sPortfolio").value.trim();
-   let bio=document.getElementById("sBio").value.trim();
-   if(code!==CREATOR_SECRET){m.style.color="red";m.innerText="Wrong creator code! Code: CREATOR2026";return;}
-   if(!port){m.style.color="red";m.innerText="Portfolio required";return;}
-   if(bio.length<20){m.style.color="red";m.innerText="Bio min 20 chars";return;}
-   let pending=JSON.parse(localStorage.getItem("pendingCreators")||"[]");
-   pending.push({name:n,email:e,portfolio:port,bio:bio,date:new Date().toLocaleString()});
-   localStorage.setItem("pendingCreators",JSON.stringify(pending));
-   users.push({name:n,email:e,pass:p,role:"creator",verified:false,portfolio:port,bio:bio});
-   localStorage.setItem("allUsers",JSON.stringify(users));
-   m.style.color="#c084fc";m.innerText="✅ Creator created! Pending verify but you can login";
-   setTimeout(()=>{document.getElementById("tLogin").click();},1200);
- }else{
-   users.push({name:n,email:e,pass:p,role:"reader",verified:true});
-   localStorage.setItem("allUsers",JSON.stringify(users));
-   m.style.color="#22c55e";m.innerText="✅ Reader account created! Login now";
-   setTimeout(()=>{document.getElementById("tLogin").click();document.getElementById("lEmail").value=e;},800);
- }
+ if(p!==p2){m.style.color="red";m.innerText="Not match";return;}
+ let payload={name:n,email:e,password:p,role:curRole,code:document.getElementById("sCode").value.trim(),portfolio:document.getElementById("sPortfolio").value.trim(),bio:document.getElementById("sBio").value.trim()};
+ try{
+  let r=await fetch(API+"/signup",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+  let d=await r.json();
+  m.style.color=d.ok?"#22c55e":"red"; m.innerText=d.msg;
+  if(d.ok) setTimeout(()=>{document.getElementById("tLogin").click(); document.getElementById("lEmail").value=e;},1000);
+ }catch(err){ m.style.color="red"; m.innerText="Backend not running! Run node server.js"; }
 };
 
-// LOGIN - 2 ADMINS SUPPORT
-document.getElementById("btnLogin").onclick=function(){
- let e=document.getElementById("lEmail").value.trim().toLowerCase();
- let p=document.getElementById("lPass").value.trim();
+document.getElementById("btnLogin").onclick=async function(){
+ let email=document.getElementById("lEmail").value.trim().toLowerCase();
+ let password=document.getElementById("lPass").value.trim();
  let m=document.getElementById("lMsg");
- if(!e||!p){m.style.color="red";m.innerText="Enter email & pass";return;}
-
- // Check Admin 1 & 2 - with custom pass support for first admin
- let admin1RealPass = localStorage.getItem("adminCustomPass") || ADMINS[0].pass;
- if(e==ADMINS[0].email && p==admin1RealPass){
-   localStorage.setItem("isLoggedIn","true");localStorage.setItem("role","admin");localStorage.setItem("genz_user",e);localStorage.setItem("genz_name","Akash 1");m.style.color="#a855f7";m.innerText="Admin 1 OK";setTimeout(()=>{location.href="admin.html";},500);return;
- }
- if(e==ADMINS[1].email && p==ADMINS[1].pass){
-   localStorage.setItem("isLoggedIn","true");localStorage.setItem("role","admin");localStorage.setItem("genz_user",e);localStorage.setItem("genz_name","Akash 2");m.style.color="#a855f7";m.innerText="Admin 2 OK";setTimeout(()=>{location.href="admin.html";},500);return;
- }
-
- let users=JSON.parse(localStorage.getItem("allUsers")||"[]");
- let f=users.find(u=>u.email==e && u.pass==p);
- if(!f){m.style.color="red";m.innerText="❌ Wrong email or password";return;}
-
- localStorage.setItem("isLoggedIn","true");localStorage.setItem("role",f.role);localStorage.setItem("genz_user",f.email);localStorage.setItem("genz_name",f.name);
- m.style.color="#22c55e";m.innerText="✅ Welcome "+f.name;
- setTimeout(()=>{if(f.role=="creator")location.href="dashboard.html";else location.href="index.html";},600);
+ if(!email||!password){m.style.color="red";m.innerText="Enter email/pass";return;}
+ try{
+  let r=await fetch(API+"/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email,password})});
+  let d=await r.json();
+  if(!d.ok){m.style.color="red";m.innerText=d.msg;return;}
+  localStorage.setItem("isLoggedIn","true"); localStorage.setItem("role",d.role); localStorage.setItem("genz_user",email); localStorage.setItem("genz_name",d.name);
+  m.style.color="#22c55e"; m.innerText="Welcome "+d.name;
+  setTimeout(()=>{ if(d.role=="admin") location.href="admin.html"; else if(d.role=="creator") location.href="dashboard.html"; else location.href="index.html"; },600);
+ }catch(err){ m.style.color="red"; m.innerText="Backend not running! Run node server.js"; }
 };
 </script>
 </body>
