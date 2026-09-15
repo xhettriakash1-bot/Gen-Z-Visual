@@ -1,86 +1,44 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Read Novel - Gen-Z Visual</title>
-<link rel="stylesheet" href="style.css">
-<style>
-.reader-wrap{padding:20px;max-width:800px;margin:0 auto}
-.back-glass{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:#1e1e22;border:1px solid #2a2a2e;border-radius:99px;color:white;text-decoration:none;font-size:13px;font-weight:700;margin-bottom:16px}
-.info-card{background:#141417;border:1px solid #232326;border-radius:24px;padding:18px;display:flex;gap:16px;margin-bottom:16px}
-.info-card img{width:90px;height:130px;border-radius:12px;object-fit:cover}
-.info-card h2{font-size:18px;line-height:1.1;margin-bottom:6px}
-.info-card p{font-size:12px;color:#888}
-.pdf-box{background:white;border-radius:20px;overflow:hidden;padding:4px;box-shadow:0 20px 60px rgba(0,0,0,0.5)}
-.pdf-box iframe{width:100%;height:80vh;border:none;border-radius:16px}
-.loading{color:#666;text-align:center;padding:20px;animation:skeleton 1.5s infinite}
-</style>
-</head>
-<body>
-
-<header>
-<div class="logo">Gen-Z <span>Visual</span></div>
-<a href="novels.html" class="top-btn" style="background:white;color:black">✕ Close</a>
-</header>
-
+<html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Read Novel - Gen-Z Visual</title><link rel="stylesheet" href="style.css">
+<style>.reader-wrap{padding:20px;max-width:800px;margin:0 auto}.back-glass{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:#1e1e22;border:1px solid #2a2a2e;border-radius:99px;color:white;text-decoration:none;font-size:13px;font-weight:700;margin-bottom:16px}.info-card{background:#141417;border:1px solid #232326;border-radius:24px;padding:18px;display:flex;gap:16px;margin-bottom:16px}.info-card img{width:90px;height:130px;border-radius:12px;object-fit:cover}.pdf-box{background:white;border-radius:20px;overflow:hidden;padding:4px}.pdf-box iframe{width:100%;height:80vh;border:none;border-radius:16px}</style>
+</head><body>
+<header><div class="logo">Gen-Z <span>Visual</span></div><a href="novels.html" class="top-btn" style="background:white;color:black">✕ Close</a></header>
 <div class="reader-wrap">
-<a href="novels.html" class="back-glass">← Back to Novels</a>
-
-<div class="info-card" id="novelInfo">
-<img id="cover" src="https://via.placeholder.com/200x300/222/fff?text=Loading">
-<div>
-<h2 id="title">Loading novel...</h2>
-<p id="author">by --</p>
-<p id="desc" style="margin-top:8px;font-size:11px;color:#aaa;line-height:1.4">Fetching from XML...</p>
-<span class="badge" id="genre" style="margin-top:10px;display:inline-block">NOVEL</span>
+<a href="novels.html" class="back-glass">← Back</a>
+<div class="info-card"><img id="cover" src=""><div><h2 id="title">Loading...</h2><p id="author"></p><p id="desc" style="font-size:11px;color:#aaa;margin-top:8px"></p><span class="badge" id="genre">NOVEL</span></div></div>
+<div class="pdf-box"><iframe id="pdfView" src=""></iframe></div>
 </div>
-</div>
-
-<div class="pdf-box">
-<iframe id="pdfView" src=""></iframe>
-</div>
-</div>
-
 <script>
-// READ NOVEL LOGIC - HTML + JS + XML
-let params = new URLSearchParams(window.location.search);
-let novelId = params.get("id");
+let params=new URLSearchParams(location.search);
+let novelId=params.get("id");
 
-async function loadNovel(){
-  try{
-    let res = await fetch('data/novels.xml');
-    let text = await res.text();
-    let xml = new DOMParser().parseFromString(text, "text/xml");
-    let novels = [...xml.querySelectorAll("novel")];
-    let novel = novels.find(n => n.querySelector("id").textContent == novelId);
-
-    if(!novel){
-      document.getElementById("title").innerText = "Novel not found";
-      return;
-    }
-
-    let title = novel.querySelector("title").textContent;
-    let author = novel.querySelector("author").textContent;
-    let cover = novel.querySelector("cover").textContent;
-    let pdf = novel.querySelector("pdf").textContent;
-    let desc = novel.querySelector("description") ? novel.querySelector("description").textContent : "No description available.";
-    let genre = novel.querySelector("genre") ? novel.querySelector("genre").textContent : "NOVEL";
-
-    document.getElementById("title").innerText = title;
-    document.getElementById("author").innerText = "by " + author;
-    document.getElementById("cover").src = cover;
-    document.getElementById("desc").innerText = desc;
-    document.getElementById("genre").innerText = genre;
-    document.getElementById("pdfView").src = pdf;
-    document.title = title + " - Gen-Z Visual";
-
-  }catch(e){
-    document.getElementById("title").innerText = "Error loading XML";
-    console.log(e);
+// *** THIS IS THE UPLOAD PART YOU ASKED WHERE TO ADD ***
+if(novelId && novelId.startsWith("my_")){
+  let realId=novelId.replace("my_","");
+  let myNovels=JSON.parse(localStorage.getItem("myNovels")||"[]");
+  let n=myNovels.find(x=>x.id==realId);
+  if(n){
+    document.getElementById("title").innerText=n.title;
+    document.getElementById("author").innerText="by "+n.author;
+    document.getElementById("cover").src=n.cover;
+    document.getElementById("desc").innerText=n.desc||"";
+    document.getElementById("genre").innerText=n.genre||"MY NOVEL";
+    document.getElementById("pdfView").src=n.pdf;
   }
+} else {
+  // OLD XML LOGIC
+  fetch('data/novels.xml').then(r=>r.text()).then(s=>{
+    let x=new DOMParser().parseFromString(s,"text/xml");
+    let novel=[...x.querySelectorAll("novel")].find(v=>v.querySelector("id").textContent==novelId);
+    if(!novel) return;
+    document.getElementById("title").innerText=novel.querySelector("title").textContent;
+    document.getElementById("author").innerText="by "+novel.querySelector("author").textContent;
+    document.getElementById("cover").src=novel.querySelector("cover").textContent;
+    document.getElementById("desc").innerText=novel.querySelector("description")?novel.querySelector("description").textContent:"";
+    document.getElementById("genre").innerText=novel.querySelector("genre")?novel.querySelector("genre").textContent:"NOVEL";
+    document.getElementById("pdfView").src=novel.querySelector("pdf").textContent;
+  });
 }
-loadNovel();
-</script>
-</body>
-</html>
+</script></body></html>
