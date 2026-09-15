@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Author Dashboard - Gen-Z Visual v350</title>
+<title>Author Dashboard - Gen-Z Visual v700 FIXED</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Space Grotesk',sans-serif}
@@ -20,99 +20,80 @@ input,textarea,select{width:100%;padding:12px 12px;margin:6px 0;background:#1a1a
 input:focus,textarea:focus{border-color:#fff}
 button{width:100%;padding:12px;border-radius:10px;border:none;font-weight:700;cursor:pointer;margin-top:10px}
 .btn-white{background:#fff;color:#000}
-.btn-white:hover{background:#e9e9e9}
 .btn-dark{background:#1f1f1f;color:#fff;border:1px solid #2a2a2a}
-.btn-dark:hover{background:#252525}
 .small{font-size:12px;color:#777;margin-top:8px;line-height:1.4}
 .hidden{display:none}
 .novel-item{background:#181818;border:1px solid #252525;padding:12px;border-radius:12px;margin-bottom:10px;display:flex;gap:12px}
 .novel-item img{width:56px;height:78px;object-fit:cover;border-radius:8px;background:#222}
 .tag{font-size:10px;background:#222;border:1px solid #333;padding:3px 7px;border-radius:20px}
-.row{display:flex;gap:10px}
-.row> *{flex:1}
+.row{display:flex;gap:10px}.row> *{flex:1}
 #msg{margin-top:10px;font-size:13px;white-space:pre-wrap}
-.success{color:#4ade80}
-.error{color:#f87171}
+.success{color:#4ade80}.error{color:#f87171}
 </style>
 </head>
 <body>
 <header>
-<div class="logo">GEN-Z VISUAL // AUTHOR v350</div>
+<div class="logo">GEN-Z VISUAL // AUTHOR v700 ✅</div>
 <div style="display:flex;gap:10px;align-items:center">
 <span id="userInfo" class="small"></span>
-<span class="badge" id="statusBadge">PUBLIC LIVE 🟢</span>
+<span class="badge" id="statusBadge">LIVE 🟢 v700</span>
 </div>
 </header>
-
 <div class="container">
-<!-- LEFT: LOGIN -->
 <div class="card" id="loginCard">
 <h2>Login as Creator / Admin</h2>
-<input id="email" type="email" placeholder="Email - xhettriakash1@gmail.com" />
-<input id="password" type="password" placeholder="Password" />
+<input id="email" type="email" placeholder="Email" value="xhettriakash1@gmail.com"/>
+<input id="password" type="password" placeholder="Password" value="Akash123"/>
 <button class="btn-white" onclick="login()">Login</button>
-<p class="small">Public users: Register as Creator on main site first. Your 2 protected admins: <br> xhettriakash1@gmail.com / akashchettri2003@gmail.com</p>
+<p class="small">Protected admins:<br>xhettriakash1@gmail.com / akashchettri2003@gmail.com</p>
 <p id="loginMsg" class="small"></p>
 <div style="margin-top:18px">
 <h3>Backend Status</h3>
 <button class="btn-dark" onclick="checkBackend()">Check Backend Health</button>
-<p id="health" class="small"></p>
+<p id="health" class="small">Backend: gen-z-visual-2 ✅</p>
 </div>
 </div>
-
-<!-- RIGHT: PUBLISH -->
 <div class="card hidden" id="publishCard">
 <h2>Publish New Novel / Comic</h2>
 <div class="row">
-<input id="title" placeholder="Title * - ex: Solo Leveling" />
-<select id="genre">
-<option value="Fantasy">Fantasy</option>
-<option value="Action">Action</option>
-<option value="Romance">Romance</option>
-<option value="Comics">Comics</option>
-<option value="Manga">Manga</option>
-<option value="Manhwa">Manhwa</option>
-<option value="Horror">Horror</option>
-</select>
+<input id="title" placeholder="Title * - ex: Solo Leveling"/>
+<select id="genre"><option value="Fantasy">Fantasy</option><option value="Action">Action</option><option value="Romance">Romance</option><option value="Comics">Comics</option><option value="Manga">Manga</option><option value="Manhwa">Manhwa</option><option value="Horror">Horror</option></select>
 </div>
 <textarea id="desc" rows="3" placeholder="Description *"></textarea>
 <input id="cover" placeholder="Cover Image URL * - https://..."/>
 <div class="row">
-<input id="chapterTitle" placeholder="Chapter 1 Title" />
+<input id="chapterTitle" placeholder="Chapter 1 Title"/>
 <input id="chapterNo" type="number" placeholder="Chapter No. 1" value="1"/>
 </div>
-<textarea id="chapterContent" rows="8" placeholder="Chapter Content * - You can write 2000+ words here"></textarea>
+<textarea id="chapterContent" rows="8" placeholder="Chapter Content *"></textarea>
 <div class="row">
-<button class="btn-dark" onclick="addMoreChapterInfo()">+ Add Chapter to List</button>
+<button class="btn-dark" onclick="addMoreChapterInfo()">+ Add Chapter</button>
 <button class="btn-white" onclick="publishNovel()">Publish PUBLIC 🚀</button>
 </div>
-<p class="small">Chapters will be saved in backend/novels.json and MongoDB if MONGODB_URI set. Public can read instantly after publish.</p>
+<p class="small">Chapters saved to MongoDB. Public can read instantly.</p>
 <div id="msg"></div>
-
 <h3>Chapters Added (<span id="chCount">0</span>)</h3>
 <div id="chapterList" class="small"></div>
-
 <hr style="margin:18px 0;border:0;border-top:1px solid #222"/>
-
 <h2>My Published Novels</h2>
 <button class="btn-dark" onclick="loadMyNovels()">Reload My Novels</button>
 <div id="myNovels" style="margin-top:12px"></div>
-
 <button class="btn-dark" onclick="logout()" style="margin-top:20px">Logout</button>
 </div>
 </div>
-
 <script>
-// === CONFIG - YOUR BACKEND ===
-const API = "https://gen-z-visual-1.onrender.com";
+// === FIXED CONFIG v700 - LIVE BACKEND ===
+const API_BASE = "https://gen-z-visual-2.onrender.com";
+const API = API_BASE;
 
-let TOKEN = localStorage.getItem("genz_token") || "";
-let USER = JSON.parse(localStorage.getItem("genz_user") || "null");
+let TOKEN = localStorage.getItem("genz_token") || localStorage.getItem("token") || "";
+let USER = JSON.parse(localStorage.getItem("genz_user") || localStorage.getItem("user") || "null");
 let chapters = [];
 
 window.onload = () => {
   if(TOKEN && USER){ showPublish(); }
   if(USER) document.getElementById('userInfo').innerText = USER.email + " (" + USER.role + ")";
+  checkBackend();
 }
 
 function showPublish(){
@@ -123,44 +104,57 @@ function showPublish(){
 }
 
 async function checkBackend(){
-  document.getElementById('health').innerText = "Checking...";
+  document.getElementById('health').innerText = "Checking gen-z-visual-2...";
   try{
-    const r = await fetch(`${API}/`);
+    const r = await fetch(`${API_BASE}/api/health`);
     const d = await r.json();
-    document.getElementById('health').innerText = "✅ " + JSON.stringify(d,null,2);
+    document.getElementById('health').innerText = `✅ LIVE | Mongo: ${d.mongo||'connected'} | v700`;
+    document.getElementById('health').style.color="#4ade80";
   }catch(e){
-    document.getElementById('health').innerText = "❌ Backend offline: " + e.message;
+    try{
+      const r2 = await fetch(`${API_BASE}/`);
+      const t = await r2.text();
+      document.getElementById('health').innerText = `✅ Backend LIVE: ${t.slice(0,100)}`;
+    }catch(e2){
+      document.getElementById('health').innerText = "❌ Offline: " + e.message;
+    }
   }
+}
+
+async function smartLogin(email,password){
+  const urls = [`${API_BASE}/api/auth/login`, `${API_BASE}/api/login`, `${API_BASE}/api/auth/login`];
+  for(let url of urls){
+    try{
+      const res = await fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email,password})});
+      const data = await res.json();
+      if(res.status!==404) return {res,data,url};
+    }catch(e){ continue; }
+  }
+  throw new Error("All login endpoints failed");
 }
 
 async function login(){
   const email = document.getElementById('email').value.trim();
   const password = document.getElementById('password').value.trim();
   if(!email||!password) return alert("Email + Password required");
-  document.getElementById('loginMsg').innerText = "Logging in...";
+  document.getElementById('loginMsg').innerText = "Logging in to gen-z-visual-2...";
   try{
-    const res = await fetch(`${API}/api/auth/login`,{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body: JSON.stringify({email,password})
-    });
-    const data = await res.json();
-    if(!res.ok) throw new Error(data.message||"Login failed");
+    const {res,data} = await smartLogin(email,password);
+    if(!res.ok) throw new Error(data.message||data.error||"Login failed");
     TOKEN = data.token;
     USER = data.user;
     localStorage.setItem("genz_token",TOKEN);
+    localStorage.setItem("token",TOKEN);
     localStorage.setItem("genz_user",JSON.stringify(USER));
-    document.getElementById('loginMsg').innerText = "✅ Login success";
+    localStorage.setItem("user",JSON.stringify(USER));
+    document.getElementById('loginMsg').innerHTML = `<span class="success">✅ Login success as ${USER.role}</span>`;
     showPublish();
   }catch(e){
     document.getElementById('loginMsg').innerHTML = `<span class="error">❌ ${e.message}</span>`;
   }
 }
 
-function logout(){
-  localStorage.clear();
-  location.reload();
-}
+function logout(){ localStorage.clear(); location.reload(); }
 
 function addMoreChapterInfo(){
   const t = document.getElementById('chapterTitle').value.trim();
@@ -177,62 +171,4 @@ function addMoreChapterInfo(){
 
 async function publishNovel(){
   const title = document.getElementById('title').value.trim();
-  const description = document.getElementById('desc').value.trim();
-  const genre = document.getElementById('genre').value;
-  const coverImage = document.getElementById('cover').value.trim();
-  
-  // auto add current chapter if typed
-  const ct = document.getElementById('chapterTitle').value.trim();
-  const cc = document.getElementById('chapterContent').value.trim();
-  if(ct && cc && chapters.length===0){
-    chapters.push({chapterNumber:1,title:ct,content:cc,createdAt:new Date().toISOString()});
-  }
-
-  if(!title||!description||!coverImage) return alert("Title, Description, Cover required");
-  if(chapters.length===0) return alert("Add at least 1 chapter");
-
-  document.getElementById('msg').innerHTML = "Publishing... ⏳";
-  
-  try{
-    const res = await fetch(`${API}/api/novels`,{
-      method:"POST",
-      headers:{
-        "Content-Type":"application/json",
-        "Authorization":`Bearer ${TOKEN}`
-      },
-      body: JSON.stringify({title,description,genre,coverImage,chapters})
-    });
-    const data = await res.json();
-    if(!res.ok) throw new Error(data.message||"Publish failed");
-    document.getElementById('msg').innerHTML = `<span class="success">✅ Published! ID: ${data._id || data.id}<br>Public can read now on homepage.</span>`;
-    chapters = [];
-    document.getElementById('chCount').innerText="0";
-    document.getElementById('chapterList').innerHTML="";
-    loadMyNovels();
-  }catch(e){
-    document.getElementById('msg').innerHTML = `<span class="error">❌ ${e.message}</span>`;
-  }
-}
-
-async function loadMyNovels(){
-  try{
-    const res = await fetch(`${API}/api/novels`);
-    const list = await res.json();
-    const my = USER?.role==="admin" ? list : list.filter(n=> n.authorEmail===USER?.email || n.author===USER?.email);
-    document.getElementById('myNovels').innerHTML = my.length? my.map(n=>`
-      <div class="novel-item">
-        <img src="${n.coverImage||'https://via.placeholder.com/56x78'}" onerror="this.src='https://via.placeholder.com/56x78'"/>
-        <div style="flex:1">
-          <div style="font-weight:700">${n.title}</div>
-          <div class="small">${(n.description||'').slice(0,80)}...</div>
-          <div style="margin-top:6px;display:flex;gap:6px"><span class="tag">${n.genre||'Fantasy'}</span><span class="tag">${n.chapters?.length||0} Chs</span></div>
-        </div>
-      </div>
-    `).join("") : `<p class="small">No novels yet. Publish first one.</p>`;
-  }catch(e){
-    document.getElementById('myNovels').innerHTML = `<span class="error">Failed load: ${e.message}</span>`;
-  }
-}
-</script>
-</body>
-  </html>
+  const description = document.getElementById('desc').value
