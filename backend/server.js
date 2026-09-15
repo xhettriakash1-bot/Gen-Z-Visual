@@ -1,4 +1,4 @@
-// GEN-Z VISUAL - v700 FINAL BACKEND - FIREWALL + ADMIN PANEL
+// GEN-Z VISUAL - v700 FINAL BACKEND - FIXED FOR ALL FRONTENDS
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -14,23 +14,12 @@ const app = express();
 app.set('trust proxy', 1);
 app.disable('x-powered-by');
 
-// ====== MONGO DB - FIXED v700 ======
 const MONGO_URI = process.env.MONGO_URI || process.env.MONGODB_URI || "";
 console.log("MONGO_URI Check:", MONGO_URI? "FOUND ✅" : "NOT FOUND ❌");
-
-if (!MONGO_URI) {
-  console.log("❌ CRITICAL: Add MONGO_URI in Render Environment!");
-}
-
 mongoose.connect(MONGO_URI, { dbName: "genzvisual" })
- .then(() => {
-    console.log("✅ Mongo Connected v700 SUCCESS");
-    console.log("🟢 v700 LIVE - Mongo Connected");
-    ensureAdmins();
-  })
- .catch(e => console.log("❌ Mongo Fail v700:", e.message));
+.then(() => { console.log("✅ Mongo Connected v700 SUCCESS"); ensureAdmins(); })
+.catch(e => console.log("❌ Mongo Fail v700:", e.message));
 
-// ====== SCHEMAS ======
 const userSchema = new mongoose.Schema({
   email: { type: String, unique: true, lowercase: true },
   password: String,
@@ -40,157 +29,131 @@ const userSchema = new mongoose.Schema({
 });
 const User = mongoose.models.User || mongoose.model('User', userSchema);
 
+// FLEXIBLE SCHEMA - accepts everything frontend sends
 const novelSchema = new mongoose.Schema({
   title: String,
   author: String,
   genre: String,
   description: String,
   cover: String,
+  coverImage: String,
+  coverUrl: String,
   content: String,
-  createdAt: { type: Date, default: Date.now }
-});
+  pdfLink: String,
+  type: String,
+  creatorEmail: String,
+  creatorName: String,
+  chapters: Array,
+  authorEmail: String,
+}, { strict: false, timestamps: true });
 const Novel = mongoose.models.Novel || mongoose.model('Novel', novelSchema);
 
-// ====== FIREWALL PROTECTION - ALL ACTIVE ======
 app.use(helmet({ contentSecurityPolicy: false, crossOriginEmbedderPolicy: false }));
 app.use(cors({ origin: true, credentials: true }));
 app.use(express.json({ limit: "15mb" }));
 app.use(mongoSanitize());
 app.use(hpp());
-app.use('/api/', rateLimit({ windowMs: 15 * 60 * 1000, max: 500, message: "Too many requests" }));
+app.use('/api/', rateLimit({ windowMs: 15 * 60 * 1000, max: 500 }));
 
-// ====== ADMIN EMAILS - FIXED - NEVER DELETE ======
 const DEFAULT_ADMINS = [
   { email: "xhettriakash1@gmail.com", password: "Akash123", name: "Akash Main Admin" },
   { email: "akashchettri2003@gmail.com", password: "Akashchettri2003", name: "Akash Second Admin" }
 ];
 
 async function ensureAdmins() {
-  try {
-    for (let adm of DEFAULT_ADMINS) {
-      const exists = await User.findOne({ email: adm.email });
-      if (!exists) {
-        const hashed = await bcrypt.hash(adm.password, 10);
-        await User.create({ email: adm.email.toLowerCase(), password: hashed, role: 'admin', name: adm.name });
-        console.log("✅ Admin Created:", adm.email);
-      } else {
-        console.log("✅ Admin Already Exists:", adm.email);
-      }
+  for (let adm of DEFAULT_ADMINS) {
+    const exists = await User.findOne({ email: adm.email });
+    if (!exists) {
+      const hashed = await bcrypt.hash(adm.password, 10);
+      await User.create({ email: adm.email.toLowerCase(), password: hashed, role: 'admin', name: adm.name });
+      console.log("✅ Admin Created:", adm.email);
     }
-  } catch (e) {
-    console.log("Admin Ensure Error:", e.message);
   }
 }
 
-// ====== JWT PROTECTION ======
 const JWT_SECRET = process.env.JWT_SECRET || "GENZ_SECRET_2026_SECURE";
-
 const protect = (req, res, next) => {
   try {
     const token = req.headers.authorization?.split(" ")[1];
     if (!token) return res.status(401).json({ error: "Login required" });
-    const decoded = jwt.verify(token, JWT_SECRET);
-    req.user = decoded;
+    req.user = jwt.verify(token, JWT_SECRET);
     next();
-  } catch {
-    res.status(401).json({ error: "Invalid token" });
-  }
+  } catch { res.status(401).json({ error: "Invalid token" }); }
 };
-
 const isAdmin = (req, res, next) => {
   if (req.user.role!== 'admin') return res.status(403).json({ error: "Admin only" });
   next();
 };
 
-// ====== API ROUTES ======
+// HEALTH
 app.get('/api/health', (req, res) => res.json({
-  ok: true,
-  v: "v700 FINAL",
-  firewall: "Active",
+  ok: true, v: "v700 FINAL FIXED", firewall: "Active",
   mongo: mongoose.connection.readyState === 1? "connected" : "disconnected",
-  admins: DEFAULT_ADMINS.map(a => a.email)
+  admins: DEFAULT_ADMINS.map(a => a.email),
+  endpoints: ["/api/login", "/api/auth/login", "/api/novels"]
 }));
+app.get('/', (req, res) => res.send("🟢 v700 FINAL LIVE - All Endpoints Ready"));
 
-app.get('/', (req, res) => res.send("🟢 v700 FINAL LIVE - Firewall Active - Mongo Connected - Admin Panel Ready"));
-
-// AUTH
-app.post('/api/register', async (req, res) => {
-  try {
-    const { email, password, name } = req.body;
-    if (!email ||!password) return res.status(400).json({ error: "Email and Password Required" });
-    const emailL = email.toLowerCase();
-    if (await User.findOne({ email: emailL })) return res.status(409).json({ error: "User Already Exists" });
-
-    const isDefaultAdmin = DEFAULT_ADMINS.some(a => a.email === emailL);
-    const hashed = await bcrypt.hash(password, 10);
-    await User.create({ email: emailL, password: hashed, role: isDefaultAdmin? 'admin' : 'reader', name: name || "User" });
-    res.json({ success: true, msg: "Registered Successfully" });
-  } catch (e) { res.status(500).json({ error: e.message }); }
-});
-
-app.post('/api/login', async (req, res) => {
+// AUTH - FIXED: support BOTH routes
+async function loginHandler(req, res) {
   try {
     const { email, password } = req.body;
-    const emailL = email.toLowerCase();
-    const user = await User.findOne({ email: emailL });
-    if (!user) return res.status(401).json({ error: "User Not Found" });
-    if (!(await bcrypt.compare(password, user.password))) return res.status(401).json({ error: "Wrong Password" });
-
+    const user = await User.findOne({ email: email.toLowerCase() });
+    if (!user) return res.status(401).json({ error: "User Not Found", message: "User Not Found" });
+    if (!(await bcrypt.compare(password, user.password))) return res.status(401).json({ error: "Wrong Password", message: "Wrong Password" });
     const token = jwt.sign({ id: user._id, email: user.email, role: user.role }, JWT_SECRET, { expiresIn: "7d" });
     res.json({ success: true, token, user: { email: user.email, role: user.role, name: user.name, id: user._id } });
   } catch (e) { res.status(500).json({ error: e.message }); }
+}
+app.post('/api/login', loginHandler);
+app.post('/api/auth/login', loginHandler); // FIXED: added this!
+app.post('/api/auth/register', async (req, res) => {
+  try {
+    const { email, password, name, role } = req.body;
+    if (!email ||!password) return res.status(400).json({ error: "Required" });
+    if (await User.findOne({ email: email.toLowerCase() })) return res.status(409).json({ error: "Exists" });
+    const isDefaultAdmin = DEFAULT_ADMINS.some(a => a.email === email.toLowerCase());
+    const hashed = await bcrypt.hash(password, 10);
+    const newRole = isDefaultAdmin? 'admin' : (role === 'creator'? 'creator' : 'reader');
+    await User.create({ email: email.toLowerCase(), password: hashed, role: newRole, name: name || "User" });
+    res.json({ success: true, msg: "Registered" });
+  } catch (e) { res.status(500).json({ error: e.message }); }
 });
+app.post('/api/register', (req, res) => { req.url = '/api/auth/register'; app.handle(req, res); });
 
-// ADMIN PANEL
+// ADMIN
 app.post('/api/admin/change-password', protect, isAdmin, async (req, res) => {
   try {
     const { oldPassword, newPassword } = req.body;
     const user = await User.findById(req.user.id);
-    if (!user) return res.json({ ok: false, msg: "Admin not found" });
-    if (!(await bcrypt.compare(oldPassword, user.password))) return res.json({ ok: false, msg: "Old password wrong" });
+    if (!(await bcrypt.compare(oldPassword, user.password))) return res.json({ ok: false, msg: "Old wrong" });
     user.password = await bcrypt.hash(newPassword, 10);
     await user.save();
-    res.json({ ok: true, msg: "Password Changed Successfully!" });
+    res.json({ ok: true, msg: "Changed!" });
   } catch (e) { res.json({ ok: false, msg: e.message }); }
 });
-
-app.post('/api/admin/make-admin', protect, isAdmin, async (req, res) => {
-  try {
-    const { email } = req.body;
-    const target = await User.findOne({ email: email.toLowerCase() });
-    if (!target) return res.json({ ok: false, msg: "User must signup first" });
-    target.role = "admin";
-    await target.save();
-    res.json({ ok: true, msg: `${email} is now ADMIN` });
-  } catch (e) { res.json({ ok: false, msg: e.message }); }
-});
-
 app.get('/api/users', protect, isAdmin, async (req, res) => {
-  const users = await User.find().select('-password').sort({ createdAt: -1 });
-  res.json(users);
+  res.json(await User.find().select('-password').sort({ createdAt: -1 }));
 });
 
-app.delete('/api/admin/delete-user/:id', protect, isAdmin, async (req, res) => {
-  try {
-    const userToDelete = await User.findById(req.params.id);
-    if (DEFAULT_ADMINS.some(a => a.email === userToDelete.email)) {
-      return res.json({ ok: false, msg: "Cannot delete Default Admin" });
-    }
-    await User.findByIdAndDelete(req.params.id);
-    res.json({ ok: true, msg: "User Deleted" });
-  } catch (e) { res.json({ ok: false, msg: e.message }); }
-});
-
-// NOVELS
+// NOVELS - FIXED: open for creator + admin
 app.get('/api/novels', async (req, res) => {
-  const novels = await Novel.find().sort({ createdAt: -1 });
-  res.json(novels);
+  let filter = {};
+  if (req.query.email) filter.creatorEmail = req.query.email;
+  res.json(await Novel.find(filter).sort({ createdAt: -1 }));
 });
-
-app.post('/api/novels', protect, isAdmin, async (req, res) => {
+app.get('/api/books', async (req, res) => {
+  res.json(await Novel.find().sort({ createdAt: -1 }));
+});
+app.post('/api/novels', protect, async (req, res) => {
+  if (req.user.role!== 'admin' && req.user.role!== 'creator') return res.status(403).json({ error: "Creator only" });
+  const novel = await Novel.create(req.body);
+  res.json({ ok: true, novel, _id: novel._id });
+});
+app.post('/api/books', protect, async (req, res) => {
   const novel = await Novel.create(req.body);
   res.json({ ok: true, novel });
 });
 
 const PORT = process.env.PORT || 10000;
-app.listen(PORT, () => console.log(`v700 FINAL LIVE on ${PORT}`));
+app.listen(PORT, () => console.log(`✅ v700 FINAL FIXED LIVE on ${PORT} - BOTH login routes ready`));
