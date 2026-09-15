@@ -3,63 +3,46 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Login - Gen-Z Visual</title>
 <link rel="stylesheet" href="style.css">
-<!-- ===== ADVANCE FRONTEND FIREWALL v3 ===== -->
+<!-- ===== ADVANCE FIREWALL v3 - PROTECTED ===== -->
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
 <meta http-equiv="X-Frame-Options" content="DENY">
-<meta http-equiv="X-XSS-Protection" content="1; mode=block">
 <script>
-// ===== FIREWALL 1: DOMAIN LOCK + ANTI-IFRAME =====
+// FIREWALL 1: DOMAIN LOCK
 (function(){
-  const ALLOWED_HOST = ["xhettriakash1.github.io", "localhost", "127.0.0.1"];
-  const currentHost = window.location.hostname;
-  const isAllowed = ALLOWED_HOST.some(h => currentHost.includes(h)) || currentHost === "";
-  if(window.location.protocol !== "file:" && !isAllowed){
-    document.documentElement.innerHTML = "<h1 style='color:red;text-align:center;margin-top:20%'>⛔ DOMAIN NOT AUTHORIZED</h1>";
-    throw new Error("Unauthorized Domain");
+  const ALLOWED = ["xhettriakash1.github.io","localhost","127.0.0.1"];
+  if(location.protocol!=="file:" && !ALLOWED.some(h=>location.hostname.includes(h)) && location.hostname!==""){
+    document.documentElement.innerHTML="<h1 style='color:red;text-align:center;margin-top:20%'>⛔ Unauthorized Domain Blocked</h1>"; throw new Error("Blocked");
   }
-  if(window.top !== window.self){
-    window.top.location = window.self.location;
-  }
+  if(window.top!==window.self) window.top.location=window.self.location;
 })();
-
-// ===== FIREWALL 2: ANTI-DEVTOOLS =====
-document.addEventListener('contextmenu', e => e.preventDefault());
-document.addEventListener('keydown', function(e){
-  if(e.keyCode == 123 || (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74)) || (e.ctrlKey && e.keyCode == 85) || (e.ctrlKey && e.keyCode == 83)){
+// FIREWALL 2: ANTI-DEVTOOLS + RIGHT CLICK
+document.addEventListener('contextmenu',e=>e.preventDefault());
+document.addEventListener('keydown',e=>{
+  if(e.keyCode==123 || (e.ctrlKey&&e.shiftKey&&(e.keyCode==73||e.keyCode==74)) || (e.ctrlKey&&e.keyCode==85)){
     e.preventDefault(); return false;
   }
 });
-
-// ===== FIREWALL 3: INPUT SANITIZER =====
-const Firewall = {
-  patterns: [/<script.*?>.*?<\/script>/gi, /javascript:/gi, /onerror=/gi, /onload=/gi, /union.*select/gi, /select.*from/gi, /<iframe/gi, /eval\(/gi, /\.\.\//g],
-  protectAllInputs: function(){
-    document.addEventListener('input', function(e){
-      if(e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA"){
-        const val = e.target.value;
-        for(let p of Firewall.patterns){
-          if(p.test(val)){
-            e.target.value = ""; e.target.style.border = "2px solid red";
-            e.target.placeholder = "⛔ Hack attempt blocked!"; break;
-          }
-        }
+// FIREWALL 3: INPUT PROTECTION
+const Firewall={
+  patterns:[/<script/gi,/javascript:/gi,/onerror=/gi,/onload=/gi,/union.*select/gi,/<iframe/gi,/eval\(/gi],
+  protect(){
+    document.addEventListener('input',e=>{
+      if(e.target.tagName==="INPUT"||e.target.tagName==="TEXTAREA"){
+        for(let p of this.patterns){ if(p.test(e.target.value)){
+          e.target.value=""; e.target.style.border="2px solid red"; e.target.placeholder="⛔ Hack blocked!"; break;
+        }}
       }
     });
   }
 };
-window.addEventListener('DOMContentLoaded', () => Firewall.protectAllInputs());
-
-// BOT PROTECTION
-let lastSubmitTime = 0;
-window.FirewallCheckSubmit = function(){
-  const now = Date.now();
-  if(now - lastSubmitTime < 3000){ alert("⛔ Too fast! Bot detected. Wait 3 sec."); return false; }
-  lastSubmitTime = now; return true;
+window.addEventListener('DOMContentLoaded',()=>Firewall.protect());
+let lastSubmit=0;
+window.FirewallCheck=()=>{ 
+  const now=Date.now(); 
+  if(now-lastSubmit<3000){alert("⛔ Too fast - wait 3 sec"); return false;} 
+  lastSubmit=now; return true;
 };
-document.addEventListener('dragstart', e => e.preventDefault());
 </script>
-<!-- ===== END FIREWALL ===== -->
-
 <style>
 *{box-sizing:border-box}body{background:#0a0a0a;color:white;margin:0;font-family:system-ui}
 header{display:flex;justify-content:space-between;padding:12px 16px;border-bottom:1px solid #222}
@@ -74,7 +57,6 @@ header{display:flex;justify-content:space-between;padding:12px 16px;border-botto
 input,textarea{width:100%;padding:13px;margin:7px 0;background:#0e0e10;border:1px solid #2a2a2e;border-radius:12px;color:white;outline:none}
 .btn{width:100%;padding:14px;background:white;color:black;border:none;border-radius:99px;font-weight:900;cursor:pointer;margin-top:10px}
 .msg{font-size:12px;margin-top:10px;min-height:16px;text-align:center;font-weight:700}
-.small{font-size:11px;color:#666}
 .creator-extra{display:none;border:1px dashed #a855f7;border-radius:16px;padding:12px;margin-top:10px;background:#1a1025}
 </style>
 </head>
@@ -87,6 +69,7 @@ input,textarea{width:100%;padding:13px;margin:7px 0;background:#0e0e10;border:1p
 <input id="lPass" type="password" placeholder="Password">
 <button class="btn" id="btnLogin">Login</button>
 <p id="lMsg" class="msg"></p>
+<p style="font-size:11px;color:#555;text-align:center;margin-top:10px">Admin: xhettriakash1@gmail.com / akashchettri2003@gmail.com</p>
 </div>
 <div id="signupBox" style="display:none">
 <div class="role"><div id="rReader" class="on">📚 Reader</div><div id="rCreator">🎨 Creator</div></div>
@@ -100,13 +83,16 @@ input,textarea{width:100%;padding:13px;margin:7px 0;background:#0e0e10;border:1p
 <input id="sPortfolio" placeholder="Portfolio / Insta*">
 <textarea id="sBio" placeholder="Why you want to be creator? min 20 chars*" rows="3"></textarea>
 </div>
-<label style="display:flex;gap:8px;margin-top:10px"><input type="checkbox" id="agree" style="width:18px;height:18px;margin:0"><span class="small">Agree Terms*</span></label>
+<label style="display:flex;gap:8px;margin-top:10px"><input type="checkbox" id="agree" style="width:18px;height:18px;margin:0"><span style="font-size:11px;color:#666">Agree Terms*</span></label>
 <button class="btn" id="btnSignup">Create Account</button>
 <p id="sMsg" class="msg"></p>
 </div>
 </div>
 <script>
+// CHANGE THIS AFTER RENDER DEPLOY
 const API = "http://localhost:3000/api";
+// For live: const API = "https://YOUR-RENDER-LINK.onrender.com/api";
+
 let curRole="reader";
 let rR=document.getElementById("rReader"), rC=document.getElementById("rCreator"), cExtra=document.getElementById("creatorExtra");
 rR.onclick=()=>{curRole="reader"; rR.className="on"; rC.className=""; cExtra.style.display="none";};
@@ -115,7 +101,7 @@ document.getElementById("tLogin").onclick=()=>{document.getElementById("loginBox
 document.getElementById("tSignup").onclick=()=>{document.getElementById("loginBox").style.display="none";document.getElementById("signupBox").style.display="block";document.getElementById("tSignup").className="on";document.getElementById("tLogin").className="";};
 
 document.getElementById("btnSignup").onclick=async function(){
- if(!window.FirewallCheckSubmit()) return;
+ if(!window.FirewallCheck()) return;
  let n=document.getElementById("sName").value.trim();
  let e=document.getElementById("sEmail").value.trim().toLowerCase();
  let p=document.getElementById("sPass").value.trim();
@@ -136,7 +122,7 @@ document.getElementById("btnSignup").onclick=async function(){
 };
 
 document.getElementById("btnLogin").onclick=async function(){
- if(!window.FirewallCheckSubmit()) return;
+ if(!window.FirewallCheck()) return;
  let email=document.getElementById("lEmail").value.trim().toLowerCase();
  let password=document.getElementById("lPass").value.trim();
  let m=document.getElementById("lMsg");
@@ -152,4 +138,4 @@ document.getElementById("btnLogin").onclick=async function(){
 };
 </script>
 </body>
- </html>
+  </html>
