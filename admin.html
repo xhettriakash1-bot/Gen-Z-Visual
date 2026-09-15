@@ -1,47 +1,39 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
+<html><head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Admin Panel - Gen-Z Visual</title>
 <link rel="stylesheet" href="style.css">
 <style>
-*{box-sizing:border-box}
-body{background:#0a0a0a;color:white;margin:0;font-family:system-ui}
+*{box-sizing:border-box} body{background:#0a0a0a;color:white;margin:0;font-family:system-ui}
 header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#0a0a0a;border-bottom:1px solid #222;position:sticky;top:0;z-index:10}
-.logo{font-weight:900;font-size:20px}
-.logo span{color:#a855f7}
+.logo{font-weight:900;font-size:20px} .logo span{color:#a855f7}
 .wrap{max-width:1000px;margin:0 auto;padding:16px;padding-bottom:100px}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0}
 .stat{background:#141417;border:1px solid #232326;border-radius:16px;padding:16px;text-align:center}
-.stat b{font-size:26px;display:block;color:white}
-.stat span{font-size:11px;color:#888;letter-spacing:1px;text-transform:uppercase}
-.tabs{display:flex;gap:8px;background:#141417;border:1px solid #232326;padding:4px;border-radius:99px;width:fit-content;margin:18px 0}
-.tabs div{padding:10px 18px;border-radius:99px;font-weight:800;font-size:13px;cursor:pointer;color:#888}
-.tabs div.on{background:white;color:black}
+.stat b{font-size:26px;display:block}
 .card{background:#141417;border:1px solid #232326;border-radius:20px;padding:16px;margin-bottom:16px}
 .row{display:flex;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid #1e1e22}
-.row:last-child{border:none}
-.row img{width:50px;height:70px;border-radius:10px;object-fit:cover;background:#222}
+.row:last-child{border:none} .row img{width:50px;height:70px;border-radius:10px;object-fit:cover;background:#222}
 .badge{font-size:10px;padding:3px 8px;border-radius:99px;font-weight:800}
-.badge-reader{background:#1e293b;color:#60a5fa}
-.badge-creator{background:#2a1e3b;color:#c084fc}
-.badge-admin{background:#a855f7;color:white}
+.badge-reader{background:#1e293b;color:#60a5fa} .badge-creator{background:#2a1e3b;color:#c084fc}
 .btn{padding:7px 14px;border-radius:99px;border:none;font-weight:800;cursor:pointer;font-size:12px}
-.btn-del{background:#ff0055;color:white}
-.btn-login{background:white;color:black}
-.btn-clear{background:#222;color:white;border:1px solid #333}
-h2{margin:0}
+.btn-del{background:#ff0055;color:white} .btn-login{background:white;color:black} .btn-save{background:#a855f7;color:white;padding:12px;width:100%;margin-top:8px}
+.btn-create{background:white;color:black;padding:12px;width:100%;margin-top:8px;font-weight:900}
+.tabs{display:flex;gap:8px;background:#141417;border:1px solid #232326;padding:4px;border-radius:99px;width:fit-content;margin:18px 0;flex-wrap:wrap}
+.tabs div{padding:10px 18px;border-radius:99px;font-weight:800;font-size:13px;cursor:pointer;color:#888}
+.tabs div.on{background:white;color:black}
+input,select{width:100%;padding:12px;background:#0e0e10;border:1px solid #2a2a2e;border-radius:12px;color:white;outline:none;margin:6px 0}
 .small{font-size:11px;color:#666}
-.search{width:100%;padding:12px;background:#0e0e10;border:1px solid #2a2a2e;border-radius:12px;color:white;margin-bottom:10px;outline:none}
+.role-pick{display:flex;gap:8px;margin:8px 0}
+.role-pick div{flex:1;text-align:center;padding:10px;border-radius:99px;border:1px solid #2a2a2e;cursor:pointer;font-weight:700;color:#888;background:#0e0e10}
+.role-pick div.on{background:white;color:black;border-color:white}
 </style>
 </head>
 <body>
 <header>
 <div class="logo">ADMIN <span>PANEL</span></div>
 <div style="display:flex;gap:8px">
-<a href="index.html" class="top-btn" style="background:#1e1e22;color:white;text-decoration:none;padding:8px 14px;border-radius:99px;font-size:12px;font-weight:700">Home</a>
-<a href="dashboard.html" class="top-btn" style="background:white;color:black;text-decoration:none;padding:8px 14px;border-radius:99px;font-size:12px;font-weight:700">Studio</a>
+<a href="index.html" style="background:#1e1e22;color:white;text-decoration:none;padding:8px 14px;border-radius:99px;font-size:12px;font-weight:700">Home</a>
 <button onclick="logout()" style="background:#ff0055;color:white;border:none;padding:8px 14px;border-radius:99px;font-weight:700;cursor:pointer">Logout</button>
 </div>
 </header>
@@ -58,140 +50,124 @@ h2{margin:0}
 
 <div class="tabs">
 <div id="tUsers" class="on">👥 Users</div>
+<div id="tCreate" style="background:#a855f7;color:white">+ Create Account</div>
 <div id="tNovels">📚 Novels</div>
 <div id="tComics">💥 Comics</div>
+<div id="tSettings">⚙️ Settings</div>
 </div>
 
-<input id="search" class="search" placeholder="Search users, novels, comics...">
-
+<!-- USERS LIST -->
 <div id="boxUsers" class="card"></div>
+
+<!-- CREATE ACCOUNT FROM ADMIN -->
+<div id="boxCreate" class="card" style="display:none;border-color:#a855f7">
+<h3 style="color:#a855f7;margin-top:0">+ Create New Account</h3>
+<p class="small">Admin can create Reader or Creator accounts directly</p>
+<div class="role-pick"><div id="crReader" class="on">📚 Reader</div><div id="crCreator">🎨 Creator</div></div>
+<input id="newName" placeholder="Full Name*">
+<input id="newEmail" placeholder="Email*">
+<input id="newPass" placeholder="Password* (min 4)" type="text">
+<button class="btn btn-create" onclick="createUserFromAdmin()">Create Account</button>
+<p id="createMsg" class="small" style="margin-top:8px;min-height:16px"></p>
+</div>
+
 <div id="boxNovels" class="card" style="display:none"></div>
 <div id="boxComics" class="card" style="display:none"></div>
 
-<div class="card" style="border-color:#ff0055;background:#1a1014">
-<h3 style="color:#ff6b6b;margin-top:0">Danger Zone</h3>
-<p class="small">These actions delete data permanently</p>
-<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
-<button class="btn btn-clear" onclick="clearData('novels')">Clear All Novels</button>
-<button class="btn btn-clear" onclick="clearData('comics')">Clear All Comics</button>
-<button class="btn btn-del" onclick="clearData('users')">Clear All Users</button>
-<button class="btn btn-del" onclick="clearData('all')">Clear Everything</button>
-</div>
+<div id="boxSettings" class="card" style="display:none">
+<h3>⚙️ Admin Password</h3>
+<input id="curEmail" disabled>
+<input id="curPass" type="password" placeholder="Current password">
+<input id="newPassSet" type="password" placeholder="New password min 8">
+<input id="confirmPassSet" type="password" placeholder="Confirm new">
+<button class="btn btn-save" onclick="changeAdminPass()">Update Password</button>
+<p id="passMsg" class="small" style="margin-top:8px"></p>
+<button class="btn" style="background:#222;color:white;border:1px solid #333;margin-top:8px" onclick="resetPass()">Reset to Default</button>
 </div>
 </div>
 
 <script>
-// SECURITY - ONLY ADMIN
-if(localStorage.getItem("role")!=="admin" || localStorage.getItem("genz_user")!=="akashchettri2003@gmail.com"){
- alert("Access Denied! Admin only");
- location.href="login.html";
-}
+const DEFAULT_EMAIL="akashchettri2003@gmail.com";
+const DEFAULT_PASS="Akashchettri2003@123#";
+if(localStorage.getItem("role")!=="admin"){ alert("Admin only"); location.href="login.html"; }
+function getAdminPass(){ return localStorage.getItem("adminCustomPass") || DEFAULT_PASS; }
 
-const $ = id=>document.getElementById(id);
-$("tUsers").onclick=()=>switchTab("Users");
-$("tNovels").onclick=()=>switchTab("Novels");
-$("tComics").onclick=()=>switchTab("Comics");
-$("search").oninput=()=>load();
+document.getElementById("curEmail").value=DEFAULT_EMAIL;
+let createRole="reader";
+document.getElementById("crReader").onclick=()=>{createRole="reader"; document.getElementById("crReader").className="on"; document.getElementById("crCreator").className="";};
+document.getElementById("crCreator").onclick=()=>{createRole="creator"; document.getElementById("crCreator").className="on"; document.getElementById("crReader").className="";};
+
+document.getElementById("tUsers").onclick=()=>switchTab("Users");
+document.getElementById("tCreate").onclick=()=>switchTab("Create");
+document.getElementById("tNovels").onclick=()=>switchTab("Novels");
+document.getElementById("tComics").onclick=()=>switchTab("Comics");
+document.getElementById("tSettings").onclick=()=>switchTab("Settings");
 
 function switchTab(t){
- $("boxUsers").style.display=t=="Users"?"block":"none";
- $("boxNovels").style.display=t=="Novels"?"block":"none";
- $("boxComics").style.display=t=="Comics"?"block":"none";
- $("tUsers").className=t=="Users"?"on":"";
- $("tNovels").className=t=="Novels"?"on":"";
- $("tComics").className=t=="Comics"?"on":"";
+ document.getElementById("boxUsers").style.display=t=="Users"?"block":"none";
+ document.getElementById("boxCreate").style.display=t=="Create"?"block":"none";
+ document.getElementById("boxNovels").style.display=t=="Novels"?"block":"none";
+ document.getElementById("boxComics").style.display=t=="Comics"?"block":"none";
+ document.getElementById("boxSettings").style.display=t=="Settings"?"block":"none";
+ document.getElementById("tUsers").className=t=="Users"?"on":"";
+ document.getElementById("tCreate").className=t=="Create"?"on":"";
+ document.getElementById("tNovels").className=t=="Novels"?"on":"";
+ document.getElementById("tComics").className=t=="Comics"?"on":"";
+ document.getElementById("tSettings").className=t=="Settings"?"on":"";
+ if(t=="Create") document.getElementById("tCreate").style.background="white",document.getElementById("tCreate").style.color="black";
+ else document.getElementById("tCreate").style.background="#a855f7",document.getElementById("tCreate").style.color="white";
 }
 
 function load(){
- let q=$("search").value.toLowerCase();
  let users=JSON.parse(localStorage.getItem("allUsers")||"[]");
  let novels=JSON.parse(localStorage.getItem("myNovels")||"[]");
  let comics=JSON.parse(localStorage.getItem("myComics")||"[]");
-
- $("uCount").innerText=users.length;
- $("nCount").innerText=novels.length;
- $("cCount").innerText=comics.length;
-
- // USERS
- let filteredUsers=users.filter(u=>u.name.toLowerCase().includes(q)||u.email.toLowerCase().includes(q)||u.role.includes(q));
- let hu=`<h3 style="margin:0 0 10px">All Users (${filteredUsers.length})</h3>`;
- if(filteredUsers.length==0) hu+="<p class='small'>No users found</p>";
- filteredUsers.forEach((u,idx)=>{
-  let realIdx=users.indexOf(u);
-  hu+=`<div class="row">
-   <div style="width:36px;height:36px;border-radius:99px;background:#222;display:grid;place-items:center;font-weight:900">${u.name[0].toUpperCase()}</div>
-   <div style="flex:1"><b>${u.name}</b> <span class="badge ${u.role=='creator'?'badge-creator':'badge-reader'}">${u.role}</span><br><span class="small">${u.email} • pass: ${u.pass}</span></div>
-   <div style="display:flex;gap:6px">
-    <button class="btn btn-login" onclick="loginAs('${u.email}')">Login As</button>
-    <button class="btn btn-del" onclick="delUser(${realIdx})">X</button>
-   </div>
-  </div>`;
- });
- $("boxUsers").innerHTML=hu;
-
- // NOVELS
- let filteredNovels=novels.filter(n=>n.title.toLowerCase().includes(q)||n.author.toLowerCase().includes(q));
- let hn=`<h3 style="margin:0 0 10px">All Novels (${filteredNovels.length})</h3>`;
- if(filteredNovels.length==0) hn+="<p class='small'>No novels</p>";
- filteredNovels.forEach(n=>{
-  hn+=`<div class="row"><img src="${n.cover}"><div style="flex:1"><b>${n.title}</b><br><span class="small">${n.author} • ${n.genre||''}</span></div><button class="btn btn-del" onclick="delNovel(${n.id})">Delete</button></div>`;
- });
- $("boxNovels").innerHTML=hn;
-
- // COMICS
- let filteredComics=comics.filter(c=>c.title.toLowerCase().includes(q));
- let hc=`<h3 style="margin:0 0 10px">All Comics (${filteredComics.length})</h3>`;
- if(filteredComics.length==0) hc+="<p class='small'>No comics</p>";
- filteredComics.forEach(c=>{
-  hc+=`<div class="row"><img src="${c.cover}"><div style="flex:1"><b>${c.title}</b><br><span class="small">${c.author||''} • ${c.pages?.length||0} pages</span></div><button class="btn btn-del" onclick="delComic(${c.id})">Delete</button></div>`;
- });
- $("boxComics").innerHTML=hc;
+ document.getElementById("uCount").innerText=users.length;
+ document.getElementById("nCount").innerText=novels.length;
+ document.getElementById("cCount").innerText=comics.length;
+ let hu=`<h3>All Users (${users.length})</h3>`; 
+ users.forEach((u,i)=>{ hu+=`<div class="row"><div style="width:36px;height:36px;border-radius:99px;background:#222;display:grid;place-items:center;font-weight:900">${u.name[0].toUpperCase()}</div><div style="flex:1"><b>${u.name}</b> <span class="badge ${u.role=='creator'?'badge-creator':'badge-reader'}">${u.role}</span><br><span class="small">${u.email} • ${u.pass}</span></div><div style="display:flex;gap:6px"><button class="btn btn-login" onclick="loginAs('${u.email}')">Login As</button><button class="btn btn-del" onclick="delUser(${i})">X</button></div></div>`; });
+ document.getElementById("boxUsers").innerHTML=hu||"No users";
+ let hn=`<h3>All Novels (${novels.length})</h3>`; novels.forEach(n=>{ hn+=`<div class="row"><img src="${n.cover}"><div style="flex:1"><b>${n.title}</b><br><span class="small">${n.author}</span></div><button class="btn btn-del" onclick="delNovel(${n.id})">Del</button></div>`; });
+ document.getElementById("boxNovels").innerHTML=hn;
+ let hc=`<h3>All Comics (${comics.length})</h3>`; comics.forEach(c=>{ hc+=`<div class="row"><img src="${c.cover}"><div style="flex:1"><b>${c.title}</b><br><span class="small">${c.pages?.length||0} pages</span></div><button class="btn btn-del" onclick="delComic(${c.id})">Del</button></div>`; });
+ document.getElementById("boxComics").innerHTML=hc;
 }
 
-function delUser(i){
- if(!confirm("Delete this user?")) return;
- let u=JSON.parse(localStorage.getItem("allUsers")||"[]");
- u.splice(i,1);
- localStorage.setItem("allUsers", JSON.stringify(u));
- load();
-}
-window.delNovel=(id)=>{
- if(!confirm("Delete novel?")) return;
- let a=JSON.parse(localStorage.getItem("myNovels")||"[]").filter(x=>x.id!=id);
- localStorage.setItem("myNovels", JSON.stringify(a)); load();
-}
-window.delComic=(id)=>{
- if(!confirm("Delete comic?")) return;
- let a=JSON.parse(localStorage.getItem("myComics")||"[]").filter(x=>x.id!=id);
- localStorage.setItem("myComics", JSON.stringify(a)); load();
-}
-function clearData(type){
- if(!confirm("Are you sure? This cannot be undone!")) return;
- if(type=="novels") localStorage.removeItem("myNovels");
- if(type=="comics") localStorage.removeItem("myComics");
- if(type=="users") localStorage.setItem("allUsers", JSON.stringify([]));
- if(type=="all"){ localStorage.removeItem("myNovels"); localStorage.removeItem("myComics"); localStorage.setItem("allUsers", JSON.stringify([])); }
- load();
-}
-function loginAs(email){
+function createUserFromAdmin(){
+ let name=document.getElementById("newName").value.trim();
+ let email=document.getElementById("newEmail").value.trim().toLowerCase();
+ let pass=document.getElementById("newPass").value.trim();
+ let msg=document.getElementById("createMsg");
+ if(!name||!email||!pass){ msg.style.color="#ff6b6b"; msg.innerText="Fill all fields"; return; }
+ if(email==DEFAULT_EMAIL){ msg.style.color="#ff6b6b"; msg.innerText="Cannot use admin email"; return; }
  let users=JSON.parse(localStorage.getItem("allUsers")||"[]");
- let u=users.find(x=>x.email==email);
- if(!u) return;
- localStorage.setItem("isLoggedIn","true");
- localStorage.setItem("role",u.role);
- localStorage.setItem("genz_user",u.email);
- localStorage.setItem("genz_name",u.name);
- alert("Now logged in as "+u.name+" ("+u.role+")");
- if(u.role=="creator") location.href="dashboard.html"; else location.href="index.html";
+ if(users.find(u=>u.email==email)){ msg.style.color="#ff6b6b"; msg.innerText="Email already exists"; return; }
+ users.push({name,email,pass,role:createRole});
+ localStorage.setItem("allUsers", JSON.stringify(users));
+ msg.style.color="#22c55e"; msg.innerText="✅ "+createRole+" account created: "+email;
+ document.getElementById("newName").value=""; document.getElementById("newEmail").value=""; document.getElementById("newPass").value="";
+ load();
 }
-function logout(){
- localStorage.removeItem("isLoggedIn");
- localStorage.removeItem("role");
- localStorage.removeItem("genz_user");
- localStorage.removeItem("genz_name");
- location.href="login.html";
+
+function changeAdminPass(){
+ let cur=document.getElementById("curPass").value;
+ let np=document.getElementById("newPassSet").value;
+ let cp=document.getElementById("confirmPassSet").value;
+ let msg=document.getElementById("passMsg");
+ if(cur!==getAdminPass()){ msg.style.color="#ff6b6b"; msg.innerText="❌ Current wrong"; return; }
+ if(np.length<8){ msg.style.color="#ff6b6b"; msg.innerText="❌ Min 8 chars"; return; }
+ if(np!==cp){ msg.style.color="#ff6b6b"; msg.innerText="❌ Not matching"; return; }
+ localStorage.setItem("adminCustomPass", np);
+ msg.style.color="#22c55e"; msg.innerText="✅ Updated! New pass: "+np;
 }
+function resetPass(){ if(!confirm("Reset to default?"))return; localStorage.removeItem("adminCustomPass"); document.getElementById("passMsg").style.color="#22c55e"; document.getElementById("passMsg").innerText="Reset done: "+DEFAULT_PASS; }
+function delUser(i){ if(!confirm("Delete?"))return; let u=JSON.parse(localStorage.getItem("allUsers")||"[]"); u.splice(i,1); localStorage.setItem("allUsers",JSON.stringify(u)); load(); }
+window.delNovel=(id)=>{ let a=JSON.parse(localStorage.getItem("myNovels")||"[]").filter(x=>x.id!=id); localStorage.setItem("myNovels",JSON.stringify(a)); load(); }
+window.delComic=(id)=>{ let a=JSON.parse(localStorage.getItem("myComics")||"[]").filter(x=>x.id!=id); localStorage.setItem("myComics",JSON.stringify(a)); load(); }
+function loginAs(email){ let u=JSON.parse(localStorage.getItem("allUsers")||"[]").find(x=>x.email==email); localStorage.setItem("isLoggedIn","true"); localStorage.setItem("role",u.role); localStorage.setItem("genz_user",u.email); localStorage.setItem("genz_name",u.name); location.href=u.role=="creator"?"dashboard.html":"index.html"; }
+function logout(){ localStorage.removeItem("isLoggedIn"); localStorage.removeItem("role"); localStorage.removeItem("genz_user"); localStorage.removeItem("genz_name"); location.href="login.html"; }
 load();
 </script>
 </body>
-  </html>
+ </html>
