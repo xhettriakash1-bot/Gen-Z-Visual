@@ -1,22 +1,20 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Gen-Z Visual - Home</title>
-<link rel="stylesheet" href="style.css?v=2">
-<script>
-// NO DOMAIN BLOCK - Open for everyone
-</script>
+<link rel="stylesheet" href="style.css?v=300">
 <style>
-*{box-sizing:border-box}body{background:#0a0a0a;color:white;margin:0;font-family:system-ui}
+*{box-sizing:border-box}body{background:#0a0a0a;color:white;margin:0;font-family:system-ui,sans-serif}
 header{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid #222;position:sticky;top:0;background:#0a0a0a;z-index:10}
 .logo{font-weight:900;font-size:20px}.logo span{color:#a855f7}
 nav a{color:#aaa;text-decoration:none;margin-left:14px;font-size:14px;font-weight:700}
-.hero{max-width:900px;margin:60px auto;padding:20px;text-align:center}
-.hero h1{font-size:48px;line-height:1.1;margin:0}.hero h1 span{color:#a855f7}
-.hero p{color:#888;margin-top:14px;font-size:16px}
-.btn{padding:14px 24px;background:white;color:black;border-radius:99px;font-weight:900;text-decoration:none;display:inline-block;margin:8px}
-.btn2{padding:14px 24px;background:#1a1a1a;color:white;border:1px solid #333;border-radius:99px;font-weight:900;text-decoration:none;display:inline-block;margin:8px}
+.hero{max-width:900px;margin:70px auto;padding:20px;text-align:center}
+.hero h1{font-size:52px;line-height:1.05;margin:0;font-weight:900}.hero h1 span{color:#a855f7}
+.hero p{color:#888;margin-top:16px;font-size:17px}
+.btn{padding:14px 28px;background:white;color:black;border-radius:99px;font-weight:900;text-decoration:none;display:inline-block;margin:8px}
+.btn2{padding:14px 28px;background:#1a1a1a;color:white;border:1px solid #333;border-radius:99px;font-weight:900;text-decoration:none;display:inline-block;margin:8px}
 </style>
 </head>
 <body>
@@ -30,10 +28,16 @@ nav a{color:#aaa;text-decoration:none;margin-left:14px;font-size:14px;font-weigh
 </header>
 <div class="hero">
 <h1>Stories for <span>Gen-Z</span> by Gen-Z</h1>
-<p>Read, create, and share visual stories.</p>
-<br>
+<p>Read, create, and share visual stories. Open for everyone.</p>
+<br><br>
 <a href="login.html" class="btn">Start Reading →</a>
-<a href="login.html" class="btn2">Become Creator</a>
+<a href="login.html?role=creator" class="btn2">Become Creator</a>
+<p style="margin-top:30px;color:#555;font-size:13px">Backend: v300 LIVE - Public Access Enabled</p>
 </div>
+<script>
+// v300 - OPEN PUBLIC - NO DOMAIN BLOCK
+const API = "https://gen-z-visual-i630.onrender.com";
+console.log("API:", API, "Mode: OPEN PUBLIC");
+</script>
 </body>
 </html>
