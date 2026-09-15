@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin Panel - Gen-Z Visual</title>
+<link rel="stylesheet" href="style.css">
+<style>
+*{box-sizing:border-box}
+body{background:#0a0a0a;color:white;margin:0;font-family:system-ui}
+header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#0a0a0a;border-bottom:1px solid #222;position:sticky;top:0;z-index:10}
+.logo{font-weight:900;font-size:20px}
+.logo span{color:#a855f7}
+.wrap{max-width:1000px;margin:0 auto;padding:16px;padding-bottom:100px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0}
+.stat{background:#141417;border:1px solid #232326;border-radius:16px;padding:16px;text-align:center}
+.stat b{font-size:26px;display:block;color:white}
+.stat span{font-size:11px;color:#888;letter-spacing:1px;text-transform:uppercase}
+.tabs{display:flex;gap:8px;background:#141417;border:1px solid #232326;padding:4px;border-radius:99px;width:fit-content;margin:18px 0}
+.tabs div{padding:10px 18px;border-radius:99px;font-weight:800;font-size:13px;cursor:pointer;color:#888}
+.tabs div.on{background:white;color:black}
+.card{background:#141417;border:1px solid #232326;border-radius:20px;padding:16px;margin-bottom:16px}
+.row{display:flex;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid #1e1e22}
+.row:last-child{border:none}
+.row img{width:50px;height:70px;border-radius:10px;object-fit:cover;background:#222}
+.badge{font-size:10px;padding:3px 8px;border-radius:99px;font-weight:800}
+.badge-reader{background:#1e293b;color:#60a5fa}
+.badge-creator{background:#2a1e3b;color:#c084fc}
+.badge-admin{background:#a855f7;color:white}
+.btn{padding:7px 14px;border-radius:99px;border:none;font-weight:800;cursor:pointer;font-size:12px}
+.btn-del{background:#ff0055;color:white}
+.btn-login{background:white;color:black}
+.btn-clear{background:#222;color:white;border:1px solid #333}
+h2{margin:0}
+.small{font-size:11px;color:#666}
+.search{width:100%;padding:12px;background:#0e0e10;border:1px solid #2a2a2e;border-radius:12px;color:white;margin-bottom:10px;outline:none}
+</style>
+</head>
+<body>
+<header>
+<div class="logo">ADMIN <span>PANEL</span></div>
+<div style="display:flex;gap:8px">
+<a href="index.html" class="top-btn" style="background:#1e1e22;color:white;text-decoration:none;padding:8px 14px;border-radius:99px;font-size:12px;font-weight:700">Home</a>
+<a href="dashboard.html" class="top-btn" style="background:white;color:black;text-decoration:none;padding:8px 14px;border-radius:99px;font-size:12px;font-weight:700">Studio</a>
+<button onclick="logout()" style="background:#ff0055;color:white;border:none;padding:8px 14px;border-radius:99px;font-weight:700;cursor:pointer">Logout</button>
+</div>
+</header>
+
+<div class="wrap">
+<h2>Welcome, Akash 👑</h2>
+<p class="small">akashchettri2003@gmail.com • Super Admin</p>
+
+<div class="stats">
+<div class="stat"><b id="uCount">0</b><span>Users</span></div>
+<div class="stat"><b id="nCount">0</b><span>Novels</span></div>
+<div class="stat"><b id="cCount">0</b><span>Comics</span></div>
+</div>
+
+<div class="tabs">
+<div id="tUsers" class="on">👥 Users</div>
+<div id="tNovels">📚 Novels</div>
+<div id="tComics">💥 Comics</div>
+</div>
+
+<input id="search" class="search" placeholder="Search users, novels, comics...">
+
+<div id="boxUsers" class="card"></div>
+<div id="boxNovels" class="card" style="display:none"></div>
+<div id="boxComics" class="card" style="display:none"></div>
+
+<div class="card" style="border-color:#ff0055;background:#1a1014">
+<h3 style="color:#ff6b6b;margin-top:0">Danger Zone</h3>
+<p class="small">These actions delete data permanently</p>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+<button class="btn btn-clear" onclick="clearData('novels')">Clear All Novels</button>
+<button class="btn btn-clear" onclick="clearData('comics')">Clear All Comics</button>
+<button class="btn btn-del" onclick="clearData('users')">Clear All Users</button>
+<button class="btn btn-del" onclick="clearData('all')">Clear Everything</button>
+</div>
+</div>
+</div>
+
+<script>
+// SECURITY - ONLY ADMIN
+if(localStorage.getItem("role")!=="admin" || localStorage.getItem("genz_user")!=="akashchettri2003@gmail.com"){
+ alert("Access Denied! Admin only");
+ location.href="login.html";
+}
+
+const $ = id=>document.getElementById(id);
+$("tUsers").onclick=()=>switchTab("Users");
+$("tNovels").onclick=()=>switchTab("Novels");
+$("tComics").onclick=()=>switchTab("Comics");
+$("search").oninput=()=>load();
+
+function switchTab(t){
+ $("boxUsers").style.display=t=="Users"?"block":"none";
+ $("boxNovels").style.display=t=="Novels"?"block":"none";
+ $("boxComics").style.display=t=="Comics"?"block":"none";
+ $("tUsers").className=t=="Users"?"on":"";
+ $("tNovels").className=t=="Novels"?"on":"";
+ $("tComics").className=t=="Comics"?"on":"";
+}
+
+function load(){
+ let q=$("search").value.toLowerCase();
+ let users=JSON.parse(localStorage.getItem("allUsers")||"[]");
+ let novels=JSON.parse(localStorage.getItem("myNovels")||"[]");
+ let comics=JSON.parse(localStorage.getItem("myComics")||"[]");
+
+ $("uCount").innerText=users.length;
+ $("nCount").innerText=novels.length;
+ $("cCount").innerText=comics.length;
+
+ // USERS
+ let filteredUsers=users.filter(u=>u.name.toLowerCase().includes(q)||u.email.toLowerCase().includes(q)||u.role.includes(q));
+ let hu=`<h3 style="margin:0 0 10px">All Users (${filteredUsers.length})</h3>`;
+ if(filteredUsers.length==0) hu+="<p class='small'>No users found</p>";
+ filteredUsers.forEach((u,idx)=>{
+  let realIdx=users.indexOf(u);
+  hu+=`<div class="row">
+   <div style="width:36px;height:36px;border-radius:99px;background:#222;display:grid;place-items:center;font-weight:900">${u.name[0].toUpperCase()}</div>
+   <div style="flex:1"><b>${u.name}</b> <span class="badge ${u.role=='creator'?'badge-creator':'badge-reader'}">${u.role}</span><br><span class="small">${u.email} • pass: ${u.pass}</span></div>
+   <div style="display:flex;gap:6px">
+    <button class="btn btn-login" onclick="loginAs('${u.email}')">Login As</button>
+    <button class="btn btn-del" onclick="delUser(${realIdx})">X</button>
+   </div>
+  </div>`;
+ });
+ $("boxUsers").innerHTML=hu;
+
+ // NOVELS
+ let filteredNovels=novels.filter(n=>n.title.toLowerCase().includes(q)||n.author.toLowerCase().includes(q));
+ let hn=`<h3 style="margin:0 0 10px">All Novels (${filteredNovels.length})</h3>`;
+ if(filteredNovels.length==0) hn+="<p class='small'>No novels</p>";
+ filteredNovels.forEach(n=>{
+  hn+=`<div class="row"><img src="${n.cover}"><div style="flex:1"><b>${n.title}</b><br><span class="small">${n.author} • ${n.genre||''}</span></div><button class="btn btn-del" onclick="delNovel(${n.id})">Delete</button></div>`;
+ });
+ $("boxNovels").innerHTML=hn;
+
+ // COMICS
+ let filteredComics=comics.filter(c=>c.title.toLowerCase().includes(q));
+ let hc=`<h3 style="margin:0 0 10px">All Comics (${filteredComics.length})</h3>`;
+ if(filteredComics.length==0) hc+="<p class='small'>No comics</p>";
+ filteredComics.forEach(c=>{
+  hc+=`<div class="row"><img src="${c.cover}"><div style="flex:1"><b>${c.title}</b><br><span class="small">${c.author||''} • ${c.pages?.length||0} pages</span></div><button class="btn btn-del" onclick="delComic(${c.id})">Delete</button></div>`;
+ });
+ $("boxComics").innerHTML=hc;
+}
+
+function delUser(i){
+ if(!confirm("Delete this user?")) return;
+ let u=JSON.parse(localStorage.getItem("allUsers")||"[]");
+ u.splice(i,1);
+ localStorage.setItem("allUsers", JSON.stringify(u));
+ load();
+}
+window.delNovel=(id)=>{
+ if(!confirm("Delete novel?")) return;
+ let a=JSON.parse(localStorage.getItem("myNovels")||"[]").filter(x=>x.id!=id);
+ localStorage.setItem("myNovels", JSON.stringify(a)); load();
+}
+window.delComic=(id)=>{
+ if(!confirm("Delete comic?")) return;
+ let a=JSON.parse(localStorage.getItem("myComics")||"[]").filter(x=>x.id!=id);
+ localStorage.setItem("myComics", JSON.stringify(a)); load();
+}
+function clearData(type){
+ if(!confirm("Are you sure? This cannot be undone!")) return;
+ if(type=="novels") localStorage.removeItem("myNovels");
+ if(type=="comics") localStorage.removeItem("myComics");
+ if(type=="users") localStorage.setItem("allUsers", JSON.stringify([]));
+ if(type=="all"){ localStorage.removeItem("myNovels"); localStorage.removeItem("myComics"); localStorage.setItem("allUsers", JSON.stringify([])); }
+ load();
+}
+function loginAs(email){
+ let users=JSON.parse(localStorage.getItem("allUsers")||"[]");
+ let u=users.find(x=>x.email==email);
+ if(!u) return;
+ localStorage.setItem("isLoggedIn","true");
+ localStorage.setItem("role",u.role);
+ localStorage.setItem("genz_user",u.email);
+ localStorage.setItem("genz_name",u.name);
+ alert("Now logged in as "+u.name+" ("+u.role+")");
+ if(u.role=="creator") location.href="dashboard.html"; else location.href="index.html";
+}
+function logout(){
+ localStorage.removeItem("isLoggedIn");
+ localStorage.removeItem("role");
+ localStorage.removeItem("genz_user");
+ localStorage.removeItem("genz_name");
+ location.href="login.html";
+}
+load();
+</script>
+</body>
+  </html>
