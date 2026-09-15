@@ -1,6 +1,9 @@
 <!DOCTYPE html>
-<html><head><meta name="viewport" content="width=device-width, initial-scale=1"><title>Login</title>
+<html><head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Login - Gen-Z Visual</title>
 <link rel="stylesheet" href="style.css">
+<script src="protect.js"></script>
 <style>
 .box{max-width:400px;margin:20px auto;padding:24px;background:#141417;border:1px solid #232326;border-radius:24px}
 .tabs{display:flex;background:#0e0e10;padding:4px;border-radius:99px;margin-bottom:16px}
@@ -9,49 +12,125 @@
 .role{display:flex;gap:8px;margin:10px 0}
 .role div{flex:1;text-align:center;padding:10px;border-radius:99px;background:#0e0e10;color:#888;font-weight:700;cursor:pointer;border:1px solid #2a2a2e}
 .role div.on{background:white;color:black}
-input{width:100%;padding:13px;margin:7px 0;background:#0e0e10;border:1px solid #2a2a2e;border-radius:12px;color:white}
+input{width:100%;padding:13px;margin:7px 0;background:#0e0e10;border:1px solid #2a2a2e;border-radius:12px;color:white;outline:none}
 .btn{width:100%;padding:14px;background:white;color:black;border:none;border-radius:99px;font-weight:900;cursor:pointer;margin-top:10px}
 .msg{font-size:12px;margin-top:8px;min-height:16px}
-</style></head><body>
-<header><div class="logo">Gen-Z <span>Visual</span></div><a href="index.html" class="top-btn">Home</a></header>
+</style>
+</head>
+<body>
+<header><div class="logo">Gen-Z <span>Visual</span></div><a href="index.html" class="top-btn" style="background:#222;color:white;text-decoration:none;padding:8px 14px;border-radius:99px">Home</a></header>
+
 <div class="box">
 <div class="tabs"><div id="tLogin" class="on">Login</div><div id="tSignup">Sign Up</div></div>
+
 <div id="loginBox">
-<input id="lEmail" placeholder="Email"><input id="lPass" type="password" placeholder="Password">
-<button class="btn" id="btnLogin">Login</button><p id="lMsg" class="msg"></p>
+<input id="lEmail" placeholder="Email">
+<input id="lPass" type="password" placeholder="Password">
+<button class="btn" id="btnLogin">Login</button>
+<p id="lMsg" class="msg"></p>
+<p style="font-size:11px;color:#666;margin-top:10px">Admin: akashchettri2003@gmail.com<br>Reader: reader@gmail.com / 1234<br>Creator: creator@gmail.com / 1234</p>
 </div>
+
 <div id="signupBox" style="display:none">
 <div class="role"><div id="rReader" class="on">📚 Reader</div><div id="rCreator">🎨 Creator</div></div>
-<input id="sName" placeholder="Name*"><input id="sEmail" placeholder="Email*"><input id="sPass" type="password" placeholder="Password*">
-<button class="btn" id="btnSignup">Create Account</button><p id="sMsg" class="msg"></p>
+<input id="sName" placeholder="Name*">
+<input id="sEmail" placeholder="Email*">
+<input id="sPass" type="password" placeholder="Password*">
+<button class="btn" id="btnSignup">Create Account</button>
+<p id="sMsg" class="msg"></p>
 </div>
 </div>
+
 <script>
-const ADMIN_EMAIL="akashchettri2003@gmail.com"; const ADMIN_PASS="Akashchettri2003@123#";
-if(!localStorage.getItem("allUsers")){localStorage.setItem("allUsers",JSON.stringify([{name:"Demo Reader",email:"reader@gmail.com",pass:"1234",role:"reader"},{name:"Demo Creator",email:"creator@gmail.com",pass:"1234",role:"creator"}]));}
+const ADMIN_EMAIL="akashchettri2003@gmail.com";
+const DEFAULT_ADMIN_PASS="Akashchettri2003@123#";
+
+// Init demo users if not exist
+if(!localStorage.getItem("allUsers")){
+ localStorage.setItem("allUsers", JSON.stringify([
+  {name:"Demo Reader",email:"reader@gmail.com",pass:"1234",role:"reader"},
+  {name:"Demo Creator",email:"creator@gmail.com",pass:"1234",role:"creator"}
+ ]));
+}
+
 let role="reader";
-document.getElementById("rReader").onclick=()=>{role="reader"; document.getElementById("rReader").className="on"; document.getElementById("rCreator").className="";};
-document.getElementById("rCreator").onclick=()=>{role="creator"; document.getElementById("rCreator").className="on"; document.getElementById("rReader").className="";};
-document.getElementById("tLogin").onclick=()=>{document.getElementById("loginBox").style.display="block";document.getElementById("signupBox").style.display="none";document.getElementById("tLogin").className="on";document.getElementById("tSignup").className="";};
-document.getElementById("tSignup").onclick=()=>{document.getElementById("loginBox").style.display="none";document.getElementById("signupBox").style.display="block";document.getElementById("tSignup").className="on";document.getElementById("tLogin").className="";};
+document.getElementById("rReader").onclick=()=>{
+ role="reader"; document.getElementById("rReader").className="on"; document.getElementById("rCreator").className="";
+};
+document.getElementById("rCreator").onclick=()=>{
+ role="creator"; document.getElementById("rCreator").className="on"; document.getElementById("rReader").className="";
+};
+document.getElementById("tLogin").onclick=()=>{
+ document.getElementById("loginBox").style.display="block";
+ document.getElementById("signupBox").style.display="none";
+ document.getElementById("tLogin").className="on";
+ document.getElementById("tSignup").className="";
+};
+document.getElementById("tSignup").onclick=()=>{
+ document.getElementById("loginBox").style.display="none";
+ document.getElementById("signupBox").style.display="block";
+ document.getElementById("tSignup").className="on";
+ document.getElementById("tLogin").className="";
+};
+
+// SIGNUP
 document.getElementById("btnSignup").onclick=()=>{
- let n=document.getElementById("sName").value.trim(),e=document.getElementById("sEmail").value.trim().toLowerCase(),p=document.getElementById("sPass").value.trim(),m=document.getElementById("sMsg");
- if(!n||!e||!p){m.style.color="#ff6b6b";m.innerText="Fill all";return;}
- if(e==ADMIN_EMAIL){m.style.color="#ff6b6b";m.innerText="Reserved for admin";return;}
-let adminRealPass = localStorage.getItem("adminCustomPass") || ADMIN_PASS;
-
-
-if(e==ADMIN_EMAIL && p==adminRealPass){
-let adminRealPass = localStorage.getItem("adminCustomPass") || ADMIN_PASS;
- let u=JSON.parse(localStorage.getItem("allUsers")||"[]"); if(u.find(x=>x.email==e)){m.style.color="#ff6b6b";m.innerText="Exists, login";return;}
- u.push({name:n,email:e,pass:p,role}); localStorage.setItem("allUsers",JSON.stringify(u)); m.style.color="#22c55e"; m.innerText="Created! Login now"; setTimeout(()=>{document.getElementById("tLogin").click();},800);
+ let n=document.getElementById("sName").value.trim();
+ let e=document.getElementById("sEmail").value.trim().toLowerCase();
+ let p=document.getElementById("sPass").value.trim();
+ let m=document.getElementById("sMsg");
+ if(!n||!e||!p){ m.style.color="#ff6b6b"; m.innerText="Fill all fields"; return; }
+ if(e==ADMIN_EMAIL){ m.style.color="#ff6b6b"; m.innerText="Reserved for admin"; return; }
+ if(typeof isInjection==="function" && (isInjection(e)||isInjection(p))){ m.style.color="#ff6b6b"; m.innerText="Invalid characters"; return; }
+ let u=JSON.parse(localStorage.getItem("allUsers")||"[]");
+ if(u.find(x=>x.email==e)){ m.style.color="#ff6b6b"; m.innerText="Email exists, login now"; return; }
+ u.push({name:n,email:e,pass:p,role:role});
+ localStorage.setItem("allUsers", JSON.stringify(u));
+ m.style.color="#22c55e"; m.innerText="✅ Created! Now login";
+ setTimeout(()=>{ document.getElementById("tLogin").click(); document.getElementById("lEmail").value=e; },800);
 };
+
+// LOGIN - FIXED
 document.getElementById("btnLogin").onclick=()=>{
- let e=document.getElementById("lEmail").value.trim().toLowerCase(),p=document.getElementById("lPass").value.trim(),m=document.getElementById("lMsg");
- if(e==ADMIN_EMAIL&&p==ADMIN_PASS){localStorage.setItem("isLoggedIn","true");localStorage.setItem("role","admin");localStorage.setItem("genz_user",ADMIN_EMAIL);localStorage.setItem("genz_name","Admin Akash");m.style.color="#a855f7";m.innerText="Admin login!";setTimeout(()=>location.href="admin.html",500);return;}
- let u=JSON.parse(localStorage.getItem("allUsers")||"[]").find(x=>x.email==e&&x.pass==p);
- if(!u){m.style.color="#ff6b6b";m.innerText="Wrong email/pass";return;}
- localStorage.setItem("isLoggedIn","true");localStorage.setItem("role",u.role);localStorage.setItem("genz_user",u.email);localStorage.setItem("genz_name",u.name);
- m.style.color="#22c55e";m.innerText="Success!";setTimeout(()=>{if(u.role=="creator")location.href="dashboard.html";else location.href="index.html";},500);
+ let e=document.getElementById("lEmail").value.trim().toLowerCase();
+ let p=document.getElementById("lPass").value.trim();
+ let m=document.getElementById("lMsg");
+ if(!e||!p){ m.style.color="#ff6b6b"; m.innerText="Enter email & pass"; return; }
+ 
+ // Security check
+ if(typeof secureLoginCheck==="function"){
+   if(!secureLoginCheck(e,p)) return;
+ }
+
+ // ADMIN LOGIN - with custom password support
+ let adminRealPass = localStorage.getItem("adminCustomPass") || DEFAULT_ADMIN_PASS;
+ if(e==ADMIN_EMAIL && p==adminRealPass){
+   localStorage.setItem("isLoggedIn","true");
+   localStorage.setItem("role","admin");
+   localStorage.setItem("genz_user",ADMIN_EMAIL);
+   localStorage.setItem("genz_name","Admin Akash");
+   m.style.color="#a855f7"; m.innerText="✅ Admin login!";
+   setTimeout(()=>{ location.href="admin.html"; },500);
+   return;
+ }
+
+ // NORMAL USER LOGIN
+ let users=JSON.parse(localStorage.getItem("allUsers")||"[]");
+ let found=users.find(x=>x.email==e && x.pass==p);
+ if(!found){
+   m.style.color="#ff6b6b"; m.innerText="❌ Wrong email or password";
+   return;
+ }
+ localStorage.setItem("isLoggedIn","true");
+ localStorage.setItem("role",found.role);
+ localStorage.setItem("genz_user",found.email);
+ localStorage.setItem("genz_name",found.name);
+ m.style.color="#22c55e"; m.innerText="✅ Success!";
+ setTimeout(()=>{
+   if(found.role=="creator") location.href="dashboard.html";
+   else location.href="index.html";
+ },500);
 };
-</script></body></html>
+</script>
+</body>
+</html>
