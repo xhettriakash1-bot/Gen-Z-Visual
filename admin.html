@@ -102,11 +102,17 @@ input{width:100%;padding:12px;background:#0e0e10;border:1px solid #2a2a2e;border
 </div>
 
 <script>
-const DEFAULT_EMAIL="akashchettri2003@gmail.com";
+const ADMINS = [
+ {email:"akashchettri2003@gmail.com", pass:"Akashchettri2003@123#"},
+ {email:"xhettriakash1@gmail.com", pass:"Akash123"}
+];
 const DEFAULT_PASS="Akashchettri2003@123#";
-if(localStorage.getItem("role")!=="admin"){ alert("Admin only"); location.href="login.html"; }
-function getAdminPass(){ return localStorage.getItem("adminCustomPass") || DEFAULT_PASS; }
-document.getElementById("curEmail").value=DEFAULT_EMAIL;
+if(localStorage.getItem("role")!=="admin"){alert("Admin only");location.href="login.html";}
+function getAdminPass(){
+ let curUser = localStorage.getItem("genz_user");
+ if(curUser=="xhettriakash1@gmail.com") return "Akash123";
+ return localStorage.getItem("adminCustomPass") || DEFAULT_PASS;
+}
 
 let createRole="reader", editRole="reader";
 document.getElementById("crReader").onclick=()=>{createRole="reader"; document.getElementById("crReader").className="on"; document.getElementById("crCreator").className="";};
