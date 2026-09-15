@@ -1,4 +1,19 @@
 <?xml version="1.0"?>
-<genzvisual>
-  <comic><title>Alone</title><creator>Akash</creator><type>novel</type></comic>
-</genzvisual>
+<comics>
+  <comic>
+    <id>1</id>
+    <title>Alone - The Beginning</title>
+    <author>GenZ Studio</author>
+    <cover>https://via.placeholder.com/300x400/ff00ff/ffffff?text=Alone+Comic</cover>
+    <desc>First chapter of Alone comic series.</desc>
+    <pages>https://via.placeholder.com/800x1200/111/fff?text=Page+1,https://via.placeholder.com/800x1200/222/fff?text=Page+2,https://via.placeholder.com/800x1200/333/fff?text=Page+3</pages>
+  </comic>
+  <comic>
+    <id>2</id>
+    <title>City Lights</title>
+    <author>GenZ Studio</author>
+    <cover>https://via.placeholder.com/300x400/00ff88/000000?text=City+Lights</cover>
+    <desc>Life in the city at night.</desc>
+    <pages>https://via.placeholder.com/800x1200/111/fff?text=Page+1</pages>
+  </comic>
+</comics>
