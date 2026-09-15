@@ -2,94 +2,29 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Creator Studio Pro v700</title>
-<link rel="stylesheet" href="style.css">
+<title>Studio PRO ULTRA - Gen-Z Visual v700</title>
+<link rel="stylesheet" href="style.css?v=700">
 <script>
-if(window.top!==window.self) window.top.location=window.self.location;
-const Firewall={
-  patterns:[/<script/gi,/javascript:/gi,/onerror=/gi,/onload=/gi,/union.*select/gi,/<iframe/gi,/eval\(/gi],
-  scan(v){ return this.patterns.some(p=>p.test(v)); },
-  protect(){
-    document.addEventListener('input',e=>{
-      if(e.target.tagName==="INPUT"||e.target.tagName==="TEXTAREA"){
-        if(this.scan(e.target.value)){ e.target.value=""; e.target.style.border="2px solid red"; e.target.placeholder="⛔ Blocked"; }
-      }
-    });
-  }
-};
-window.addEventListener('DOMContentLoaded',()=>Firewall.protect());
+// FIREWALL v700 + DOMAIN LOCK FIXED
 (function(){
-  const user = JSON.parse(localStorage.getItem("user")||"{}");
-  const role = (localStorage.getItem("role") || user.role || "").toLowerCase();
-  const email = (localStorage.getItem("email") || user.email || "").toLowerCase();
-  const ALLOWED_ADMINS = ["xhettriakash1@gmail.com","akashchettri2003@gmail.com"];
-  const token = localStorage.getItem("token");
-  if(!token){ location.href="login.html"; return; }
+  const ALLOWED=["kash1-bot.github.io","xhettriak.github.io","localhost","127.0.0.1"];
+  const host=location.hostname;
+  if(!(location.protocol==="file:"||host===""||host.includes("github.io")||ALLOWED.some(h=>host.includes(h)))){
+    document.documentElement.innerHTML=`<h1 style="color:#ff00ff;text-align:center;margin-top:20%;font-family:Space Grotesk">⛔ Blocked ${host}</h1>`;
+    throw new Error("Blocked");
+  }
+  if(window.top!==window.self) window.top.location=window.self.location;
 })();
+const Firewall={patterns:[/<script/gi,/javascript:/gi,/onerror=/gi,/onload=/gi,/union.*select/gi,/<iframe/gi,/eval\(/gi],scan(v){return this.patterns.some(p=>p.test(v))},protect(){document.addEventListener('input',e=>{if(e.target.tagName==="INPUT"||e.target.tagName==="TEXTAREA"){if(this.scan(e.target.value)){e.target.value="";e.target.style.border="2px solid #ff00ff";e.target.placeholder="⛔ Blocked v700"}}})}};
+window.addEventListener('DOMContentLoaded',()=>Firewall.protect());
+(function(){const token=localStorage.getItem("token")||localStorage.getItem("genz_token");if(!token){location.href="login.html"}})();
 </script>
 <style>
-*{box-sizing:border-box}body{background:#0a0a0a;color:white;margin:0;font-family:system-ui}
-.top{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:rgba(10,10,10,0.9);backdrop-filter:blur(10px);border-bottom:1px solid #222}
-.logo{font-weight:900;font-size:20px}.logo span{color:#a855f7}
-.studio{max-width:650px;margin:0 auto;padding:16px;padding-bottom:100px}
-.switcher{display:flex;background:#141417;border:1px solid #232326;border-radius:99px;padding:4px;margin:16px 0}
-.switcher div{flex:1;text-align:center;padding:12px;border-radius:99px;font-weight:800;cursor:pointer;color:#888}
-.switcher div.on{background:white;color:black}
-.card{background:#141417;border:1px solid #232326;border-radius:22px;padding:18px;margin-bottom:18px}
-.card h3{margin:0 0 10px;font-size:16px}
-.card input,.card textarea,.card select{width:100%;padding:13px;margin:7px 0;background:#0e0e10;border:1px solid #2a2a2e;border-radius:12px;color:white;outline:none;font-size:14px}
-.card label{font-size:11px;color:#888;margin-top:6px;display:block}
-.btn{width:100%;padding:15px;border:none;border-radius:99px;font-weight:900;margin-top:10px;cursor:pointer;font-size:14px}
-.btn-pub{background:white;color:black}.btn-log{background:#1e1e22;color:white;border:1px solid #333}
-.preview{width:90px;height:120px;border-radius:10px;object-fit:cover;margin-top:8px;display:none}
-.status{font-size:12px;margin-top:8px;min-height:16px}
-.list-item{display:flex;gap:10px;align-items:center;background:#141417;border:1px solid #232326;border-radius:14px;padding:10px;margin-bottom:8px}
-.list-item img{width:48px;height:68px;border-radius:8px;object-fit:cover}
-.del{margin-left:auto;background:#ff0055;color:white;border:none;padding:6px 12px;border-radius:99px;font-weight:800}
-</style>
-</head>
-<body>
-<div class="top"><div class="logo">Studio <span>PRO v700</span></div><button class="btn-log" style="width:auto;padding:8px 16px" onclick="logout()">Logout</button></div>
-<div class="studio">
-<h2 id="welcome" style="margin:10px 0">Loading...</h2>
-<p style="font-size:11px;color:#22c55e">🟢 Firewall v700 Active | Backend: gen-z-visual-2 ✅ LIVE | 2 Admins Protected</p>
-<p id="health" style="font-size:11px;color:#888"></p>
-<div class="switcher"><div id="swNovel" class="on">📚 Novel</div><div id="swComic">💥 Comic</div></div>
-<div id="boxNovel" class="card">
-<h3>Publish Novel</h3>
-<input id="nTitle" placeholder="Title*"><input id="nAuthor" placeholder="Author*">
-<select id="nGenre"><option>Fantasy</option><option>Romance</option><option>Action</option><option>Horror</option><option>Sci-Fi</option></select>
-<label>Cover Image</label><input type="file" id="nCoverFile" accept="image/*"><img id="nPrev" class="preview">
-<label>PDF Link (Google Drive) </label><input id="nPdfLink" placeholder="https://drive.google.com/...">
-<textarea id="nDesc" placeholder="Description" rows="3"></textarea>
-<button class="btn btn-pub" onclick="publishNovel()">Publish Novel</button><p id="nStatus" class="status"></p>
-</div>
-<div id="boxComic" class="card" style="display:none">
-<h3>Publish Comic</h3><input id="cTitle" placeholder="Title*"><input id="cAuthor" placeholder="Author*">
-<input type="file" id="cCoverFile" accept="image/*"><img id="cPrev" class="preview">
-<input id="cPdfLink" placeholder="PDF Link"><textarea id="cDesc" placeholder="Description" rows="3"></textarea>
-<button class="btn btn-pub" onclick="publishComic()">Publish Comic</button><p id="cStatus" class="status"></p>
-</div>
-<div class="card"><h3>📚 My Published</h3><div id="myList">Loading...</div></div>
-</div>
-<script>
-const API_BASE = "https://gen-z-visual-2.onrender.com";
-const API = `${API_BASE}/api`;
-function logout(){ localStorage.clear(); location.href="login.html"; }
-document.getElementById("swNovel").onclick=()=>{document.getElementById("boxNovel").style.display="block";document.getElementById("boxComic").style.display="none";document.getElementById("swNovel").className="on";document.getElementById("swComic").className="";};
-document.getElementById("swComic").onclick=()=>{document.getElementById("boxNovel").style.display="none";document.getElementById("boxComic").style.display="block";document.getElementById("swComic").className="on";document.getElementById("swNovel").className="";};
-document.getElementById("nCoverFile")?.addEventListener('change', e=>{const f=e.target.files[0]; if(!f) return; const img=document.getElementById("nPrev"); img.style.display="block"; img.src=URL.createObjectURL(f);});
-document.getElementById("cCoverFile")?.addEventListener('change', e=>{const f=e.target.files[0]; if(!f) return; const img=document.getElementById("cPrev"); img.style.display="block"; img.src=URL.createObjectURL(f);});
-(async()=>{
-  const user = JSON.parse(localStorage.getItem("user")||"{}");
-  document.getElementById("welcome").innerText = `Welcome, ${user.name||user.email||"Creator"} 👋`;
-  try{const h = await fetch(`${API_BASE}/api/health`).then(r=>r.json()); document.getElementById("health").innerText = `✅ Backend LIVE | Mongo: ${h.mongo||'connected'} | v700`;}catch(e){document.getElementById("welcome").innerText="Welcome 👋";}
-})();
-async function uploadCover(file){if(!file) return ""; const fd=new FormData(); fd.append("image", file); const endpoints = [`${API}/upload`, `${API}/upload/image`]; for(let url of endpoints){ try{const res=await fetch(url, {method:"POST", headers:{Authorization:`Bearer ${localStorage.getItem("token")}`}, body:fd}); const data=await res.json(); if(res.ok && (data.url||data.imageUrl)) return data.url||data.imageUrl;}catch(e){ continue; }} return await new Promise(r=>{ const fr=new FileReader(); fr.onload=()=>r(fr.result); fr.readAsDataURL(file); });}
-async function publishNovel(){const s=document.getElementById("nStatus"); s.innerText="⏳ Publishing..."; try{const coverFile=document.getElementById("nCoverFile").files[0]; let coverUrl = await uploadCover(coverFile); const body={title:document.getElementById("nTitle").value,author:document.getElementById("nAuthor").value,genre:document.getElementById("nGenre").value,description:document.getElementById("nDesc").value,coverImage:coverUrl,pdfLink:document.getElementById("nPdfLink").value,type:"novel"}; if(!body.title||!body.author){ s.innerText="❌ Fill title & author"; return; } const endpoints=[`${API}/novels`, `${API}/books`, `${API}/stories`]; let ok=false; for(let url of endpoints){ try{const res=await fetch(url, {method:"POST",headers:{"Content-Type":"application/json", Authorization:`Bearer ${localStorage.getItem("token")}`},body:JSON.stringify(body)}); const data=await res.json(); if(res.ok){ s.style.color="#22c55e"; s.innerText="✅ Novel Published!"; ok=true; loadMy(); break; }}catch(e){ continue; }} if(!ok){ s.innerText="✅ Saved locally"; let arr=JSON.parse(localStorage.getItem("myBooks")||"[]"); arr.push(body); localStorage.setItem("myBooks",JSON.stringify(arr)); loadMy(); }}catch(e){ s.innerText="❌ "+e.message; }}
-async function publishComic(){const s=document.getElementById("cStatus"); s.innerText="⏳ Publishing..."; try{const coverFile=document.getElementById("cCoverFile").files[0]; let coverUrl = await uploadCover(coverFile); const body={title:document.getElementById("cTitle").value,author:document.getElementById("cAuthor").value,description:document.getElementById("cDesc").value,coverImage:coverUrl,pdfLink:document.getElementById("cPdfLink").value,type:"comic"}; if(!body.title){ s.innerText="❌ Fill title"; return; } const endpoints=[`${API}/comics`, `${API}/stories`]; for(let url of endpoints){ try{const res=await fetch(url, {method:"POST",headers:{"Content-Type":"application/json", Authorization:`Bearer ${localStorage.getItem("token")}`},body:JSON.stringify(body)}); if(res.ok){ s.style.color="#22c55e"; s.innerText="✅ Comic Published!"; loadMy(); return; }}catch(e){ continue; }} let arr=JSON.parse(localStorage.getItem("myBooks")||"[]"); arr.push(body); localStorage.setItem("myBooks",JSON.stringify(arr)); s.innerText="✅ Saved locally"; loadMy(); }catch(e){ s.innerText="❌ "+e.message; }}
-function loadMy(){const list=document.getElementById("myList"); const books=JSON.parse(localStorage.getItem("myBooks")||"[]"); if(books.length===0){ list.innerHTML="<p style='color:#666;font-size:12px'>No published yet</p>"; return; } list.innerHTML = books.map((b,i)=>`<div class="list-item"><img src="${b.coverImage||'https://via.placeholder.com/48x68'}"><div><b>${b.title}</b><br><small>${b.author||''} - ${b.type}</small></div><button class="del" onclick="delBook(${i})">Del</button></div>`).join("");}
-function delBook(i){ let arr=JSON.parse(localStorage.getItem("myBooks")||"[]"); arr.splice(i,1); localStorage.setItem("myBooks",JSON.stringify(arr)); loadMy(); } loadMy();
-</script>
-</body>
-</html>
+.studio{max-width:700px;margin:0 auto;padding:16px 20px 120px}
+.welcome-card{background:linear-gradient(135deg,rgba(255,0,255,0.15),rgba(122,0,255,0.15));backdrop-filter:blur(25px);border:1px solid rgba(255,0,255,0.2);border-radius:24px;padding:20px;margin:14px 0;position:relative;overflow:hidden}
+.welcome-card::before{content:"";position:absolute;top:-50%;right:-30%;width:200px;height:200px;background:radial-gradient(circle,rgba(255,0,255,0.2),transparent 70%);border-radius:50%}
+.top-ultra{position:sticky;top:0;z-index:99;display:flex;justify-content:space-between;align-items:center;padding:14px 20px;background:rgba(10,10,12,0.7);backdrop-filter:blur(25px);border-bottom:1px solid rgba(255,255,255,0.06)}
+.switcher{display:flex;background:rgba(20,20,23,0.8);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.08);border-radius:99px;padding:5px;margin:20px 0;box-shadow:inset 0 1px 1px rgba(255,255,255,0.05)}
+.switcher div{flex:1;text-align:center;padding:13px;border-radius:99px;font-weight:800;cursor:pointer;color:#666;transition:0.4s cubic-bezier(0.175,0.885,0.32,1.275);font-size:14px}
+.switcher div.on{background:white;color:black;box-shadow:0 8px 20px rgba(255,255,255,0.25);transform:scale(1.02)}
+.card-ultra{background:rgba(20,20,23,0.85);backdrop-filter
