@@ -3,6 +3,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Comics v705 PRO - Gen-Z Visual FIXED CLOSED</title>
+<script>
+// v705 PRO FINAL - WAKE FIX - prevents "Server waking"
+fetch("https://gen-z-visual-2.onrender.com/",{cache:"no-store"});
+fetch("https://gen-z-visual-2.onrender.com/api/health",{cache:"no-store"});
+setInterval(()=>fetch("https://gen-z-visual-2.onrender.com/",{cache:"no-store"}), 240000);
+</script>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#07070a;color:#fff;font-family:system-ui}
 .top{position:sticky;top:0;z-index:99;display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#111;border-bottom:1px solid #222}
@@ -26,7 +32,7 @@
 </div>
 <div style="max-width:900px;margin:0 auto;padding:16px">
   <h2 style="margin:0;font-size:22px;font-weight:900">All Comics <span style="color:#ff8800">PUBLIC</span></h2>
-  <p style="color:#666;font-size:11px;margin-top:4px" id="status">v705 PRO CLOSED • LIVE + XML fallback = NEVER EMPTY + PAID + VIEWS</p>
+  <p style="color:#666;font-size:11px;margin-top:4px" id="status">v705 PRO FINAL FIXED CLOSED • LIVE + XML fallback = NEVER EMPTY + PAID + VIEWS</p>
 </div>
 <div class="grid" id="list"></div>
 <a href="dashboard.html?v=705" class="fab">+ Publish</a>
@@ -37,12 +43,18 @@
 const API="https://gen-z-visual-2.onrender.com";
 const XML_FALLBACK="data/comics.xml?v=705";
 async function getLive(){
- try{
-  await fetch(API+"/",{cache:"no-store"});
-  let r=await fetch(API+"/api/comics",{cache:"no-store"});
-  let d=await r.json();
-  return Array.isArray(d)?d:(d.comics||[]);
- }catch{ return []; }
+ for(let i=1;i<=3;i++){
+  try{
+   await fetch(API+"/",{cache:"no-store"}).catch(()=>{});
+   let r=await fetch(API+"/api/comics",{cache:"no-store"});
+   let d=await r.json();
+   let arr = Array.isArray(d)?d:(d.comics||[]);
+   if(arr.length>0 || i===3) return arr;
+  }catch(e){
+   if(i<3) await new Promise(s=>setTimeout(s, 4000));
+  }
+ }
+ return [];
 }
 async function getXML(){
  try{
@@ -60,10 +72,10 @@ async function getXML(){
  }catch{ return []; }
 }
 async function load(){
- document.getElementById("list").innerHTML="<p style='color:#666;padding:16px'>Waking LIVE backend... 15s</p>";
+ document.getElementById("list").innerHTML="<p style='color:#666;padding:16px'>⏳ Waking LIVE v705... 10s</p>";
  let live=await getLive(); let list=live.length?live:await getXML();
- if(live.length===0) document.getElementById("status").innerText=`⚠️ LIVE empty → XML fallback ${list.length} comics - NEVER EMPTY`;
- else document.getElementById("status").innerText=`✅ LIVE v705 CLOSED - ${live.length} comics • ${live.reduce((s,x)=>s+(x.views||0),0)} views`;
+ if(live.length===0) document.getElementById("status").innerText=`⚠️ LIVE waking → XML fallback ${list.length} comics - tap refresh in 10s`;
+ else document.getElementById("status").innerText=`✅ LIVE v705 FINAL CLOSED - ${live.length} comics • ${live.reduce((s,x)=>s+(x.views||0),0)} views`;
  document.getElementById("list").innerHTML=list.map(c=>`
   <div class="card" onclick="openComic('${c._id}',${c.isXML})">
    <span class="badge ${c.isXML?'demo':(c.access==='paid'?'paid':'live')}">${c.isXML?'XML':(c.access==='paid'?'₹'+c.price:'LIVE')}</span>
