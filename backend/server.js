@@ -1,4 +1,4 @@
-// GEN-Z VISUAL - v704.5 FINAL SAFE + FIREWALL FRIENDLY - 16 Sep 2026 + FREE/PAID + UPI DIRECT
+// GEN-Z VISUAL - v704.5 FINAL + UPI
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
@@ -8,7 +8,6 @@ require('dotenv').config();
 const app = express();
 app.set('trust proxy', 1);
 app.disable('x-powered-by');
-
 app.use((req,res,next)=>{
   res.setHeader('X-Content-Type-Options','nosniff');
   res.setHeader('X-Frame-Options','SAMEORIGIN');
@@ -22,14 +21,12 @@ app.use((req,res,next)=>{
   if(!hits[ip]) hits[ip]={c:0,t:Date.now()};
   if(Date.now()-hits[ip].t>60000) hits[ip]={c:0,t:Date.now()};
   hits[ip].c++;
-  if(hits[ip].c>200) return res.status(429).json({error:"Too many requests - wait 1 min"});
+  if(hits[ip].c>200) return res.status(429).json({error:"Too many"});
   next();
 });
-
 const MONGO_URI = process.env.MONGO_URI || process.env.MONGODB_URI || "";
-console.log("MONGO:", MONGO_URI? "FOUND ✅" : "MISSING ❌");
 mongoose.connect(MONGO_URI, { dbName: "genzvisual" })
-.then(() => { console.log("✅ Mongo Connected v704.5 + UPI"); ensureAdmins(); })
+.then(() => { console.log("✅ Mongo v704.5"); ensureAdmins(); })
 .catch(e => console.log("❌ Mongo Fail:", e.message));
 
 const userSchema = new mongoose.Schema({
@@ -64,7 +61,6 @@ const Comic = mongoose.models.Comic || mongoose.model('Comic', comicSchema);
 
 app.use(cors({ origin: true, credentials: true }));
 app.use(express.json({ limit: "50mb" }));
-
 const DEFAULT_ADMINS = [
   { email: "xhettriakash1@gmail.com", password: "Akash123", name: "Akash Main Admin" },
   { email: "akashchettri2003@gmail.com", password: "Akashchettri2003", name: "Akash Second Admin" }
@@ -74,7 +70,6 @@ async function ensureAdmins(){
     if(!await User.findOne({email:adm.email})){
       let h=await bcrypt.hash(adm.password,10);
       await User.create({email:adm.email.toLowerCase(), password:h, role:'admin', name:adm.name});
-      console.log("✅ Admin Created:",adm.email);
     } else {
       await User.updateOne({email:adm.email},{role:'admin'});
     }
@@ -92,10 +87,8 @@ const isAdmin = (req,res,next)=>{
   if(req.user.role!=='admin') return res.status(403).json({error:"Admin only"});
   next();
 };
-
-app.get('/api/health',(req,res)=>res.json({ok:true,v:"v704.5 FINAL",mongo:mongoose.connection.readyState===1?"connected":"disconnected",firewall:"ON ✅", features: "FREE/PAID + UPI ✅"}));
-app.get('/',(req,res)=>res.send("🟢 v704.5 FINAL LIVE - Gen-Z Visual + FREE/PAID + UPI"));
-
+app.get('/api/health',(req,res)=>res.json({ok:true,v:"v704.5 FINAL"}));
+app.get('/',(req,res)=>res.send("🟢 v704.5 LIVE + UPI"));
 async function loginHandler(req,res){
   try{
     let {email,password}=req.body;
@@ -108,14 +101,13 @@ async function loginHandler(req,res){
 }
 app.post('/api/login',loginHandler);
 app.post('/api/auth/login',loginHandler);
-
 async function registerHandler(req,res){
   try{
     let {email,password,name,role,portfolio,bio,code}=req.body;
     if(await User.findOne({email:email.toLowerCase()})) return res.status(409).json({error:"Exists"});
     let isDefaultAdmin=DEFAULT_ADMINS.some(a=>a.email===email.toLowerCase());
     let newRole=isDefaultAdmin?'admin':(role==='creator'?'creator':'reader');
-    if(role==='creator' && code && code!=='CREATOR2026' &&!isDefaultAdmin) return res.status(403).json({error:"Wrong creator code"});
+    if(role==='creator' && code && code!=='CREATOR2026' &&!isDefaultAdmin) return res.status(403).json({error:"Wrong code"});
     let hashed=await bcrypt.hash(password,10);
     await User.create({email:email.toLowerCase(),password:hashed,role:newRole,name:name||"User",portfolio,bio});
     res.json({success:true,msg:"Registered as "+newRole});
@@ -125,9 +117,50 @@ app.post('/api/auth/register',registerHandler);
 app.post('/api/auth/register-creator',registerHandler);
 app.post('/api/register',registerHandler);
 app.post('/api/register-creator',registerHandler);
-
 app.get('/api/users',protect,isAdmin,async(req,res)=>res.json(await User.find().select('-password').sort({createdAt:-1})));
 app.get('/api/novels',async(req,res)=>res.json(await Novel.find().sort({createdAt:-1}).limit(200)));
 app.post('/api/novels',protect,async(req,res)=>{
   let me = await User.findOne({email:req.user.email});
-  let novel=await Novel.create({...req.body,type:'novel',creatorEmail:req.user.email,creatorName:req.user.email, access: req.body.access||'free', price: req.body.price||0, authorUpi: me
+  let novel=await Novel.create({...req.body,type:'novel',creatorEmail:req.user.email,creatorName:req.user.email, access: req.body.access||'free', price: req.body.price||0, authorUpi: me?.upiId||''});
+  res.json({ok:true,novel});
+});
+app.get('/api/comics',async(req,res)=>res.json(await Comic.find().sort({createdAt:-1}).limit(200)));
+app.post('/api/comics',protect,async(req,res)=>{
+  let me = await User.findOne({email:req.user.email});
+  let comic=await Comic.create({...req.body,type:'comic',creatorEmail:req.user.email,creatorName:req.user.email,cover:req.body.cover||req.body.coverImage||(req.body.pages&&req.body.pages[0]), access: req.body.access||'free', price: req.body.price||0, authorUpi: me?.upiId||''});
+  res.json({ok:true,comic});
+});
+app.get('/api/books',async(req,res)=>{
+  let n=await Novel.find().sort({createdAt:-1}).limit(100);
+  let c=await Comic.find().sort({createdAt:-1}).limit(100);
+  res.json([...n,...c]);
+});
+app.get('/api/can-read/:id',protect,async(req,res)=>{
+  let book = await Novel.findById(req.params.id) || await Comic.findById(req.params.id);
+  if(!book) return res.status(404).json({error:"Not found"});
+  if(book.access==='free' ||!book.access) return res.json({canRead:true});
+  if(req.user.role==='admin') return res.json({canRead:true});
+  if(book.creatorEmail===req.user.email) return res.json({canRead:true});
+  res.json({canRead:false, price: book.price||0, authorUpi: book.authorUpi||''});
+});
+app.post('/api/save-upi',protect,async(req,res)=>{
+  let upi = (req.body.upiId||'').trim();
+  if(!upi.includes('@')) return res.status(400).json({error:"Invalid UPI"});
+  await User.updateOne({email:req.user.email},{upiId: upi});
+  res.json({ok:true, upiId: upi});
+});
+app.get('/api/me',protect,async(req,res)=>{
+  let user = await User.findOne({email:req.user.email}).select('-password');
+  res.json(user);
+});
+app.post('/api/fix-upi-all',protect,async(req,res)=>{
+  let me = await User.findOne({email:req.user.email});
+  if(!me?.upiId) return res.status(400).json({error:"Save UPI first!"});
+  await Novel.updateMany({creatorEmail:req.user.email}, {authorUpi: me.upiId});
+  await Comic.updateMany({creatorEmail:req.user.email}, {authorUpi: me.upiId});
+  res.json({ok:true, upiId: me.upiId});
+});
+app.delete('/api/novels/:id',protect,isAdmin,async(req,res)=>{await Novel.findByIdAndDelete(req.params.id); res.json({ok:true});});
+app.delete('/api/comics/:id',protect,isAdmin,async(req,res)=>{await Comic.findByIdAndDelete(req.params.id); res.json({ok:true});});
+const PORT=process.env.PORT||10000;
+app.listen(PORT,()=>console.log(`✅ v704.5 LIVE ${PORT}`));
