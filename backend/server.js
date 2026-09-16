@@ -1,7 +1,7 @@
 const express=require('express'),cors=require('cors'),mongoose=require('mongoose'),bcrypt=require('bcryptjs'),jwt=require('jsonwebtoken'),Razorpay=require('razorpay');require('dotenv').config();
 const app=express();app.set('trust proxy',1);app.disable('x-powered-by');
 
-// =====🔒 EXTRA SECURITY - FIREWALL + CONFIDENTIAL ADMIN - NO DOMAIN LOCK =====
+// =====🔒 FIREWALL + CONFIDENTIAL ADMIN - NO DOMAIN LOCK =====
 const blockedIPs=new Map(), adminAttempts=new Map();
 setInterval(()=>{ let n=Date.now(); for(let [k,v] of blockedIPs){ if(n-v.t>120000) blockedIPs.delete(k); } for(let [k,v] of adminAttempts){ if(n-v.time>900000) adminAttempts.delete(k); } },60000);
 function friendlyFirewall(req,res,next){
@@ -25,7 +25,6 @@ function adminSecure(req,res,next){
 }
 app.use(friendlyFirewall);
 app.use('/api/auth', adminSecure);
-// ===== END SECURITY =====
 
 const hits=new Map(); setInterval(()=>{ let now=Date.now(); for(let [k,v] of hits){ if(now-v.t>60000) hits.delete(k); } },30000);
 app.use((req,res,next)=>{
@@ -50,10 +49,11 @@ app.use(cors({origin:true,credentials:true}));app.use(express.json({limit:"50mb"
 
 const razorpay = new Razorpay({ key_id: process.env.RAZORPAY_KEY_ID, key_secret: process.env.RAZORPAY_KEY_SECRET });
 
+// ===== 100% CONFIDENTIAL - NO PASSWORD IN CODE =====
 const ADMINS=[
-  {email: process.env.ADMIN_EMAIL_1 || "xhettriakash1@gmail.com", password: process.env.ADMIN_PASSWORD_1 || "Akash123", name:"Akash Main"},
-  {email: process.env.ADMIN_EMAIL_2 || "akashchettri2003@gmail.com", password: process.env.ADMIN_PASSWORD_2 || "Akashchettri2003", name:"Akash Second"}
-];
+  {email: process.env.ADMIN_EMAIL_1, password: process.env.ADMIN_PASSWORD_1, name:"Akash Main"},
+  {email: process.env.ADMIN_EMAIL_2, password: process.env.ADMIN_PASSWORD_2, name:"Akash Second"}
+].filter(a=>a.email && a.password);
 async function ensureAdmins(){try{for(let a of ADMINS){if(!await User.findOne({email:a.email})){let h=await bcrypt.hash(a.password,10);await User.create({email:a.email.toLowerCase(),password:h,role:'admin',name:a.name});}else await User.updateOne({email:a.email},{role:'admin'});} }catch(e){console.log("Admin error",e.message)}}
 
 const JWT=process.env.JWT_SECRET||"GENZ_SECRET_2026_SECURE";
@@ -64,8 +64,8 @@ function slugify(t){return (t||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').slic
 function isValidUrl(u){try{let x=new URL(u);return x.protocol==='http:'||x.protocol==='https:';}catch{return false;}}
 function cleanPages(p){if(!Array.isArray(p)) return []; return [...new Set(p.map(s=>String(s||'').trim()).filter(s=>s.length>10 && isValidUrl(s)))].slice(0,100);}
 
-app.get('/',(req,res)=>res.json({ok:true,msg:"Gen-Z Visual v705 PRO Firewall + Confidential", time:new Date().toISOString()}));
-app.get('/api/health',(req,res)=>res.json({ok:true,mongo:mongoose.connection.readyState, v:"705 PRO FIREWALL", razorpay:!!process.env.RAZORPAY_KEY_ID}));
+app.get('/',(req,res)=>res.json({ok:true,msg:"Gen-Z Visual v705 PRO Firewall 100% Confidential", time:new Date().toISOString()}));
+app.get('/api/health',(req,res)=>res.json({ok:true,mongo:mongoose.connection.readyState, v:"705 PRO FIREWALL CONFIDENTIAL", razorpay:!!process.env.RAZORPAY_KEY_ID}));
 
 app.post('/api/create-order',async(req,res)=>{
  try{
@@ -121,4 +121,4 @@ app.delete('/api/comics/:id',protect,async(req,res)=>{ try{let b=await Comic.fin
 app.get('/api/users',protect,isAdmin,async(req,res)=>{ try{let list=await User.find().select("email role name upiId createdAt").sort({createdAt:-1}); res.json(list);}catch(e){res.status(500).json({error:e.message})} });
 
 const PORT=process.env.PORT||10000;
-app.listen(PORT,()=>console.log(`✅ Gen-Z v705 FIREWALL + Confidential LIVE ${PORT}`));
+app.listen(PORT,()=>console.log(`✅ Gen-Z v705 FIREWALL 100% CONFIDENTIAL LIVE ${PORT}`));
