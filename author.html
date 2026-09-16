@@ -1,174 +1,62 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Author Dashboard - Gen-Z Visual v700 FIXED</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+<html><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard v704.5 - LIVE PUBLISH</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Space Grotesk',sans-serif}
-body{background:#080808;color:#fff;min-height:100vh}
-header{padding:18px 22px;border-bottom:1px solid #1f1f1f;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:#080808;z-index:10}
-.logo{font-weight:700;letter-spacing:1px}
-.badge{background:#fff;color:#000;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700}
-.container{max-width:1100px;margin:0 auto;padding:20px;display:grid;grid-template-columns:360px 1fr;gap:20px}
-@media(max-width:900px){.container{grid-template-columns:1fr}}
-.card{background:#121212;border:1px solid #232323;border-radius:16px;padding:20px}
-h2{font-size:18px;margin-bottom:12px}
-h3{font-size:14px;color:#aaa;margin:16px 0 8px}
-input,textarea,select{width:100%;padding:12px 12px;margin:6px 0;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:10px;color:#fff;outline:none}
-input:focus,textarea:focus{border-color:#fff}
-button{width:100%;padding:12px;border-radius:10px;border:none;font-weight:700;cursor:pointer;margin-top:10px}
-.btn-white{background:#fff;color:#000}
-.btn-dark{background:#1f1f1f;color:#fff;border:1px solid #2a2a2a}
-.small{font-size:12px;color:#777;margin-top:8px;line-height:1.4}
-.hidden{display:none}
-.novel-item{background:#181818;border:1px solid #252525;padding:12px;border-radius:12px;margin-bottom:10px;display:flex;gap:12px}
-.novel-item img{width:56px;height:78px;object-fit:cover;border-radius:8px;background:#222}
-.tag{font-size:10px;background:#222;border:1px solid #333;padding:3px 7px;border-radius:20px}
-.row{display:flex;gap:10px}.row> *{flex:1}
-#msg{margin-top:10px;font-size:13px;white-space:pre-wrap}
-.success{color:#4ade80}.error{color:#f87171}
+*{box-sizing:border-box;font-family:system-ui}body{margin:0;background:#080808;color:#fff}
+header{padding:14px 18px;border-bottom:1px solid #222;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:#080808;z-index:10}
+.wrap{max-width:1100px;margin:0 auto;padding:18px;display:grid;grid-template-columns:380px 1fr;gap:18px}
+@media(max-width:900px){.wrap{grid-template-columns:1fr}}
+.card{background:#121212;border:1px solid #222;border-radius:16px;padding:18px}
+input,textarea,select{width:100%;padding:12px;margin:6px 0;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:10px;color:#fff;outline:none}
+button{padding:12px;border-radius:10px;border:none;font-weight:800;cursor:pointer;margin-top:8px}
+.btn-w{background:#fff;color:#000;width:100%}.btn-d{background:#1f1f1f;color:#fff;border:1px solid #2a2a2a;width:100%}
+.badge{padding:4px 10px;border-radius:20px;font-size:10px;font-weight:900}.ok{background:#00ff88;color:#000}.live{background:#00ff88;color:#000}
+.item{display:flex;gap:10px;background:#181818;border:1px solid #252525;padding:10px;border-radius:12px;margin:6px 0}
+.item img{width:50px;height:70px;object-fit:cover;border-radius:8px}
 </style>
-</head>
-<body>
+</head><body>
 <header>
-<div class="logo">GEN-Z VISUAL // AUTHOR v700 ✅</div>
-<div style="display:flex;gap:10px;align-items:center">
-<span id="userInfo" class="small"></span>
-<span class="badge" id="statusBadge">LIVE 🟢 v700</span>
-</div>
+<b>GEN-Z VISUAL // DASHBOARD <span style="background:#00ff88;color:#000;padding:3px 8px;border-radius:20px;font-size:10px">v704.5 LIVE</span></b>
+<div style="display:flex;gap:8px"><a href="index.html?v=704.5" style="background:#222;color:#fff;padding:8px 12px;border-radius:20px;text-decoration:none;font-size:12px">Home</a><button onclick="localStorage.clear();location.href='login.html?v=704.5'" style="background:#ef4444;color:#fff;padding:8px 12px;border-radius:20px;border:none">Logout</button></div>
 </header>
-<div class="container">
+
+<div class="wrap">
 <div class="card" id="loginCard">
-<h2>Login as Creator / Admin</h2>
-<input id="email" type="email" placeholder="Email" value="xhettriakash1@gmail.com"/>
-<input id="password" type="password" placeholder="Password" value="Akash123"/>
-<button class="btn-white" onclick="login()">Login</button>
-<p class="small">Protected admins:<br>xhettriakash1@gmail.com / akashchettri2003@gmail.com</p>
-<p id="loginMsg" class="small"></p>
-<div style="margin-top:18px">
-<h3>Backend Status</h3>
-<button class="btn-dark" onclick="checkBackend()">Check Backend Health</button>
-<p id="health" class="small">Backend: gen-z-visual-2 ✅</p>
+<h3>Creator Login</h3>
+<input id="email" placeholder="Email" value="xhettriakash1@gmail.com">
+<input id="pass" type="password" placeholder="Password" value="Akash123">
+<button class="btn-w" onclick="login()">Login to Publish LIVE</button>
+<p id="loginMsg" style="font-size:12px;color:#888;margin-top:8px"></p>
+<div style="margin-top:16px">
+<button class="btn-d" onclick="check()">Check Backend LIVE</button>
+<p id="health" style="font-size:11px;color:#666"></p>
 </div>
 </div>
-<div class="card hidden" id="publishCard">
-<h2>Publish New Novel / Comic</h2>
-<div class="row">
-<input id="title" placeholder="Title * - ex: Solo Leveling"/>
-<select id="genre"><option value="Fantasy">Fantasy</option><option value="Action">Action</option><option value="Romance">Romance</option><option value="Comics">Comics</option><option value="Manga">Manga</option><option value="Manhwa">Manhwa</option><option value="Horror">Horror</option></select>
+
+<div class="card" id="pubCard" style="display:none">
+<h3>Publish Novel / Comic - LIVE for ALL readers 🚀</h3>
+<div style="display:flex;gap:8px">
+<select id="type" style="flex:1"><option value="novels">Novel</option><option value="comics">Comic</option></select>
+<select id="genre" style="flex:1"><option>Fantasy</option><option>Action</option><option>Romance</option><option>Comics</option><option>Manga</option><option>Drama</option></select>
 </div>
+<input id="title" placeholder="Title *">
+<input id="cover" placeholder="Cover URL * https://...">
 <textarea id="desc" rows="3" placeholder="Description *"></textarea>
-<input id="cover" placeholder="Cover Image URL * - https://..."/>
-<div class="row">
-<input id="chapterTitle" placeholder="Chapter 1 Title"/>
-<input id="chapterNo" type="number" placeholder="Chapter No. 1" value="1"/>
-</div>
-<textarea id="chapterContent" rows="8" placeholder="Chapter Content *"></textarea>
-<div class="row">
-<button class="btn-dark" onclick="addMoreChapterInfo()">+ Add Chapter</button>
-<button class="btn-white" onclick="publishNovel()">Publish PUBLIC 🚀</button>
-</div>
-<p class="small">Chapters saved to MongoDB. Public can read instantly.</p>
-<div id="msg"></div>
-<h3>Chapters Added (<span id="chCount">0</span>)</h3>
-<div id="chapterList" class="small"></div>
-<hr style="margin:18px 0;border:0;border-top:1px solid #222"/>
-<h2>My Published Novels</h2>
-<button class="btn-dark" onclick="loadMyNovels()">Reload My Novels</button>
-<div id="myNovels" style="margin-top:12px"></div>
-<button class="btn-dark" onclick="logout()" style="margin-top:20px">Logout</button>
+<textarea id="content" rows="8" placeholder="For Novel: Full content / Chapter text * | For Comic: Pages URLs comma separated https://img1,https://img2 *"></textarea>
+<button class="btn-w" onclick="publish()">🚀 PUBLISH LIVE (MongoDB)</button>
+<p id="msg" style="font-size:12px;white-space:pre-wrap;margin-top:8px"></p>
+<hr style="border-color:#222;margin:14px 0">
+<h3>My LIVE Published</h3>
+<button class="btn-d" onclick="loadMine()">Reload</button>
+<div id="myList" style="margin-top:10px"></div>
 </div>
 </div>
+
 <script>
-// === FIXED CONFIG v700 - LIVE BACKEND ===
-const API_BASE = "https://gen-z-visual-2.onrender.com";
-const API = API_BASE;
-
-let TOKEN = localStorage.getItem("genz_token") || localStorage.getItem("token") || "";
-let USER = JSON.parse(localStorage.getItem("genz_user") || localStorage.getItem("user") || "null");
-let chapters = [];
-
-window.onload = () => {
-  if(TOKEN && USER){ showPublish(); }
-  if(USER) document.getElementById('userInfo').innerText = USER.email + " (" + USER.role + ")";
-  checkBackend();
-}
-
-function showPublish(){
-  document.getElementById('loginCard').classList.add('hidden');
-  document.getElementById('publishCard').classList.remove('hidden');
-  document.getElementById('userInfo').innerText = (USER?.email||"") + " (" + (USER?.role||"creator") + ")";
-  loadMyNovels();
-}
-
-async function checkBackend(){
-  document.getElementById('health').innerText = "Checking gen-z-visual-2...";
-  try{
-    const r = await fetch(`${API_BASE}/api/health`);
-    const d = await r.json();
-    document.getElementById('health').innerText = `✅ LIVE | Mongo: ${d.mongo||'connected'} | v700`;
-    document.getElementById('health').style.color="#4ade80";
-  }catch(e){
-    try{
-      const r2 = await fetch(`${API_BASE}/`);
-      const t = await r2.text();
-      document.getElementById('health').innerText = `✅ Backend LIVE: ${t.slice(0,100)}`;
-    }catch(e2){
-      document.getElementById('health').innerText = "❌ Offline: " + e.message;
-    }
-  }
-}
-
-async function smartLogin(email,password){
-  const urls = [`${API_BASE}/api/auth/login`, `${API_BASE}/api/login`, `${API_BASE}/api/auth/login`];
-  for(let url of urls){
-    try{
-      const res = await fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email,password})});
-      const data = await res.json();
-      if(res.status!==404) return {res,data,url};
-    }catch(e){ continue; }
-  }
-  throw new Error("All login endpoints failed");
-}
-
-async function login(){
-  const email = document.getElementById('email').value.trim();
-  const password = document.getElementById('password').value.trim();
-  if(!email||!password) return alert("Email + Password required");
-  document.getElementById('loginMsg').innerText = "Logging in to gen-z-visual-2...";
-  try{
-    const {res,data} = await smartLogin(email,password);
-    if(!res.ok) throw new Error(data.message||data.error||"Login failed");
-    TOKEN = data.token;
-    USER = data.user;
-    localStorage.setItem("genz_token",TOKEN);
-    localStorage.setItem("token",TOKEN);
-    localStorage.setItem("genz_user",JSON.stringify(USER));
-    localStorage.setItem("user",JSON.stringify(USER));
-    document.getElementById('loginMsg').innerHTML = `<span class="success">✅ Login success as ${USER.role}</span>`;
-    showPublish();
-  }catch(e){
-    document.getElementById('loginMsg').innerHTML = `<span class="error">❌ ${e.message}</span>`;
-  }
-}
-
-function logout(){ localStorage.clear(); location.reload(); }
-
-function addMoreChapterInfo(){
-  const t = document.getElementById('chapterTitle').value.trim();
-  const c = document.getElementById('chapterContent').value.trim();
-  const n = parseInt(document.getElementById('chapterNo').value)||1;
-  if(!t||!c) return alert("Chapter Title + Content required");
-  chapters.push({chapterNumber:n,title:t,content:c,createdAt:new Date().toISOString()});
-  document.getElementById('chCount').innerText = chapters.length;
-  document.getElementById('chapterList').innerHTML = chapters.map(ch=>`#${ch.chapterNumber} ${ch.title}`).join("<br>");
-  document.getElementById('chapterTitle').value="";
-  document.getElementById('chapterContent').value="";
-  document.getElementById('chapterNo').value = chapters.length+1;
-}
-
-async function publishNovel(){
-  const title = document.getElementById('title').value.trim();
-  const description = document.getElementById('desc').value
+const API="https://gen-z-visual-2.onrender.com";
+let TOKEN=localStorage.getItem("token")||localStorage.getItem("genz_token")||"";
+let USER=null;
+try{USER=JSON.parse(localStorage.getItem("user")||localStorage.getItem("genz_user")||"null");}catch{}
+window.onload=()=>{ if(TOKEN&&USER){showPub();} check(); }
+function showPub(){
