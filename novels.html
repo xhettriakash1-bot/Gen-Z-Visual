@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Novels - Gen-Z Visual v703.2</title>
+<title>Novels - Gen-Z Visual v704.5</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#07070a;color:#fff;font-family:system-ui,sans-serif}
 header{position:sticky;top:0;z-index:9;display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#111;border-bottom:1px solid #222}
@@ -23,10 +23,10 @@ header{position:sticky;top:0;z-index:9;display:flex;justify-content:space-betwee
 .nav a.active{color:#ff00ff}
 </style>
 </head><body>
-<header><div class="logo">Gen-Z <span>Novels</span> <span style="font-size:9px;background:#ff00ff;padding:2px 6px;border-radius:10px;color:#fff">v703.2</span></div><a href="dashboard.html" class="top-btn">✍️ Studio</a></header>
+<header><div class="logo">Gen-Z <span>Novels</span> <span style="font-size:9px;background:#00ff88;padding:2px 6px;border-radius:10px;color:#000">v704.5 FIXED</span></div><a href="dashboard.html?v=704.5" class="top-btn">✍️ Studio</a></header>
 
 <div class="head">
-<h2 style="margin:0;font-size:20px;font-weight:900">Novels <span style="color:#ff00ff">LIVE</span></h2>
+<h2 style="margin:0;font-size:20px;font-weight:900">Novels <span style="color:#00ff88">LIVE</span></h2>
 <span class="count" id="count">Loading...</span>
 </div>
 
@@ -44,25 +44,24 @@ const API="https://gen-z-visual-2.onrender.com/api";
 async function load(){
  let grid=document.getElementById("grid"); let count=document.getElementById("count");
  let total=0; grid.innerHTML="";
- try{
-   let live=[];
-   try{ let r=await fetch(`${API}/novels`); if(r.ok){ live=await r.json(); live=Array.isArray(live)?live:live.novels||[]; } }catch(e){}
-   live.forEach(n=>{
-     total++;
-     grid.innerHTML+=`<div class="card" onclick="location.href='read.html?id=${n._id||n.id}'"><span class="badge-live">LIVE</span><img src="${n.coverImage||n.cover||'https://picsum.photos/400/600'}"><div class="info"><h3>${n.title}</h3><p>${n.author||'Anon'} • ${n.genre||'Novel'}</p></div></div>`;
-   });
-   // My uploads
-   let my=[];
-   try{ my=JSON.parse(localStorage.getItem("myNovels")||"[]"); }catch(e){ my=[]; localStorage.removeItem("myNovels"); }
-   let my2=[];
-   try{ my2=JSON.parse(localStorage.getItem("myBooks")||"[]").filter(b=>!b.type||b.type==="novel"); }catch(e){}
-   [...my,...my2].forEach(n=>{
-     total++;
-     grid.innerHTML+=`<div class="card" style="border-color:#ff00ff40" onclick="location.href='read.html?id=my_${n.id}'"><span class="badge-my">MY ✨</span><img src="${n.cover||n.coverImage}"><div class="info"><h3>${n.title}</h3><p>${n.author||'Me'} • My</p></div></div>`;
-   });
-   count.innerText=total+" stories • v703.2 PUBLIC";
-   if(total===0) grid.innerHTML="<div style='grid-column:1/-1;text-align:center;padding:40px;color:#666'>No novels yet<br><a href='dashboard.html' style='background:#fff;color:#000;padding:8px 16px;border-radius:20px;text-decoration:none;font-weight:800;display:inline-block;margin-top:10px'>Publish Now</a></div>";
- }catch(e){ grid.innerHTML=`<div style='grid-column:1/-1;text-align:center;color:#f44'>${e.message}</div>`; }
+ let live=[];
+ try{ let r=await fetch(`${API}/novels`); if(r.ok){ live=await r.json(); live=Array.isArray(live)?live:live.novels||[]; } }catch(e){}
+ live.forEach(n=>{
+   total++;
+   // FIXED LINK -> read-novel.html
+   grid.innerHTML+=`<div class="card" onclick="location.href='read-novel.html?id=${n._id||n.id}'"><span class="badge-live">LIVE</span><img src="${n.coverImage||n.cover||'https://picsum.photos/400/600'}" loading="lazy"><div class="info"><h3>${n.title}</h3><p>${n.author||'Anon'} • ${n.genre||'Novel'}</p></div></div>`;
+ });
+ // My uploads
+ let my=[];
+ try{ my=JSON.parse(localStorage.getItem("myNovels")||"[]"); }catch(e){}
+ let my2=[];
+ try{ my2=JSON.parse(localStorage.getItem("myBooks")||"[]").filter(b=>!b.pages); }catch(e){}
+ [...my,...my2].forEach(n=>{
+   total++;
+   grid.innerHTML+=`<div class="card" style="border-color:#ff00ff40" onclick="location.href='read-novel.html?id=my_${n.id||n._id}'"><span class="badge-my">MY ✨</span><img src="${n.cover||n.coverImage}" loading="lazy"><div class="info"><h3>${n.title}</h3><p>${n.author||'Me'} • My</p></div></div>`;
+ });
+ count.innerText=total+" stories • v704.5 PUBLIC FIXED";
+ if(total===0) grid.innerHTML="<div style='grid-column:1/-1;text-align:center;padding:40px;color:#666'>No novels yet<br><a href='dashboard.html' style='background:#fff;color:#000;padding:8px 16px;border-radius:20px;text-decoration:none;font-weight:800;display:inline-block;margin-top:10px'>Publish Now</a></div>";
 }
 load();
 </script>
