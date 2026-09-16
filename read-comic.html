@@ -16,7 +16,9 @@ header{display:flex;justify-content:space-between;align-items:center;padding:12p
 .paywall{display:none;position:fixed;inset:0;background:#07070af0;backdrop-filter:blur(20px);z-index:9999;align-items:center;justify-content:center;padding:20px}
 .paywall.on{display:flex}
 .pay-box{background:#15151a;border:1px solid #333;border-radius:24px;padding:24px;max-width:380px;width:100%;text-align:center}
-</style></head><body>
+</style>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head><body>
 <header><div class="logo">Gen-Z <span>Comics</span> <span style="font-size:10px;background:#00ff88;color:#000;padding:2px 6px;border-radius:10px">v705 PRO FINAL CLOSED</span></div><a href="comics.html?v=705" class="top-btn">✕ Close</a></header>
 <div class="progress"><div class="progress-bar" id="bar"></div></div>
 <div class="reader-wrap">
@@ -30,9 +32,9 @@ header{display:flex;justify-content:space-between;align-items:center;padding:12p
 <p id="payTitle" style="color:#888;font-size:13px"></p>
 <h1 id="payPrice" style="color:#facc15;margin:10px 0">₹49</h1>
 <p id="payUpi" style="font-size:11px;color:#00ff88;background:#00ff8815;padding:6px;border-radius:8px"></p>
-<p style="font-size:11px;color:#666;margin-top:8px">Money goes directly to author via UPI QR</p>
-<button onclick="doPay()" style="width:100%;padding:14px;background:#facc15;color:#000;border:none;border-radius:12px;font-weight:900;margin-top:12px;cursor:pointer">🔓 Pay via UPI & Unlock Now</button>
-<p style="font-size:10px;color:#555;margin-top:10px">After UPI payment, enter Transaction ID - owner verifies</p>
+<p style="font-size:11px;color:#666;margin-top:8px">Secure payment via Razorpay</p>
+<button onclick="payNowRazorpay()" style="width:100%;padding:14px;background:#facc15;color:#000;border:none;border-radius:12px;font-weight:900;margin-top:12px;cursor:pointer">🔓 Pay ₹ & Unlock Now</button>
+<p style="font-size:10px;color:#555;margin-top:10px">Instant unlock after payment ✅</p>
 <button onclick="location.href='comics.html?v=705'" style="width:100%;padding:10px;background:#222;color:#888;border:1px solid #333;border-radius:12px;margin-top:8px">← Back to Comics</button>
 </div></div>
 
@@ -73,7 +75,6 @@ if(!book){document.getElementById("t").innerText="Comic not found";document.getE
 
 currentBook=book;
 
-// VIEW increment v705
 if(!book.isXML){
  try{ fetch(API+"/comics/"+(book._id||realId)+"/view",{method:"POST",cache:"no-store"}).catch(()=>{}); }catch{}
 }
@@ -89,7 +90,7 @@ if(access==='paid'){
   document.getElementById("cover").src=book.cover||book.coverImage||(book.pages&&book.pages[0])||'https://picsum.photos/300/400';
   document.getElementById("badge").innerText='💎 PAID • ₹'+price+' • LOCKED';document.getElementById("payTitle").innerText=book.title;document.getElementById("payPrice").innerText='₹'+price;
   let upi=book.authorUpi||book.upi||book.upiId||"";
-  document.getElementById("payUpi").innerText=upi? "UPI: "+upi+" ✅ Direct to author" : "⚠️ Author UPI not set - contact author";
+  document.getElementById("payUpi").innerText=upi? "UPI: "+upi+" ✅ Direct to author" : "Secure Razorpay Payment";
   document.getElementById("paywall").classList.add('on');document.getElementById("pages").innerHTML='🔒 Paid comic locked - pay to unlock';return;
  }
 }
@@ -104,22 +105,50 @@ document.getElementById("pages").innerHTML=html||"No pages found";
 window.addEventListener('scroll',()=>{let s=(window.scrollY/(document.body.scrollHeight-window.innerHeight))*100;document.getElementById('bar').style.width=s+'%';});
 }
 
-function doPay(){
-  let upi=currentBook.authorUpi||currentBook.upi||currentBook.upiId||'';
-  let amt=currentBook.price||49;
-  if(!upi ||!upi.includes('@')){alert('❌ Author UPI not set. Ask author to set UPI in Dashboard.');return;}
-  let link=`upi://pay?pa=${encodeURIComponent(upi)}&pn=${encodeURIComponent(currentBook.author||'GenZ-Visual')}&am=${amt}&cu=INR&tn=${encodeURIComponent(currentBook.title.slice(0,30))}`;
-  window.location.href=link;
-  setTimeout(()=>{
-    let txn=prompt('✅ After UPI payment, enter Transaction ID (min 6 chars):\n\nIt will be sent to author for verification. Fake ID = ban.');
-    if(txn && txn.trim().length>=6){
-      localStorage.setItem('bought_'+currentId,'yes');
-      localStorage.setItem('bought_'+currentRealId,'yes');
-      localStorage.setItem('txn_'+currentId,txn.trim());
-      alert('✅ Unlock request saved! Showing comic now. Author will verify txn: '+txn);
-      location.reload();
-    }
-  },2500);
+// --- RAZORPAY PAYMENT FINAL ---
+async function payNowRazorpay(){
+  try{
+    let price = currentBook.price || 10;
+    let title = currentBook.title || "Comic";
+    const res = await fetch(`${API_BASE}/api/create-order`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({amount: price, title: title})
+    });
+    const data = await res.json();
+    if(!data.orderId){ alert("Order failed: "+(data.error||"Unknown")); return; }
+
+    var options = {
+      key: data.key_id,
+      amount: data.amount,
+      currency: "INR",
+      name: "Gen-Z Visual",
+      description: title,
+      order_id: data.orderId,
+      handler: async function(response){
+        const verify = await fetch(`${API_BASE}/api/verify-payment`,{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body: JSON.stringify(response)
+        });
+        const result = await verify.json();
+        if(result.ok){
+          localStorage.setItem('bought_'+currentId,'yes');
+          localStorage.setItem('bought_'+currentRealId,'yes');
+          localStorage.setItem('bought_my_'+currentRealId,'yes');
+          alert("✅ Payment Success! Unlocked!");
+          location.reload();
+        }else{
+          alert("❌ Verification Failed!");
+        }
+      },
+      theme:{color:"#facc15"}
+    };
+    var rzp = new Razorpay(options);
+    rzp.open();
+  }catch(e){
+    alert("Payment Error: "+e.message);
+  }
 }
 
 loadStory();
