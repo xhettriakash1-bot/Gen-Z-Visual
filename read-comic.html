@@ -1,4 +1,4 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Read Comic v704.7 FIXED</title>
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Read Comic v705 PRO FINAL</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#07070a;color:#fff;font-family:system-ui}
 header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#111;border-bottom:1px solid #222;position:sticky;top:0;z-index:99}
@@ -11,75 +11,115 @@ header{display:flex;justify-content:space-between;align-items:center;padding:12p
 .comic-pages img{width:100%;display:block;margin:0 auto;border-radius:12px;cursor:zoom-in}
 .page-num{text-align:center;font-size:10px;color:#555;padding:8px 0}
 .progress{height:4px;background:#222;border-radius:99px;margin:10px 0;overflow:hidden;position:sticky;top:55px;z-index:10}
-.progress-bar{height:100%;background:linear-gradient(90deg,#ff00ff,#00ff88);width:0%}
+.progress-bar{height:100%;background:linear-gradient(90deg,#ff8800,#00ff88);width:0%}
 .ctrl{padding:10px 18px;border-radius:99px;background:#222;border:1px solid #333;color:#fff;font-size:12px;font-weight:700;cursor:pointer;margin:4px}
 .paywall{display:none;position:fixed;inset:0;background:#07070af0;backdrop-filter:blur(20px);z-index:9999;align-items:center;justify-content:center;padding:20px}
 .paywall.on{display:flex}
 .pay-box{background:#15151a;border:1px solid #333;border-radius:24px;padding:24px;max-width:380px;width:100%;text-align:center}
 </style></head><body>
-<header><div class="logo">Gen-Z <span>Comics</span> <span style="font-size:10px;background:#00ff88;color:#000;padding:2px 6px;border-radius:10px">v704.7 FIXED</span></div><a href="comic.html?v=704.7" class="top-btn">✕ Close</a></header>
+<header><div class="logo">Gen-Z <span>Comics</span> <span style="font-size:10px;background:#00ff88;color:#000;padding:2px 6px;border-radius:10px">v705 PRO FINAL CLOSED</span></div><a href="comics.html?v=705" class="top-btn">✕ Close</a></header>
 <div class="progress"><div class="progress-bar" id="bar"></div></div>
 <div class="reader-wrap">
-<div class="top-info"><img id="cover" src="https://picsum.photos/300/400"><div style="flex:1"><h2 id="t" style="margin:0;font-size:20px;font-weight:900">Loading...</h2><p id="author" style="font-size:12px;color:#888">...</p><p id="desc" style="font-size:11px;color:#666;margin-top:8px"></p><span id="badge" style="font-size:10px;background:#ff00ff22;border:1px solid #ff00ff40;padding:4px 10px;border-radius:20px;color:#ff8aff">Searching...</span><div style="margin-top:10px"><button class="ctrl" onclick="window.scrollBy({top:-innerHeight*0.8,behavior:'smooth'})">↑</button><button class="ctrl" onclick="window.scrollBy({top:innerHeight*0.8,behavior:'smooth'})">↓</button></div></div></div>
-<div class="comic-pages" id="pages"></div>
+<div class="top-info"><img id="cover" src="https://picsum.photos/300/400"><div style="flex:1"><h2 id="t" style="margin:0;font-size:20px;font-weight:900">Loading v705...</h2><p id="author" style="font-size:12px;color:#888">...</p><p id="desc" style="font-size:11px;color:#666;margin-top:8px"></p><span id="badge" style="font-size:10px;background:#ff00ff22;border:1px solid #ff00ff40;padding:4px 10px;border-radius:20px;color:#ff8aff">Waking LIVE v705...</span><div style="margin-top:10px"><button class="ctrl" onclick="window.scrollBy({top:-innerHeight*0.8,behavior:'smooth'})">↑ Up</button><button class="ctrl" onclick="window.scrollBy({top:innerHeight*0.8,behavior:'smooth'})">↓ Down</button></div></div></div>
+<div class="comic-pages" id="pages"><p style="text-align:center;color:#666;padding:20px">⏳ Loading LIVE v705...</p></div>
 </div>
 
-<!-- PAYWALL CLEAN - NO JS TEXT INSIDE -->
 <div id="paywall" class="paywall"><div class="pay-box">
 <div style="font-size:40px">💎</div>
-<h2 style="margin:10px 0">Premium Comic</h2>
+<h2 style="margin:10px 0">Premium Comic LOCKED</h2>
 <p id="payTitle" style="color:#888;font-size:13px"></p>
-<h1 id="payPrice" style="color:#a855f7;margin:10px 0">₹49</h1>
-<p style="font-size:11px;color:#666">Money goes directly to author via UPI</p>
-<button onclick="doPay()" style="width:100%;padding:14px;background:#a855f7;color:#fff;border:none;border-radius:12px;font-weight:900;margin-top:12px;cursor:pointer">🔓 Pay & Unlock Now</button>
-<p style="font-size:10px;color:#555;margin-top:10px">After payment, enter Transaction ID</p>
+<h1 id="payPrice" style="color:#facc15;margin:10px 0">₹49</h1>
+<p id="payUpi" style="font-size:11px;color:#00ff88;background:#00ff8815;padding:6px;border-radius:8px"></p>
+<p style="font-size:11px;color:#666;margin-top:8px">Money goes directly to author via UPI QR</p>
+<button onclick="doPay()" style="width:100%;padding:14px;background:#facc15;color:#000;border:none;border-radius:12px;font-weight:900;margin-top:12px;cursor:pointer">🔓 Pay via UPI & Unlock Now</button>
+<p style="font-size:10px;color:#555;margin-top:10px">After UPI payment, enter Transaction ID - owner verifies</p>
+<button onclick="location.href='comics.html?v=705'" style="width:100%;padding:10px;background:#222;color:#888;border:1px solid #333;border-radius:12px;margin-top:8px">← Back to Comics</button>
 </div></div>
 
 <script>
-const API="https://gen-z-visual-2.onrender.com/api";
-let currentBook=null,currentId=null;
+const API_BASE="https://gen-z-visual-2.onrender.com";
+const API=API_BASE+"/api";
+let currentBook=null,currentId=null, currentRealId=null;
+
 async function loadStory(){
-let id=new URLSearchParams(location.search).get("id");currentId=id;
-if(!id){document.getElementById("t").innerText="No ID";return;}
-let realId=id.replace("my_","");let book=null,source="";
-document.getElementById("badge").innerText="🔍 Direct check...";
-try{let r=await fetch(API+"/comics/"+realId);if(r.ok){book=await r.json();source="DIRECT ✅";}}catch(e){}
-if(!book){try{let r=await fetch(API+"/comics");if(r.ok){let list=await r.json();list=Array.isArray(list)?list:list.comics||[];book=list.find(x=>String(x._id)===String(realId)||String(x._id)===String(id)||String(x.id)===String(realId));if(book)source="LIVE LIST ✅";}}catch(e){}}
-if(!book){try{let my=JSON.parse(localStorage.getItem("myComics")||"[]");book=my.find(x=>String(x.id||x._id)===String(realId)||String(x.id||x._id)===String(id));if(book)source="DEVICE";}catch(e){}}
-if(!book){document.getElementById("t").innerText="Comic not found";document.getElementById("pages").innerHTML=`ID ${id} not found on LIVE.<br>Wake up Render: <a href="${API}/comics" style="color:#a855f7" target="_blank">${API}/comics</a>`;document.getElementById("badge").innerText="❌ Not Found";return;}
+let params=new URLSearchParams(location.search);
+let id=params.get("id"), xml=params.get("xml");
+currentId=id||xml;
+if(!id &&!xml){document.getElementById("t").innerText="No ID";return;}
+let realId=(id||xml||"").replace("my_",""); currentRealId=realId;
+let book=null,source="";
+
+document.getElementById("badge").innerText="🔍 Waking LIVE v705...";
+try{ await fetch(API_BASE+"/",{cache:"no-store"}); }catch{}
+
+if(xml){
+ try{
+  let txt=await fetch("data/comics.xml?v=705",{cache:"no-store"}).then(r=>r.text());
+  let doc=new DOMParser().parseFromString(txt,"text/xml");
+  let c=[...doc.querySelectorAll("comic")].find(x=> (x.querySelector("id")?.textContent)===realId);
+  if(c){
+   book={ _id: c.querySelector("id")?.textContent, title:c.querySelector("title")?.textContent, author:c.querySelector("author")?.textContent, cover:c.querySelector("cover")?.textContent, pages:(c.querySelector("pages")?.textContent||"").split(",").map(s=>s.trim()).filter(Boolean), description:c.querySelector("desc")?.textContent||"", access:"free", price:0, views:0, isXML:true };
+   source="XML ✅";
+  }
+ }catch{}
+}
+
+if(!book && id){
+ try{let r=await fetch(API+"/comics/"+realId,{cache:"no-store"});if(r.ok){book=await r.json();source="DIRECT LIVE ✅";}}catch{}
+ if(!book){try{let r=await fetch(API+"/comics",{cache:"no-store"});if(r.ok){let list=await r.json();list=Array.isArray(list)?list:list.comics||[];book=list.find(x=>String(x._id)===String(realId)||String(x._id)===String(id));if(book)source="LIVE LIST ✅";}}catch{}}
+}
+
+if(!book){document.getElementById("t").innerText="Comic not found";document.getElementById("pages").innerHTML=`ID ${currentId} not found.<br>Backend waking: <a href="${API}/comics" style="color:#ff8800" target="_blank">Open API</a> then retry`;document.getElementById("badge").innerText="❌ Not Found";return;}
+
 currentBook=book;
-let access=(book.access||'free').toLowerCase();let price=book.price||49;
+
+// VIEW increment v705
+if(!book.isXML){
+ try{ fetch(API+"/comics/"+(book._id||realId)+"/view",{method:"POST",cache:"no-store"}).catch(()=>{}); }catch{}
+}
+
+let access=(book.access||book.accessType||'free').toLowerCase();let price=book.price||49;
 if(access==='paid'){
-let user=null;try{user=JSON.parse(localStorage.getItem('user')||localStorage.getItem('genz_user')||'null')}catch{}
-let bought=localStorage.getItem('bought_'+id)||localStorage.getItem('bought_'+realId);
-let isOwner=false;if(user){let u=(user.email||'').toLowerCase();let c=(book.creatorEmail||'').toLowerCase();if(c&&u&&c===u)isOwner=true;if(u==='xhettriakash1@gmail.com')isOwner=true;}
-if(source==="DEVICE")isOwner=true;
-if(!bought&&!isOwner){document.getElementById("t").innerText=book.title;document.getElementById("author").innerText="by "+(book.author||'GenZ');document.getElementById("cover").src=book.cover||book.coverImage||(book.pages&&book.pages[0])||'';document.getElementById("badge").innerText='💎 PAID • ₹'+price;document.getElementById("payTitle").innerText=book.title;document.getElementById("payPrice").innerText='₹'+price;document.getElementById("paywall").classList.add('on');document.getElementById("pages").innerHTML='🔒 Paid comic';return;}}
+ let user=null;try{user=JSON.parse(localStorage.getItem('user')||localStorage.getItem('genz_user')||'null')}catch{}
+ let bought=localStorage.getItem('bought_'+currentId)||localStorage.getItem('bought_'+realId)||localStorage.getItem('bought_my_'+realId);
+ let isOwner=false;if(user){let u=(user.email||'').toLowerCase();let c=(book.creatorEmail||'').toLowerCase();if(c&&u&&c===u)isOwner=true;if(u==='xhettriakash1@gmail.com')isOwner=true;}
+ if(book.isXML) isOwner=true;
+ if(!bought&&!isOwner){
+  document.getElementById("t").innerText=book.title;document.getElementById("author").innerText="by "+(book.author||'GenZ')+" • 👁️ "+(book.views||0);
+  document.getElementById("cover").src=book.cover||book.coverImage||(book.pages&&book.pages[0])||'https://picsum.photos/300/400';
+  document.getElementById("badge").innerText='💎 PAID • ₹'+price+' • LOCKED';document.getElementById("payTitle").innerText=book.title;document.getElementById("payPrice").innerText='₹'+price;
+  let upi=book.authorUpi||book.upi||book.upiId||"";
+  document.getElementById("payUpi").innerText=upi? "UPI: "+upi+" ✅ Direct to author" : "⚠️ Author UPI not set - contact author";
+  document.getElementById("paywall").classList.add('on');document.getElementById("pages").innerHTML='🔒 Paid comic locked - pay to unlock';return;
+ }
+}
+
 document.getElementById("t").innerText=book.title||"Untitled";
-document.getElementById("author").innerText="by "+(book.author||book.creatorName||"GenZ")+" • "+source+(access==='paid'?' • PAID ₹'+price:' • FREE');
+document.getElementById("author").innerText="by "+(book.author||book.creatorName||"GenZ")+" • "+source+" • 👁️ "+((book.views||0)+1)+" views • "+(access==='paid'?'PAID ₹'+price:'FREE');
 document.getElementById("desc").innerText=book.description||"";
 document.getElementById("cover").src=book.cover||book.coverImage||(book.pages&&book.pages[0])||'https://picsum.photos/300/400';
-document.getElementById("badge").innerText=source+" • "+(access==='paid'?'PAID ₹'+price:'FREE');
-let pages=book.pages||[];let html="";pages.forEach((p,i)=>{html+=`<div><img src="${p}" loading="lazy"><div class="page-num">Page ${i+1}</div></div>`;});
-document.getElementById("pages").innerHTML=html||"No pages";
+document.getElementById("badge").innerText=source+" • "+(access==='paid'?'PAID ₹'+price+' UNLOCKED':'FREE')+" • 👁️ "+((book.views||0)+1);
+let pages=book.pages||[];let html="";pages.forEach((p,i)=>{html+=`<div><img src="${p}" loading="lazy" onerror="this.src='https://picsum.photos/400/600'"><div class="page-num">Page ${i+1} / ${pages.length}</div></div>`;});
+document.getElementById("pages").innerHTML=html||"No pages found";
 window.addEventListener('scroll',()=>{let s=(window.scrollY/(document.body.scrollHeight-window.innerHeight))*100;document.getElementById('bar').style.width=s+'%';});
 }
 
 function doPay(){
-  let upi=currentBook.authorUpi||currentBook.upi||'';
-  let amt=currentBook.price||20;
-  if(!upi || !upi.includes('@')){alert('Author UPI not set');return;}
-  window.location.href=`upi://pay?pa=${upi}&pn=GenZ-Visual&am=${amt}&cu=INR&tn=${encodeURIComponent(currentBook.title)}`;
+  let upi=currentBook.authorUpi||currentBook.upi||currentBook.upiId||'';
+  let amt=currentBook.price||49;
+  if(!upi ||!upi.includes('@')){alert('❌ Author UPI not set. Ask author to set UPI in Dashboard.');return;}
+  let link=`upi://pay?pa=${encodeURIComponent(upi)}&pn=${encodeURIComponent(currentBook.author||'GenZ-Visual')}&am=${amt}&cu=INR&tn=${encodeURIComponent(currentBook.title.slice(0,30))}`;
+  window.location.href=link;
   setTimeout(()=>{
-    let txn=prompt('Enter UPI Transaction ID (12 digits) after payment:\n\nThis will be sent to author for verification');
-    if(txn && txn.length>=6){
+    let txn=prompt('✅ After UPI payment, enter Transaction ID (min 6 chars):\n\nIt will be sent to author for verification. Fake ID = ban.');
+    if(txn && txn.trim().length>=6){
       localStorage.setItem('bought_'+currentId,'yes');
-      localStorage.setItem('txn_'+currentId,txn);
-      localStorage.setItem('bought_'+currentId.replace('my_',''),'yes');
-      alert('Unlock request sent! Author will verify. If fake ID, access will be revoked.');
+      localStorage.setItem('bought_'+currentRealId,'yes');
+      localStorage.setItem('txn_'+currentId,txn.trim());
+      alert('✅ Unlock request saved! Showing comic now. Author will verify txn: '+txn);
       location.reload();
     }
-  },3000);
+  },2500);
 }
 
 loadStory();
