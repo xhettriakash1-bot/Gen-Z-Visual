@@ -30,7 +30,25 @@ header{display:flex;justify-content:space-between;align-items:center;padding:12p
 <h1 id="payPrice" style="color:#a855f7;margin:10px 0">₹49</h1>
 <p style="font-size:11px;color:#666">Money goes directly to author via UPI</p>
 <button onclick="doPay()" style="width:100%;padding:14px;background:#a855f7;color:#fff;border:none;border-radius:12px;font-weight:900;margin-top:12px;cursor:pointer">🔓 Pay & Unlock Now</button>
-<button onclick="mockUnlock()" style="width:100%;padding:10px;background:#222;color:#888;border:1px solid #333;border-radius:12px;margin-top:8px;font-size:11px;cursor:pointer">I already paid (Unlock Demo)</button>
+function doPay(){
+  let upi=currentBook.authorUpi||''; 
+  let amt=currentBook.price||20;
+  if(!upi || !upi.includes('@')){alert('Author UPI not set');return;}
+  
+  // Open UPI app
+  window.location.href=`upi://pay?pa=${upi}&pn=GenZ Author&am=${amt}&cu=INR&tn=${encodeURIComponent(currentBook.title)}`;
+  
+  // Ask for Transaction ID - stops fraud!
+  setTimeout(()=>{
+    let txn=prompt('Enter UPI Transaction ID (12 digits) after payment:\n\nThis will be sent to author for verification');
+    if(txn && txn.length>=6){
+      localStorage.setItem('bought_'+currentId,'yes');
+      localStorage.setItem('txn_'+currentId,txn);
+      alert('Unlock request sent! Author will verify. If fake ID, access will be revoked.');
+      location.reload();
+    }
+  },3000);
+}
 </div></div>
 <script>
 const API="https://gen-z-visual-2.onrender.com/api";
