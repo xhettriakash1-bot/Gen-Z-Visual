@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html><head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Comics v704.7 LIVE</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Comics v705 PRO - Gen-Z Visual</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#07070a;color:#fff;font-family:system-ui}
 .top{position:sticky;top:0;z-index:99;display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#111;border-bottom:1px solid #222}
@@ -11,20 +11,46 @@
 .card img{width:100%;height:220px;object-fit:cover;background:#222}
 .info{padding:10px}
 .badge{position:absolute;top:8px;left:8px;font-size:9px;font-weight:900;padding:4px 8px;border-radius:20px}
-.live{background:#00ff88;color:#000}.my{background:#ff00ff;color:#fff}.demo{background:#333;color:#aaa}
+.live{background:#00ff88;color:#000}.my{background:#ff00ff;color:#fff}.demo{background:#333;color:#aaa}.paid{background:#facc15;color:#000}
 .btn{width:100%;background:#fff;color:#000;border:none;padding:8px;border-radius:20px;font-weight:800;margin-top:6px;cursor:pointer;font-size:12px}
+.btn-paid{background:#facc15;color:#000}
 .nav{position:fixed;bottom:0;left:0;right:0;background:#111;border-top:1px solid #222;display:flex;justify-content:space-around;padding:8px 0;z-index:100}
 .nav a{color:#666;text-decoration:none;font-size:11px;text-align:center}.nav a.active{color:#ff8800}
 .fab{position:fixed;bottom:80px;right:16px;background:linear-gradient(135deg,#ff8800,#ff5500);color:#fff;padding:14px 22px;border-radius:99px;font-weight:900;text-decoration:none;box-shadow:0 10px 30px #ff880060;z-index:50}
 </style>
 </head><body>
 <div class="top">
-  <div style="font-weight:900">🎨 Comics <span style="color:#ff8800">v704.7 FIXED</span></div>
-  <div style="display:flex;gap:10px"><a href="index.html?v=704.7" style="color:#888;text-decoration:none;font-size:12px">Home</a><a href="dashboard.html?v=704.7" style="color:#ff8800;text-decoration:none;font-size:12px;font-weight:800">+ Studio</a></div>
+  <div style="font-weight:900">🎨 Comics <span style="color:#ff8800">v705 PRO</span></div>
+  <div style="display:flex;gap:10px"><a href="index.html?v=705" style="color:#888;text-decoration:none;font-size:12px">Home</a><a href="dashboard.html?v=705" style="color:#ff8800;text-decoration:none;font-size:12px;font-weight:800">+ Studio</a></div>
 </div>
 <div style="max-width:900px;margin:0 auto;padding:16px">
   <h2 style="margin:0;font-size:22px;font-weight:900">All Comics <span style="color:#ff8800">PUBLIC</span></h2>
-  <p style="color:#666;font-size:11px;margin-top:4px" id="status">v704.7 • LIVE + DEVICE + XML fallback = NEVER EMPTY</p>
+  <p style="color:#666;font-size:11px;margin-top:4px" id="status">v705 PRO • LIVE + DEVICE + XML fallback = NEVER EMPTY + PAID + VIEWS</p>
 </div>
 <div class="grid" id="list"></div>
-<a href="
+<a href="dashboard.html?v=705" class="fab">+ Publish</a>
+<div class="nav">
+<a href="index.html?v=705">🏠<br>Home</a><a href="novels.html?v=705">📚<br>Novels</a><a href="comics.html?v=705" class="active">🎨<br>Comics</a><a href="dashboard.html?v=705">✏️<br>Studio</a>
+</div>
+
+<script>
+const API="https://gen-z-visual-2.onrender.com";
+const XML_FALLBACK="data/comics.xml?v=705";
+
+async function getLive(){
+ try{
+  await fetch(API+"/",{cache:"no-store"});
+  let r=await fetch(API+"/api/comics",{cache:"no-store"});
+  let d=await r.json();
+  return Array.isArray(d)?d:(d.comics||[]);
+ }catch{ return []; }
+}
+async function getXML(){
+ try{
+  let r=await fetch(XML_FALLBACK,{cache:"no-store"});
+  let txt=await r.text();
+  let doc=new DOMParser().parseFromString(txt,"text/xml");
+  let arr=[...doc.querySelectorAll("comic")].map(c=>({
+    _id:c.querySelector("id")?.textContent||"xml_"+Math.random(),
+    title:c.querySelector("title")?.textContent||"Untitled",
+    author:c.querySelector("author")?.text
