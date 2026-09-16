@@ -13,6 +13,9 @@ header{display:flex;justify-content:space-between;align-items:center;padding:12p
 .progress{height:4px;background:#222;border-radius:99px;margin:10px 0;overflow:hidden;position:sticky;top:55px;z-index:10}
 .progress-bar{height:100%;background:linear-gradient(90deg,#ff00ff,#00ff88);width:0%}
 .ctrl{padding:10px 18px;border-radius:99px;background:#222;border:1px solid #333;color:#fff;font-size:12px;font-weight:700;cursor:pointer;margin:4px}
+.paywall{display:none;position:fixed;inset:0;background:#07070af0;backdrop-filter:blur(20px);z-index:9999;align-items:center;justify-content:center;padding:20px}
+.paywall.on{display:flex}
+.pay-box{background:#15151a;border:1px solid #333;border-radius:24px;padding:24px;max-width:380px;width:100%;text-align:center}
 </style></head><body>
 <header><div class="logo">Gen-Z <span>Comics</span> <span style="font-size:10px;background:#00ff88;color:#000;padding:2px 6px;border-radius:10px">v704.5</span></div><a href="comic.html?v=704.5" class="top-btn">✕ Close</a></header>
 <div class="progress"><div class="progress-bar" id="bar"></div></div>
@@ -20,18 +23,12 @@ header{display:flex;justify-content:space-between;align-items:center;padding:12p
 <div class="top-info"><img id="cover" src="https://picsum.photos/300/400"><div style="flex:1"><h2 id="t" style="margin:0;font-size:20px;font-weight:900">Loading...</h2><p id="author" style="font-size:12px;color:#888">...</p><p id="desc" style="font-size:11px;color:#666;margin-top:8px"></p><span id="badge" style="font-size:10px;background:#ff00ff22;border:1px solid #ff00ff40;padding:4px 10px;border-radius:20px;color:#ff8aff">Searching...</span><div style="margin-top:10px"><button class="ctrl" onclick="window.scrollBy({top:-innerHeight*0.8,behavior:'smooth'})">↑</button><button class="ctrl" onclick="window.scrollBy({top:innerHeight*0.8,behavior:'smooth'})">↓</button></div></div></div>
 <div class="comic-pages" id="pages"></div>
 </div>
-<script>
-const API="https://gen-z-visual-2.onrender.com/api";
-async function load(){
- let id=new URLSearchParams(location.search).get('id'); if(!id){t.innerText='No ID';return;}
- let comic=null, src="";
- try{ let all=JSON.parse(localStorage.getItem("myComics")||"[]").concat(JSON.parse(localStorage.getItem("myBooks")||"[]").filter(b=>b.pages)); comic=all.find(c=>String(c._id||c.id)===String(id)||String(c._id||c.id)===String(id).replace('my_','')); if(comic) src="DEVICE"; }catch(e){}
- if(!comic){ try{ let r=await fetch(API+'/comics'); let list=await r.json(); list=Array.isArray(list)?list:list.comics||[]; comic=list.find(c=>String(c._id)===String(id)); if(comic) src="LIVE ✅"; }catch(e){} }
- if(!comic){ t.innerText='Not found'; badge.innerText='❌ Not found'; return; }
- t.innerText=comic.title; author.innerText='by '+(comic.author||'GenZ'); desc.innerText=comic.description||''; cover.src=comic.cover||comic.coverImage||comic.pages?.[0]||'https://picsum.photos/300/400'; badge.innerText=src||'LIVE';
- let imgs=comic.pages||[]; pages.innerHTML=imgs.map((p,i)=>`<img src="${p}" loading="lazy"><div class="page-num">Page ${i+1}/${imgs.length}</div>`).join('')||'<div style="text-align:center;color:#666;padding:20px">No pages</div>';
- window.addEventListener('scroll',()=>{ let h=document.documentElement.scrollHeight-innerHeight, pct=h>0? (scrollY/h)*100:0; bar.style.width=pct+'%'; });
-}
-load();
-</script>
-</body></html>
+
+<div id="paywall" class="paywall"><div class="pay-box">
+<div style="font-size:40px">💎</div>
+<h2 style="margin:10px 0">Premium Comic</h2>
+<p id="payTitle" style="color:#888;font-size:13px"></p>
+<h1 id="payPrice" style="color:#a855f7;margin:10px 0">₹49</h1>
+<p style="font-size:11px;color:#666">Money goes directly to author via UPI</p>
+<button onclick="doPay()" style="width:100%;padding:14px;background:#a855f7;color:#fff;border:none;border-radius:12px;font-weight:900;margin-top:12px;cursor:pointer">🔓 Pay & Unlock Now</button>
+<button onclick="mockUnlock()" style="width:100%;
