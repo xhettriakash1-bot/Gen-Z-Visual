@@ -11,7 +11,8 @@ header{position:sticky;top:0;z-index:99;display:flex;justify-content:space-betwe
 .hero h1 span{background:linear-gradient(90deg,#ff00ff,#7a00ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .hero p{color:#888;font-size:14px;margin:14px 0;max-width:400px}
 .grid{max-width:700px;margin:0 auto;padding:0 16px 120px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.card{background:#15151a;border:1px solid #222;border-radius:16px;overflow:hidden;cursor:pointer}
+.card{background:#15151a;border:1px solid #222;border-radius:16px;overflow:hidden;cursor:pointer;transition:transform .2s}
+.card:hover{transform:translateY(-3px);border-color:#ff00ff44}
 .card img{width:100%;height:180px;object-fit:cover}
 .card-body{padding:10px}.card-body b{font-size:13px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.card-body small{color:#666;font-size:11px}
 .nav{position:fixed;bottom:0;left:0;right:0;background:#111;border-top:1px solid #222;display:flex;justify-content:space-around;padding:8px 0;z-index:99}
@@ -21,7 +22,7 @@ header{position:sticky;top:0;z-index:99;display:flex;justify-content:space-betwe
 <div style="display:flex;gap:6px"><a href="login.html?v=704.5" class="top-btn primary">Login</a><a href="dashboard.html?v=704.5" class="top-btn">Studio</a></div></header>
 <div class="search-wrap"><input id="searchBox" placeholder="Search novels, comics..." oninput="filterCards()"></div>
 <div class="hero"><h1>Stories for<br><span>Gen-Z</span><br>by Gen-Z</h1><p>Read, create, and share visual stories. LIVE + LOCAL merged</p><div style="display:flex;gap:10px"><a href="novels.html?v=704.5" style="padding:12px 20px;background:#fff;color:#000;border-radius:99px;text-decoration:none;font-weight:900;font-size:13px">📚 Novels →</a><a href="comic.html?v=704.5" style="padding:12px 20px;background:#ffffff15;color:#fff;border-radius:99px;text-decoration:none;font-weight:800;font-size:13px;border:1px solid #333">🎨 Comics</a></div><div id="status" style="margin-top:16px;font-size:11px;color:#00ff88">● Checking LIVE...</div></div>
-<div id="grid" class="grid"></div>
+<div id="grid" class="grid"><div style="grid-column:1/-1;text-align:center;color:#555;padding:20px">Loading stories...</div></div>
 <div class="nav"><a href="index.html" class="active">🏠<br>Home</a><a href="novels.html">📚<br>Novels</a><a href="comic.html">💥<br>Comics</a><a href="dashboard.html">📝<br>Studio</a></div>
 <script>
 const API="https://gen-z-visual-2.onrender.com/api";
@@ -29,8 +30,7 @@ async function loadAll(){
  let grid=document.getElementById('grid'), status=document.getElementById('status');
  let items=[]; let liveN=[], liveC=[];
  try{ let r=await fetch(API+'/novels'); liveN=await r.json(); liveN=Array.isArray(liveN)?liveN:liveN.novels||[]; status.innerText='● LIVE ✅ '+liveN.length+' novels'; }catch(e){ status.innerText='⏳ LIVE waking... LOCAL OK'; }
- try{ let r=await fetch(API+'/comics'); liveC=await r.json(); liveC=Array.isArray(liveC)?liveC:liveC.comics||[]; }catch(e){}
+ try{ let r=await fetch(API+'/comics'); liveC=await r.json(); liveC=Array.isArray(liveC)?liveC:liveC.comics||[]; status.innerText+=' | '+liveC.length+' comics'; }catch(e){}
  items=[...liveN.slice(0,10).map(x=>({title:x.title,cover:x.coverImage||x.cover,author:x.author,type:'novel',id:x._id,path:`read-novel.html?id=${x._id}`})),
         ...liveC.slice(0,10).map(x=>({title:x.title,cover:x.coverImage||x.cover||x.pages?.[0],author:x.author,type:'comic',id:x._id,path:`read-comic.html?id=${x._id}`}))];
- try{ let myN=JSON.parse(localStorage.getItem('myNovels')||'[]'); let myC=JSON.parse(localStorage.getItem('myComics')||'[]'); myN.forEach(x=>items.unshift({title:x.title,cover:x.cover,author:x.author,type:'novel',id:'my_'+x.id,path:`read-novel.html?id=my_${x.id}`})); myC.forEach(x=>items.unshift({title:x.title,cover:x.cover||x.pages?.[0],author:x.author,type:'comic',id:'my_'+x.id,path:`read-comic.html?id=my_${x.id}`})); }catch(e){}
- grid.innerHTML=items.map(c=>`<div class="card" onclick="location.href='${c.path}&v=704.5'"><img src="${c.cover||'https://picsum.photos/400/600'}" loading="lazy">
+ try{ let myN=JSON.parse(localStorage
