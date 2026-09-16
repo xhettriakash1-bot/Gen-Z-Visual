@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html><head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Comics v705 PRO - Gen-Z Visual</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Comics v705 PRO - Gen-Z Visual FIXED CLOSED</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#07070a;color:#fff;font-family:system-ui}
 .top{position:sticky;top:0;z-index:99;display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#111;border-bottom:1px solid #222}
@@ -11,7 +12,7 @@
 .card img{width:100%;height:220px;object-fit:cover;background:#222}
 .info{padding:10px}
 .badge{position:absolute;top:8px;left:8px;font-size:9px;font-weight:900;padding:4px 8px;border-radius:20px}
-.live{background:#00ff88;color:#000}.my{background:#ff00ff;color:#fff}.demo{background:#333;color:#aaa}.paid{background:#facc15;color:#000}
+.live{background:#00ff88;color:#000}.demo{background:#333;color:#aaa}.paid{background:#facc15;color:#000}
 .btn{width:100%;background:#fff;color:#000;border:none;padding:8px;border-radius:20px;font-weight:800;margin-top:6px;cursor:pointer;font-size:12px}
 .btn-paid{background:#facc15;color:#000}
 .nav{position:fixed;bottom:0;left:0;right:0;background:#111;border-top:1px solid #222;display:flex;justify-content:space-around;padding:8px 0;z-index:100}
@@ -20,23 +21,21 @@
 </style>
 </head><body>
 <div class="top">
-  <div style="font-weight:900">🎨 Comics <span style="color:#ff8800">v705 PRO</span></div>
+  <div style="font-weight:900">🎨 Comics <span style="color:#ff8800">v705 PRO FIXED CLOSED</span></div>
   <div style="display:flex;gap:10px"><a href="index.html?v=705" style="color:#888;text-decoration:none;font-size:12px">Home</a><a href="dashboard.html?v=705" style="color:#ff8800;text-decoration:none;font-size:12px;font-weight:800">+ Studio</a></div>
 </div>
 <div style="max-width:900px;margin:0 auto;padding:16px">
   <h2 style="margin:0;font-size:22px;font-weight:900">All Comics <span style="color:#ff8800">PUBLIC</span></h2>
-  <p style="color:#666;font-size:11px;margin-top:4px" id="status">v705 PRO • LIVE + DEVICE + XML fallback = NEVER EMPTY + PAID + VIEWS</p>
+  <p style="color:#666;font-size:11px;margin-top:4px" id="status">v705 PRO CLOSED • LIVE + XML fallback = NEVER EMPTY + PAID + VIEWS</p>
 </div>
 <div class="grid" id="list"></div>
 <a href="dashboard.html?v=705" class="fab">+ Publish</a>
 <div class="nav">
 <a href="index.html?v=705">🏠<br>Home</a><a href="novels.html?v=705">📚<br>Novels</a><a href="comics.html?v=705" class="active">🎨<br>Comics</a><a href="dashboard.html?v=705">✏️<br>Studio</a>
 </div>
-
 <script>
 const API="https://gen-z-visual-2.onrender.com";
 const XML_FALLBACK="data/comics.xml?v=705";
-
 async function getLive(){
  try{
   await fetch(API+"/",{cache:"no-store"});
@@ -50,7 +49,29 @@ async function getXML(){
   let r=await fetch(XML_FALLBACK,{cache:"no-store"});
   let txt=await r.text();
   let doc=new DOMParser().parseFromString(txt,"text/xml");
-  let arr=[...doc.querySelectorAll("comic")].map(c=>({
+  return [...doc.querySelectorAll("comic")].map(c=>({
     _id:c.querySelector("id")?.textContent||"xml_"+Math.random(),
     title:c.querySelector("title")?.textContent||"Untitled",
-    author:c.querySelector("author")?.text
+    author:c.querySelector("author")?.textContent||"GenZ",
+    cover:c.querySelector("cover")?.textContent||"https://picsum.photos/400/600",
+    pages:(c.querySelector("pages")?.textContent||"").split(",").map(s=>s.trim()).filter(Boolean),
+    access:"free", price:0, views:0, isXML:true
+  }));
+ }catch{ return []; }
+}
+async function load(){
+ document.getElementById("list").innerHTML="<p style='color:#666;padding:16px'>Waking LIVE backend... 15s</p>";
+ let live=await getLive(); let list=live.length?live:await getXML();
+ if(live.length===0) document.getElementById("status").innerText=`⚠️ LIVE empty → XML fallback ${list.length} comics - NEVER EMPTY`;
+ else document.getElementById("status").innerText=`✅ LIVE v705 CLOSED - ${live.length} comics • ${live.reduce((s,x)=>s+(x.views||0),0)} views`;
+ document.getElementById("list").innerHTML=list.map(c=>`
+  <div class="card" onclick="openComic('${c._id}',${c.isXML})">
+   <span class="badge ${c.isXML?'demo':(c.access==='paid'?'paid':'live')}">${c.isXML?'XML':(c.access==='paid'?'₹'+c.price:'LIVE')}</span>
+   <img src="${c.cover||c.pages?.[0]||'https://picsum.photos/400/600'}" loading="lazy">
+   <div class="info"><b style="font-size:13px">${c.title.slice(0,30)}</b><br><small style="color:#888">${c.author.slice(0,18)} • 👁️ ${c.views||0}</small><button class="btn ${c.access==='paid'?'btn-paid':''}">${c.access==='paid'?'🔒 ₹'+c.price:'📖 Read FREE'}</button></div>
+  </div>`).join('');
+}
+function openComic(id,isXML){ location.href=isXML?`read-comic.html?xml=${encodeURIComponent(id)}&v=705`:`read-comic.html?id=${id}&v=705`; }
+load();
+</script>
+</body></html>
