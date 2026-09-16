@@ -1,7 +1,7 @@
 {
   "name": "gen-z-visual-backend",
-  "version": "704.3",
-  "description": "Gen-Z Visual v704.3 SAFE - Novel + Comic",
+  "version": "704.5",
+  "description": "Gen-Z Visual v704.5 FINAL - Novel + Comic LIVE FIXED",
   "main": "server.js",
   "type": "commonjs",
   "engines": {
