@@ -19,11 +19,12 @@ header{position:sticky;top:0;z-index:99;display:flex;justify-content:space-betwe
 .paywall.on{display:flex}
 .pay-box{background:#15151a;border:1px solid #333;border-radius:24px;padding:24px;max-width:380px;width:100%;text-align:center}
 </style>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head><body>
 <header><div class="logo">Gen-Z <span>Novel</span> <span style="font-size:9px;background:#00ff88;color:#000;padding:2px 6px;border-radius:10px">v705 PRO FINAL CLOSED</span></div><a href="novels.html?v=705" class="top-btn">✕ Close</a></header>
 <div class="progress"><div class="progress-bar" id="bar"></div></div>
 <div class="reader-wrap"><div class="info-card"><img id="cover" src="https://picsum.photos/300/400"><div class="info-text"><h2 id="title">Loading v705...</h2><p id="author" style="font-size:12px;color:#888;margin-top:6px"></p><p id="desc" style="font-size:11px;color:#aaa;margin-top:8px"></p><span class="badge" id="badge">Waking LIVE v705...</span><div style="margin-top:10px"><button onclick="if(navigator.share)navigator.share({title:document.getElementById('title').innerText,url:location.href});else{alert('Link copied');}" style="padding:8px 14px;border-radius:99px;background:#1a1a1e;border:1px solid #222;color:#fff;font-size:11px">↗ Share</button></div></div></div><div class="content-box" id="content">⏳ Loading novel LIVE v705 + views...</div></div>
-<div id="paywall" class="paywall"><div class="pay-box"><div style="font-size:40px">💎</div><h2>Premium Novel LOCKED</h2><p id="payTitle" style="color:#888;font-size:13px"></p><h1 id="payPrice" style="color:#00ff88">₹49</h1><p id="payUpi" style="font-size:11px;color:#00ff88;background:#00ff8815;padding:6px;border-radius:8px"></p><p style="font-size:11px;color:#666">Money directly to author via UPI</p><button onclick="doPay()" style="width:100%;padding:14px;background:#00ff88;color:#000;border:none;border-radius:12px;font-weight:900;margin-top:12px">🔓 Pay via UPI & Unlock</button></div></div>
+<div id="paywall" class="paywall"><div class="pay-box"><div style="font-size:40px">💎</div><h2>Premium Novel LOCKED</h2><p id="payTitle" style="color:#888;font-size:13px"></p><h1 id="payPrice" style="color:#00ff88">₹49</h1><p id="payUpi" style="font-size:11px;color:#00ff88;background:#00ff8815;padding:6px;border-radius:8px"></p><p style="font-size:11px;color:#666">Secure Razorpay Payment ✅</p><button onclick="payNowRazorpay()" style="width:100%;padding:14px;background:#00ff88;color:#000;border:none;border-radius:12px;font-weight:900;margin-top:12px;cursor:pointer">🔓 Pay ₹ & Unlock Now</button><p style="font-size:10px;color:#555;margin-top:8px">Instant unlock</p></div></div>
 <script>
 const BASE="https://gen-z-visual-2.onrender.com";const API=BASE+"/api";let cur=null,cId=null,cReal=null;
 async function loadStory(){let p=new URLSearchParams(location.search);let id=p.get("id"),xml=p.get("xml");cId=id||xml;if(!cId){document.getElementById("title").innerText="No ID";return;}cReal=cId.replace("my_","");let book=null,src="";try{await fetch(BASE+"/",{cache:"no-store"})}catch{}
@@ -31,9 +32,25 @@ if(xml){try{let t=await fetch("data/novels.xml?v=705",{cache:"no-store"}).then(r
 if(!book&&id){try{let r=await fetch(API+"/novels/"+cReal,{cache:"no-store"});if(r.ok){book=await r.json();src="DIRECT LIVE ✅";}}catch{} if(!book){try{let r=await fetch(API+"/novels",{cache:"no-store"});if(r.ok){let l=await r.json();l=Array.isArray(l)?l:l.novels||[];book=l.find(x=>String(x._id)===String(cReal));if(book)src="LIVE LIST ✅";}}catch{}}}
 if(!book){document.getElementById("title").innerText="Not found";document.getElementById("content").innerText="ID "+cId+" not found";return;}cur=book;if(!book.isXML){try{fetch(API+"/novels/"+(book._id||cReal)+"/view",{method:"POST",cache:"no-store"})}catch{}}
 let acc=(book.access||'free').toLowerCase(),price=book.price||49;
-if(acc==='paid'){let u=null;try{u=JSON.parse(localStorage.getItem('user')||localStorage.getItem('genz_user')||'null')}catch{} let bought=localStorage.getItem('bought_'+cId)||localStorage.getItem('bought_'+cReal);let owner=false;if(u){let a=(u.email||'').toLowerCase(),c=(book.creatorEmail||'').toLowerCase();if(c&&a&&c===a)owner=true;if(a==='xhettriakash1@gmail.com')owner=true;} if(!bought&&!owner){document.getElementById("title").innerText=book.title;document.getElementById("author").innerText="by "+(book.author||'GenZ');document.getElementById("cover").src=book.cover||book.coverImage||'';document.getElementById("badge").innerText='💎 PAID ₹'+price+' LOCKED';document.getElementById("payTitle").innerText=book.title;document.getElementById("payPrice").innerText='₹'+price;document.getElementById("payUpi").innerText=(book.authorUpi||book.upiId||'')?'UPI: '+(book.authorUpi||book.upiId)+' ✅':'⚠️ UPI not set';document.getElementById("paywall").classList.add('on');document.getElementById("content").innerText='🔒 PAID novel locked';return;}}
+if(acc==='paid'){let u=null;try{u=JSON.parse(localStorage.getItem('user')||localStorage.getItem('genz_user')||'null')}catch{} let bought=localStorage.getItem('bought_'+cId)||localStorage.getItem('bought_'+cReal);let owner=false;if(u){let a=(u.email||'').toLowerCase(),c=(book.creatorEmail||'').toLowerCase();if(c&&a&&c===a)owner=true;if(a==='xhettriakash1@gmail.com')owner=true;} if(!bought&&!owner){document.getElementById("title").innerText=book.title;document.getElementById("author").innerText="by "+(book.author||'GenZ');document.getElementById("cover").src=book.cover||book.coverImage||'';document.getElementById("badge").innerText='💎 PAID ₹'+price+' LOCKED';document.getElementById("payTitle").innerText=book.title;document.getElementById("payPrice").innerText='₹'+price;document.getElementById("payUpi").innerText='Secure Razorpay • Instant Unlock';document.getElementById("paywall").classList.add('on');document.getElementById("content").innerText='🔒 PAID novel locked';return;}}
 document.getElementById("title").innerText=book.title;document.getElementById("author").innerText="by "+(book.author||'GenZ')+" • "+src+" • 👁️ "+((book.views||0)+1)+" views • "+(acc==='paid'?'PAID ₹'+price+' UNLOCKED':'FREE');document.getElementById("cover").src=book.cover||book.coverImage||'https://picsum.photos/400/600';document.getElementById("desc").innerText=book.description||"";document.getElementById("badge").innerText=src+" • 👁️ "+((book.views||0)+1)+" • "+(acc==='paid'?'PAID':'FREE');document.getElementById("content").innerText=book.content||book.description||"No content";window.addEventListener('scroll',()=>{let s=(scrollY/(document.body.scrollHeight-innerHeight))*100;document.getElementById('bar').style.width=s+'%';});}
-function doPay(){let upi=cur.authorUpi||cur.upiId||'';if(!upi.includes('@')){alert('UPI not set');return;}let amt=cur.price||49;location.href=`upi://pay?pa=${upi}&pn=GenZ&am=${amt}&cu=INR&tn=${encodeURIComponent(cur.title)}`;setTimeout(()=>{let t=prompt('Enter Transaction ID after payment');if(t&&t.length>=6){localStorage.setItem('bought_'+cId,'yes');localStorage.setItem('bought_'+cReal,'yes');location.reload();}},2500);}
+
+// RAZORPAY FINAL
+async function payNowRazorpay(){
+  try{
+    let price=cur.price||10; let title=cur.title||"Novel";
+    const res=await fetch(`${BASE}/api/create-order`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({amount:price,title})});
+    const data=await res.json(); if(!data.orderId){alert("Order failed: "+(data.error||"Unknown"));return;}
+    var options={key:data.key_id,amount:data.amount,currency:"INR",name:"Gen-Z Visual",description:title,order_id:data.orderId,
+      handler: async function(resp){
+        const v=await fetch(`${BASE}/api/verify-payment`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(resp)});
+        const out=await v.json();
+        if(out.ok){localStorage.setItem('bought_'+cId,'yes');localStorage.setItem('bought_'+cReal,'yes');localStorage.setItem('bought_my_'+cReal,'yes');alert("✅ Payment Success! Unlocked!");location.reload();}
+        else alert("❌ Verification failed");
+      },theme:{color:"#00ff88"}};
+    new Razorpay(options).open();
+  }catch(e){alert("Payment Error: "+e.message);}
+}
 loadStory();
 </script>
 </body></html>
