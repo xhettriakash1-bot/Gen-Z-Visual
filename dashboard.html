@@ -2,10 +2,10 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Studio PRO ULTRA - Gen-Z Visual v700</title>
+<title>Studio PRO ULTRA - Gen-Z Visual v701 FILE UPLOAD</title>
 <link rel="stylesheet" href="style.css?v=700">
 <script>
-// FIREWALL v700 + DOMAIN LOCK FIXED
+// FIREWALL v700 + DOMAIN LOCK FIXED - KEPT FROM YOUR FILE
 (function(){
   const ALLOWED=["kash1-bot.github.io","xhettriak.github.io","localhost","127.0.0.1"];
   const host=location.hostname;
@@ -27,4 +27,164 @@ window.addEventListener('DOMContentLoaded',()=>Firewall.protect());
 .switcher{display:flex;background:rgba(20,20,23,0.8);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.08);border-radius:99px;padding:5px;margin:20px 0;box-shadow:inset 0 1px 1px rgba(255,255,255,0.05)}
 .switcher div{flex:1;text-align:center;padding:13px;border-radius:99px;font-weight:800;cursor:pointer;color:#666;transition:0.4s cubic-bezier(0.175,0.885,0.32,1.275);font-size:14px}
 .switcher div.on{background:white;color:black;box-shadow:0 8px 20px rgba(255,255,255,0.25);transform:scale(1.02)}
-.card-ultra{background:rgba(20,20,23,0.85);backdrop-filter
+.card-ultra{background:rgba(20,20,23,0.85);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.07);border-radius:20px;padding:18px;margin:12px 0}
+.input-ultra{width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:14px;color:white;font-size:14px;outline:none;margin:8px 0;transition:0.3s}
+.input-ultra:focus{border-color:#ff00ff;background:rgba(255,0,255,0.06)}
+.file-box{background:rgba(255,255,255,0.03);border:1px dashed rgba(255,0,255,0.3);border-radius:16px;padding:14px;margin:10px 0}
+.btn-ultra{width:100%;padding:15px;border-radius:14px;border:none;font-weight:900;cursor:pointer;background:white;color:black;margin-top:12px;font-size:14px;letter-spacing:0.5px}
+</style>
+</head>
+<body>
+<div class="top-ultra">
+  <div style="font-weight:900;font-size:18px;letter-spacing:-1px">Gen-Z STUDIO <span style="color:#ff00ff">v701</span></div>
+  <div style="display:flex;gap:10px">
+    <a href="index.html" style="color:#888;text-decoration:none;font-size:13px;font-weight:700">Home</a>
+    <a href="novels.html" style="color:#888;text-decoration:none;font-size:13px">Novels</a>
+    <a href="comic.html" style="color:#888;text-decoration:none;font-size:13px">Comics</a>
+  </div>
+</div>
+
+<div class="studio">
+  <div class="welcome-card">
+    <div style="font-size:22px;font-weight:900;letter-spacing:-1px">Create <span style="color:#ff00ff">ULTRA</span></div>
+    <div style="color:#aaa;font-size:12px;margin-top:4px">v701 FILE UPLOAD - Upload from your phone gallery 📁</div>
+  </div>
+
+  <div class="switcher" id="switcher">
+    <div id="swNovel" class="on" onclick="setType('novel')">📚 Novel</div>
+    <div id="swComic" onclick="setType('comic')">🖼️ Comic</div>
+  </div>
+
+  <div class="card-ultra">
+    <input id="titleInput" class="input-ultra" placeholder="Title - e.g. Alone Part 2">
+    <input id="authorInput" class="input-ultra" placeholder="Author - GenZ Studio" value="GenZ Studio">
+    <textarea id="descInput" class="input-ultra" rows="3" placeholder="Description..."></textarea>
+
+    <!-- v701 FILE UPLOAD NEW -->
+    <div class="file-box">
+      <label style="font-size:11px;color:#ff00ff;font-weight:800">📁 COVER FROM DEVICE (NEW v701)</label>
+      <input type="file" id="coverFile" accept="image/*" style="width:100%;margin-top:8px;color:#999;font-size:11px">
+      <img id="coverPreview" style="width:100%;height:180px;object-fit:cover;border-radius:12px;margin-top:10px;display:none;border:1px solid #ffffff15">
+      <input id="coverInput" class="input-ultra" placeholder="Or paste Cover URL... (fallback)" style="margin-top:10px">
+    </div>
+
+    <div class="file-box" id="novelFileBox">
+      <label style="font-size:11px;color:#00ff88;font-weight:800">📄 NOVEL PDF FROM DEVICE (NEW)</label>
+      <input type="file" id="novelFile" accept=".pdf,.txt" style="width:100%;margin-top:8px;color:#999;font-size:11px">
+      <div id="novelFileName" style="font-size:11px;color:#00ff88;margin-top:6px"></div>
+      <input id="pdfInput" class="input-ultra" placeholder="Or paste PDF URL... (fallback)" style="margin-top:10px">
+    </div>
+
+    <div class="file-box" id="comicFileBox" style="display:none">
+      <label style="font-size:11px;color:#ff8800;font-weight:800">🖼️ COMIC PAGES - SELECT MULTIPLE (NEW)</label>
+      <input type="file" id="comicFiles" accept="image/*" multiple style="width:100%;margin-top:8px;color:#999;font-size:11px">
+      <div id="comicPreview" style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px"></div>
+      <textarea id="pagesInput" class="input-ultra" rows="2" placeholder="Or paste page URLs comma separated... (fallback)" style="margin-top:10px"></textarea>
+    </div>
+
+    <button class="btn-ultra" id="btnPublish">🚀 PUBLISH ULTRA v701</button>
+    <div id="status" style="text-align:center;font-size:11px;color:#666;margin-top:10px"></div>
+  </div>
+</div>
+
+<script>
+let curType = "novel";
+let uploadedCoverBase64 = null;
+let uploadedPagesBase64 = [];
+let uploadedNovelFileBase64 = null;
+
+function setType(t){
+  curType = t;
+  document.getElementById("swNovel").classList.toggle("on", t==="novel");
+  document.getElementById("swComic").classList.toggle("on", t==="comic");
+  document.getElementById("novelFileBox").style.display = t==="novel"? "block":"none";
+  document.getElementById("comicFileBox").style.display = t==="comic"? "block":"none";
+}
+
+// FILE LOGIC v701
+document.getElementById("coverFile").addEventListener("change", e=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  if(file.size > 3*1024*1024){ alert("Cover max 3MB please"); return; }
+  const r = new FileReader();
+  r.onload = ev=>{
+    uploadedCoverBase64 = ev.target.result;
+    const prev = document.getElementById("coverPreview");
+    prev.src = uploadedCoverBase64;
+    prev.style.display="block";
+  };
+  r.readAsDataURL(file);
+});
+
+document.getElementById("comicFiles").addEventListener("change", e=>{
+  uploadedPagesBase64 = [];
+  const files = [...e.target.files].slice(0,20);
+  const preview = document.getElementById("comicPreview");
+  preview.innerHTML="";
+  files.forEach(f=>{
+    if(f.size > 2*1024*1024) return;
+    const r = new FileReader();
+    r.onload = ev=>{
+      uploadedPagesBase64.push(ev.target.result);
+      preview.innerHTML += `<img src="${ev.target.result}" style="width:100%;height:70px;object-fit:cover;border-radius:8px;border:1px solid #ffffff15">`;
+    };
+    r.readAsDataURL(f);
+  });
+});
+
+document.getElementById("novelFile").addEventListener("change", e=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  document.getElementById("novelFileName").innerText = "Selected: " + file.name + " ("+(file.size/1024).toFixed(0)+"KB)";
+  const r = new FileReader();
+  r.onload = ev=>{ uploadedNovelFileBase64 = ev.target.result; };
+  r.readAsDataURL(file);
+});
+
+document.getElementById("btnPublish").onclick = async ()=>{
+  const title = document.getElementById("titleInput").value.trim();
+  const author = document.getElementById("authorInput").value.trim() || "GenZ Studio";
+  const desc = document.getElementById("descInput").value.trim() || "Gen-Z Visual Novel";
+  const coverUrlFallback = document.getElementById("coverInput").value.trim();
+  const pdfFallback = document.getElementById("pdfInput").value.trim();
+  const pagesFallback = document.getElementById("pagesInput").value.trim().split(",").map(s=>s.trim()).filter(Boolean);
+
+  if(!title){ alert("Title required"); return; }
+
+  const finalCover = uploadedCoverBase64 || coverUrlFallback || `https://picsum.photos/400/600?random=${Date.now()}`;
+  const finalPages = uploadedPagesBase64.length? uploadedPagesBase64 : pagesFallback;
+  const finalPdf = uploadedNovelFileBase64 || pdfFallback || "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf";
+
+  const status = document.getElementById("status");
+  status.innerText = "Publishing v701...";
+
+  // SAVE TO LOCAL + BACKEND LIKE BEFORE - BUT NOW WITH FILE SUPPORT
+  try{
+    if(curType==="novel"){
+      const key = "myNovels"; // same key your novels.html reads
+      let arr = JSON.parse(localStorage.getItem(key)||"[]");
+      arr.unshift({id:Date.now(), title, author, cover:finalCover, description:desc, pdf:finalPdf, genre:"File Upload", created:Date.now()});
+      localStorage.setItem(key, JSON.stringify(arr));
+
+      // Try LIVE backend too
+      try{ await fetch("https://gen-z-visual-2.onrender.com/api/novels",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({title,author,description:desc,cover:finalCover,pdfUrl:finalPdf})}) }catch(e){}
+
+      status.innerText="✅ Novel Published! Check novels.html";
+    }else{
+      const key = "myBooks"; // same key your comic.html reads
+      let arr = JSON.parse(localStorage.getItem(key)||"[]");
+      arr.unshift({id:Date.now(), title, author, cover:finalCover, description:desc, pages:finalPages, created:Date.now()});
+      localStorage.setItem(key, JSON.stringify(arr));
+
+      try{ await fetch("https://gen-z-visual-2.onrender.com/api/comics",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({title,author,description:desc,cover:finalCover,pages:finalPages})}) }catch(e){}
+
+      status.innerText="✅ Comic Published! Check comic.html - "+finalPages.length+" pages";
+    }
+    setTimeout(()=>location.href = curType==="novel"? "novels.html" : "comic.html", 1200);
+  }catch(err){
+    status.innerText="❌ "+err.message;
+  }
+};
+</script>
+</body>
+  </html>
