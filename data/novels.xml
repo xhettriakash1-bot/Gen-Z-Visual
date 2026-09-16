@@ -1,52 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<novels>
+<novels v="704.5">
   <novel>
-    <id>1</id>
+    <id>live_n101</id>
     <title>Alone - The Silent Echo</title>
     <author>GenZ Studio</author>
-    <cover>https://picsum.photos/400/600?random=21</cover>
-    <description>A boy lost in neon city, searching for meaning in silence. Gen-Z's first visual novel.</description>
-    <pdf>https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf</pdf>
     <genre>Drama</genre>
+    <cover>https://picsum.photos/400/600?random=21</cover>
+    <description>A boy lost in neon city, searching for meaning in silence. Gen-Z's first visual novel. v704.5 LIVE FALLBACK.</description>
+    <pdf>https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf</pdf>
+    <content>Chapter 1: The Silent Echo... This is demo content for v704.5. Replace with real novel content when publishing from Dashboard.</content>
+    <type>novel</type>
   </novel>
 
   <novel>
-    <id>2</id>
+    <id>live_n102</id>
     <title>City of Broken Hearts</title>
     <author>Akash Chettri</author>
-    <cover>https://picsum.photos/400/600?random=22</cover>
-    <description>Love, betrayal and neon nights. A story that hits like 2AM thoughts.</description>
-    <pdf>https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf</pdf>
     <genre>Romance</genre>
+    <cover>https://picsum.photos/400/600?random=22</cover>
+    <description>Love, betrayal and neon nights. A story that hits like 2AM thoughts. v704.5</description>
+    <pdf>https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf</pdf>
+    <content>Chapter 1: Broken Hearts... Demo content v704.5</content>
+    <type>novel</type>
   </novel>
 
   <novel>
-    <id>3</id>
-    <title>Your New Title</title>
-    <author>GenZ Author</author>
-    <cover>https://picsum.photos/400/600?random=23</cover>
-    <description>Your description - ULTRA v700 edition. Replace this with your real story description. This is now LIVE!</description>
-    <pdf>https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf</pdf>
-    <genre>Your Genre</genre>
-  </novel>
-
-  <novel>
-    <id>4</id>
-    <title>Firewall v700 - The Uprising</title>
-    <author>Gen-Z Visual Team</author>
-    <cover>https://picsum.photos/400/600?random=24</cover>
-    <description>When backend goes down, the firewall rises. The story of gen-z-visual-2 LIVE backend.</description>
-    <pdf>https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf</pdf>
+    <id>live_n103</id>
+    <title>Neon Dreams v704.5</title>
+    <author>Akash x Gen-Z</author>
     <genre>Tech Thriller</genre>
-  </novel>
-
-  <novel>
-    <id>5</id>
-    <title>Neon Dreams - ULTRA</title>
-    <author>kash1-bot</author>
-    <cover>https://picsum.photos/400/600?random=25</cover>
-    <description>Glass, blur, neon. The aesthetic that made Gen-Z Visual v700.</description>
+    <cover>https://picsum.photos/400/600?random=24</cover>
+    <description>When backend goes down, the firewall rises. The story of gen-z-visual-2 LIVE backend. v704.5 FALLBACK GUARANTEE.</description>
     <pdf>https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf</pdf>
-    <genre>Aesthetic</genre>
+    <content>Firewall v704.5 - The Uprising: When the API sleeps, the XML wakes. This ensures reader never sees empty page.</content>
+    <type>novel</type>
   </novel>
 </novels>
