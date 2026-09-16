@@ -26,11 +26,6 @@ header{position:sticky;top:0;z-index:99;display:flex;justify-content:space-betwe
 <div class="nav"><a href="index.html" class="active">🏠<br>Home</a><a href="novels.html">📚<br>Novels</a><a href="comic.html">💥<br>Comics</a><a href="dashboard.html">📝<br>Studio</a></div>
 <script>
 const API="https://gen-z-visual-2.onrender.com/api";
+let allItems=[];
 async function loadAll(){
- let grid=document.getElementById('grid'), status=document.getElementById('status');
- let items=[]; let liveN=[], liveC=[];
- try{ let r=await fetch(API+'/novels'); liveN=await r.json(); liveN=Array.isArray(liveN)?liveN:liveN.novels||[]; status.innerText='● LIVE ✅ '+liveN.length+' novels'; }catch(e){ status.innerText='⏳ LIVE waking... LOCAL OK'; }
- try{ let r=await fetch(API+'/comics'); liveC=await r.json(); liveC=Array.isArray(liveC)?liveC:liveC.comics||[]; status.innerText+=' | '+liveC.length+' comics'; }catch(e){}
- items=[...liveN.slice(0,10).map(x=>({title:x.title,cover:x.coverImage||x.cover,author:x.author,type:'novel',id:x._id,path:`read-novel.html?id=${x._id}`})),
-        ...liveC.slice(0,10).map(x=>({title:x.title,cover:x.coverImage||x.cover||x.pages?.[0],author:x.author,type:'comic',id:x._id,path:`read-comic.html?id=${x._id}`}))];
- try{ let myN=JSON.parse(localStorage
+ let grid=document.getElementById('grid'), status=document
