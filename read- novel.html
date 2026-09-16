@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Read Novel - Gen-Z Visual v704.5</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#07070a;color:#fff;font-family:system-ui,sans-serif}
+header{position:sticky;top:0;z-index:99;display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:rgba(17,17,17,0.9);backdrop-filter:blur(20px);border-bottom:1px solid #222}
+.logo{font-weight:900}.logo span{color:#00ff88}
+.top-btn{padding:8px 16px;border-radius:99px;background:#fff;color:#000;text-decoration:none;font-size:12px;font-weight:800}
+.reader-wrap{max-width:700px;margin:0 auto;padding:16px 16px 120px}
+.info-card{background:rgba(20,20,23,0.85);backdrop-filter:blur(25px);border:1px solid rgba(255,255,255,0.08);border-radius:28px;padding:20px;display:flex;gap:16px;margin-bottom:16px}
+.info-card img{width:100px;height:150px;border-radius:14px;object-fit:cover;border:1px solid #222}
+.info-text{flex:1}
+.info-text h2{font-size:22px;font-weight:900;margin:0;line-height:1.1}
+.badge{padding:4px 10px;border-radius:99px;background:#00ff8822;border:1px solid #00ff8840;color:#00ff88;font-size:10px;font-weight:800;display:inline-block;margin-top:8px}
+.content-box{background:rgba(20,20,23,0.8);border:1px solid #222;border-radius:24px;padding:20px;line-height:1.9;font-size:16px;white-space:pre-wrap;color:#ddd;min-height:200px;font-family:Georgia,serif}
+.progress{height:4px;background:#222;border-radius:99px;margin:12px 0;overflow:hidden;position:sticky;top:58px;z-index:10}
+.progress-bar{height:100%;background:linear-gradient(90deg,#00ff88,#00ccff);width:0%;transition:0.2s}
+.controls{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.ctrl{padding:8px 14px;border-radius:99px;background:#1a1a1e;border:1px solid #222;color:#fff;font-size:11px;font-weight:700;cursor:pointer}
+</style>
+</head><body>
+<header>
+  <div class="logo">Gen-Z <span>Novel</span> <span style="font-size:9px;background:#00ff88;color:#000;padding:2px 6px;border-radius:10px">v704.5</span></div>
+  <a href="novels.html?v=704.5" class="top-btn">✕ Close</a>
+</header>
+
+<div class="progress"><div class="progress-bar" id="bar"></div></div>
+
+<div class="reader-wrap">
+  <div class="info-card">
+    <img id="cover" src="https://picsum.photos/300/400?random=99" alt="">
+    <div class="info-text">
+      <h2 id="title">Loading novel...</h2>
+      <p id="author" style="font-size:12px;color:#888;margin-top:6px">by ...</p>
+      <p id="desc" style="font-size:11px;color:#aaa;margin-top:8px;line-height:1.4"></p>
+      <span class="badge" id="badge">🔍 Searching LIVE...</span>
+      <div class="controls">
+        <button class="ctrl" onclick="share()">↗ Share</button>
+        <button class="ctrl" onclick="toggleFS()">⛶ Fullscreen</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="content-box" id="content">Loading story...</div>
+
+  <p style="text-align:center;color:#444;font-size:10px;margin-top:20px">Gen-Z Visual v704.5 LIVE Reader | Backend: gen-z-visual-2.onrender.com</p>
+</div>
+
+<script>
+const API="https://gen-z-visual-2.onrender.com/api";
+let novelData=null;
+
+async function loadStory(){
+  let params=new URLSearchParams(location.search);
+  let novelId=params.get("id");
+  if(!novelId){ document.getElementById("title").innerText="No ID"; return; }
+
+  let realId=novelId.replace("my_",""); // handle my_ prefix from novels.html
+  let book=null, source="";
+
+  // 1. Try DEVICE (myNovels + myBooks)
+  try{
+    let myNovels=JSON.parse(localStorage.getItem("myNovels")||"[]");
+    let myBooks=JSON.parse(localStorage.getItem("myBooks")||"[]").filter(b=>!b.pages);
+    let all=[...myNovels,...myBooks];
+    book=all.find(x=>String(x.id||x._id)===String(realId) || String(x.id||x._id)===String(novelId));
+    if(book) source="DEVICE";
+  }catch(e){}
+
+  // 2. LIVE API - THIS FIXES READER ISSUE
+  if(!book){
+    try{
+      let res=await fetch(API+"/novels");
+      if(res.ok){
+        let list=await res.json(); list=Array.isArray(list)?list:list.novels||[];
+        book=list.find(x=>String(x._id)===String(realId) || String(x._id)===String(novelId) || String(x.id)===String(realId));
+        if(book) source="LIVE ✅";
+      }
+    }catch(e){ console.log("LIVE fail",e); }
+  }
+
+  if(!book){
+    document.getElementById("title").innerText="Novel not found";
+    document.getElementById("content").innerText=`ID ${novelId} not found on DEVICE nor LIVE.\n\n1. Publish from Studio with internet ON\n2. Check API: ${API}/novels\n3. Make sure Render is GREEN LIVE`;
+    document.getElementById("badge").innerText="❌ Not Found";
+    document.getElementById("badge").style.color="#ff4444";
+    document.getElementById("badge").style.borderColor="#ff444440";
+    return;
+  }
+
+  // Set data
+  novelData={
+    title: book.title||"Untitled",
+    author: book.author||book.creatorName||"Anonymous",
+    cover: book.cover||book.coverImage||book.coverUrl||`https://picsum.photos/400/600?random=${realId}`,
+    description: book.description||book.desc||"",
+    content: book.content||book.pdf||book.pdfUrl||book.description||"No content",
+    genre: book.genre||book.type||"NOVEL"
+  };
+
+  document.getElementById("title").innerText=novelData.title;
+  document.getElementById("author").innerText="by "+novelData.author+" • "+novelData.genre;
+  document.getElementById("desc").innerText=novelData.description;
+  document.getElementById("cover").src=novelData.cover;
+  document.getElementById("cover").onerror=function(){this.src='https://picsum.photos/400/600'};
+  document.getElementById("badge").innerText=source+" • "+novelData.genre;
+  document.getElementById("content").innerText=novelData.content;
+  document.title=novelData.title+" - Gen-Z Visual";
+  document.getElementById("bar").style.width="100%";
+  document.getElementById("bar").style.background="#00ff88";
+
+  // progress on scroll
+  window.addEventListener('scroll',()=>{
+    let scrolled=(window.scrollY/(document.body.scrollHeight-window.innerHeight))*100;
+    document.getElementById('bar').style.width=scrolled+'%';
+  });
+}
+
+function share(){
+  if(navigator.share && novelData) navigator.share({title:novelData.title,text:novelData.description,url:location.href});
+  else{ navigator.clipboard.writeText(location.href); alert("Link copied!"); }
+}
+function toggleFS(){
+  let el=document.getElementById("content");
+  if(el.requestFullscreen) el.requestFullscreen();
+}
+
+loadStory();
+</script>
+</body></html>
