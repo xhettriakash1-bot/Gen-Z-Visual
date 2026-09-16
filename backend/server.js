@@ -1,4 +1,4 @@
-// GEN-Z VISUAL - v700 FINAL BACKEND - FIXED FOR ALL FRONTENDS
+// GEN-Z VISUAL - v704.2 FINAL - NOVEL + COMIC + AUTH
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -17,9 +17,10 @@ app.disable('x-powered-by');
 const MONGO_URI = process.env.MONGO_URI || process.env.MONGODB_URI || "";
 console.log("MONGO_URI Check:", MONGO_URI? "FOUND ✅" : "NOT FOUND ❌");
 mongoose.connect(MONGO_URI, { dbName: "genzvisual" })
-.then(() => { console.log("✅ Mongo Connected v700 SUCCESS"); ensureAdmins(); })
-.catch(e => console.log("❌ Mongo Fail v700:", e.message));
+.then(() => { console.log("✅ Mongo v704.2 Connected"); ensureAdmins(); })
+.catch(e => console.log("❌ Mongo Fail:", e.message));
 
+// ===== SCHEMAS =====
 const userSchema = new mongoose.Schema({
   email: { type: String, unique: true, lowercase: true },
   password: String,
@@ -29,31 +30,30 @@ const userSchema = new mongoose.Schema({
 });
 const User = mongoose.models.User || mongoose.model('User', userSchema);
 
-// FLEXIBLE SCHEMA - accepts everything frontend sends
 const novelSchema = new mongoose.Schema({
-  title: String,
-  author: String,
-  genre: String,
-  description: String,
-  cover: String,
-  coverImage: String,
-  coverUrl: String,
-  content: String,
-  pdfLink: String,
-  type: String,
-  creatorEmail: String,
-  creatorName: String,
-  chapters: Array,
-  authorEmail: String,
+  title: String, author: String, genre: String,
+  description: String, cover: String, coverImage: String, coverUrl: String,
+  content: String, pdfLink: String, type: String,
+  creatorEmail: String, creatorName: String, chapters: Array, authorEmail: String,
 }, { strict: false, timestamps: true });
 const Novel = mongoose.models.Novel || mongoose.model('Novel', novelSchema);
 
+// NEW COMIC SCHEMA v704.2
+const comicSchema = new mongoose.Schema({
+  title: String, author: String, genre: String,
+  description: String, cover: String, coverImage: String, coverUrl: String,
+  pages: Array, // images array - base64 or URL
+  type: { type: String, default: 'comic' },
+  creatorEmail: String, creatorName: String,
+}, { strict: false, timestamps: true });
+const Comic = mongoose.models.Comic || mongoose.model('Comic', comicSchema);
+
 app.use(helmet({ contentSecurityPolicy: false, crossOriginEmbedderPolicy: false }));
 app.use(cors({ origin: true, credentials: true }));
-app.use(express.json({ limit: "15mb" }));
+app.use(express.json({ limit: "50mb" })); // increased for comic pages
 app.use(mongoSanitize());
 app.use(hpp());
-app.use('/api/', rateLimit({ windowMs: 15 * 60 * 1000, max: 500 }));
+app.use('/api/', rateLimit({ windowMs: 15 * 60 * 1000, max: 1000 }));
 
 const DEFAULT_ADMINS = [
   { email: "xhettriakash1@gmail.com", password: "Akash123", name: "Akash Main Admin" },
@@ -87,26 +87,27 @@ const isAdmin = (req, res, next) => {
 
 // HEALTH
 app.get('/api/health', (req, res) => res.json({
-  ok: true, v: "v700 FINAL FIXED", firewall: "Active",
+  ok: true, v: "v704.2 FINAL - NOVEL+COMIC", firewall: "Active",
   mongo: mongoose.connection.readyState === 1? "connected" : "disconnected",
   admins: DEFAULT_ADMINS.map(a => a.email),
-  endpoints: ["/api/login", "/api/auth/login", "/api/novels"]
+  node: process.version,
+  endpoints: ["/api/login", "/api/novels", "/api/comics", "/api/books"]
 }));
-app.get('/', (req, res) => res.send("🟢 v700 FINAL LIVE - All Endpoints Ready"));
+app.get('/', (req, res) => res.send("🟢 v704.2 LIVE - Novel + Comic Ready | Node "+process.version));
 
-// AUTH - FIXED: support BOTH routes
+// AUTH
 async function loginHandler(req, res) {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email: email.toLowerCase() });
-    if (!user) return res.status(401).json({ error: "User Not Found", message: "User Not Found" });
-    if (!(await bcrypt.compare(password, user.password))) return res.status(401).json({ error: "Wrong Password", message: "Wrong Password" });
+    if (!user) return res.status(401).json({ error: "User Not Found" });
+    if (!(await bcrypt.compare(password, user.password))) return res.status(401).json({ error: "Wrong Password" });
     const token = jwt.sign({ id: user._id, email: user.email, role: user.role }, JWT_SECRET, { expiresIn: "7d" });
     res.json({ success: true, token, user: { email: user.email, role: user.role, name: user.name, id: user._id } });
   } catch (e) { res.status(500).json({ error: e.message }); }
 }
 app.post('/api/login', loginHandler);
-app.post('/api/auth/login', loginHandler); // FIXED: added this!
+app.post('/api/auth/login', loginHandler);
 app.post('/api/auth/register', async (req, res) => {
   try {
     const { email, password, name, role } = req.body;
@@ -119,41 +120,22 @@ app.post('/api/auth/register', async (req, res) => {
     res.json({ success: true, msg: "Registered" });
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
-app.post('/api/register', (req, res) => { req.url = '/api/auth/register'; app.handle(req, res); });
 
 // ADMIN
-app.post('/api/admin/change-password', protect, isAdmin, async (req, res) => {
-  try {
-    const { oldPassword, newPassword } = req.body;
-    const user = await User.findById(req.user.id);
-    if (!(await bcrypt.compare(oldPassword, user.password))) return res.json({ ok: false, msg: "Old wrong" });
-    user.password = await bcrypt.hash(newPassword, 10);
-    await user.save();
-    res.json({ ok: true, msg: "Changed!" });
-  } catch (e) { res.json({ ok: false, msg: e.message }); }
-});
 app.get('/api/users', protect, isAdmin, async (req, res) => {
   res.json(await User.find().select('-password').sort({ createdAt: -1 }));
 });
 
-// NOVELS - FIXED: open for creator + admin
+// ===== NOVELS =====
 app.get('/api/novels', async (req, res) => {
-  let filter = {};
+  let filter = { type: { $ne: 'comic' } };
   if (req.query.email) filter.creatorEmail = req.query.email;
-  res.json(await Novel.find(filter).sort({ createdAt: -1 }));
-});
-app.get('/api/books', async (req, res) => {
-  res.json(await Novel.find().sort({ createdAt: -1 }));
+  // show both strict type=novel and old docs without type
+  const novels = await Novel.find({
+    $or: [{ type: 'novel' }, { type: { $exists: false } }, { type: '' }, filter]
+  }).sort({ createdAt: -1 }).limit(200);
+  res.json(novels);
 });
 app.post('/api/novels', protect, async (req, res) => {
   if (req.user.role!== 'admin' && req.user.role!== 'creator') return res.status(403).json({ error: "Creator only" });
-  const novel = await Novel.create(req.body);
-  res.json({ ok: true, novel, _id: novel._id });
-});
-app.post('/api/books', protect, async (req, res) => {
-  const novel = await Novel.create(req.body);
-  res.json({ ok: true, novel });
-});
-
-const PORT = process.env.PORT || 10000;
-app.listen(PORT, () => console.log(`✅ v700 FINAL FIXED LIVE on ${PORT} - BOTH login routes ready`));
+  const doc
