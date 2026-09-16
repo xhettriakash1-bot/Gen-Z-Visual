@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://akash1-bot.github.io/sitemap.xml
