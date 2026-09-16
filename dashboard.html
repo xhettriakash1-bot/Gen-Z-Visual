@@ -1,167 +1,62 @@
 <!DOCTYPE html><html><head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Studio v704.5 FIXED ALL</title>
-<style>body{background:#000;color:#fff;font-family:sans-serif;padding:0;margin:0}.top{background:#111;padding:14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #222;position:sticky;top:0;z-index:99}.card{background:#151515;border:1px solid #222;border-radius:16px;padding:14px;margin:12px}.input,textarea,select{width:100%;padding:12px;background:#0a0a0a;border:1px solid #333;border-radius:10px;color:#fff;margin:6px 0;box-sizing:border-box}.btn{width:100%;padding:12px;background:#fff;color:#000;border:none;border-radius:10px;font-weight:900;margin-top:8px;cursor:pointer}.btn-c{background:linear-gradient(135deg,#ff8800,#ff5500);color:#fff}.tab{display:inline-block;padding:10px 18px;border-radius:99px;border:1px solid #333;margin:4px;font-weight:800;cursor:pointer;font-size:13px;user-select:none}.tab.active{background:#fff;color:#000}.stat{display:inline-block;background:#1a1a1a;border:1px solid #222;border-radius:10px;padding:8px 14px;margin:4px;text-align:center;font-size:12px}.prev img{width:56px;height:76px;object-fit:cover;border-radius:8px;border:1px solid #333;margin:4px}
+<title>Dashboard v704.5 FINAL - FIXED ALL</title>
+<style>body{background:#000;color:#fff;font-family:sans-serif;padding:0;margin:0}.top{background:#111;padding:14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #222;position:sticky;top:0;z-index:99}.card{background:#151515;border:1px solid #222;border-radius:16px;padding:14px;margin:12px}.input,textarea{width:100%;padding:12px;background:#0a0a0a;border:1px solid #333;border-radius:10px;color:#fff;margin:6px 0;box-sizing:border-box}.btn{width:100%;padding:12px;background:#fff;color:#000;border:none;border-radius:10px;font-weight:900;margin-top:8px;cursor:pointer}.btn-c{background:linear-gradient(135deg,#ff8800,#ff5500);color:#fff}.tab{display:inline-block;padding:10px 18px;border-radius:99px;border:1px solid #333;margin:4px;font-weight:800;cursor:pointer;font-size:13px}.tab.active{background:#fff;color:#000}.prev img{width:56px;height:76px;object-fit:cover;border-radius:8px;border:1px solid #333;margin:4px}
 </style>
 </head><body>
 <div class="top">
-<div style="font-weight:900">Gen-Z <span style="color:#ff8800">Studio v704.5</span></div>
-<div><a href="index.html" style="color:#888;text-decoration:none;font-size:12px;margin-right:8px">Home</a><a href="comic.html?v=704" style="color:#ff8800;text-decoration:none;font-size:12px;font-weight:800">Comics</a></div>
+<div style="font-weight:900">Gen-Z <span style="color:#ff8800">Dashboard v704.5</span></div>
+<div><a href="index.html?v=704.5" style="color:#888;text-decoration:none;font-size:12px;margin-right:8px">Home</a><a href="admin.html?v=704.5" style="color:#00ff88;text-decoration:none;font-size:12px;font-weight:800">Admin</a></div>
 </div>
 <div style="max-width:600px;margin:0 auto;padding:12px">
 <div class="card" style="background:#1a001a">
 <b id="adminStatus">👤 Guest Mode</b><br>
-<small style="color:#888" id="loginInfo">Login with Akash123 to publish LIVE</small><br><br>
-<div style="display:flex;gap:8px"><button class="btn" style="background:#ff00ff;color:#fff;margin:0" id="loginBtn" onclick="realLogin()">🔐 ADMIN LOGIN (Real)</button><button class="btn" style="background:#333;color:#fff;margin:0;display:none" id="logoutBtn" onclick="logout()">Logout</button></div>
+<small style="color:#888" id="loginInfo">Login to publish LIVE for ALL</small><br><br>
+<div style="display:flex;gap:8px"><button class="btn" style="background:#ff00ff;color:#fff;margin:0" id="loginBtn" onclick="realLogin()">🔐 ADMIN LOGIN</button><button class="btn" style="background:#333;color:#fff;margin:0;display:none" id="logoutBtn" onclick="logout()">Logout</button></div>
 <div id="authStatus" style="font-size:11px;margin-top:8px;color:#ff8800"></div>
 </div>
 <div class="card" style="text-align:center">
-<div class="tab active" id="tN" onclick="switchTab('novel')">📚 Publish Novel</div>
-<div class="tab" id="tC" onclick="switchTab('comic')">💥 Publish Comic</div>
+<div class="tab active" id="tN" onclick="switchTab('novel')">📚 Novel</div>
+<div class="tab" id="tC" onclick="switchTab('comic')">💥 Comic</div>
 </div>
 <div id="novelBox" class="card">
-<b>📚 Publish Novel</b>
+<b>📚 Publish Novel LIVE</b>
 <input id="nTitle" class="input" placeholder="Novel Title *">
-<input id="nAuthor" class="input" placeholder="Author">
-<input id="nCover" class="input" placeholder="Cover URL (optional - will use random if empty)">
+<input id="nAuthor" class="input" placeholder="Author" value="Akash">
+<input id="nCover" class="input" placeholder="Cover URL https://...">
 <textarea id="nDesc" rows="3" placeholder="Description..."></textarea>
 <textarea id="nContent" rows="6" placeholder="Chapter 1 content..."></textarea>
 <button class="btn" onclick="publishNovel()">📚 Publish Novel</button>
 <div id="nStat" style="font-size:11px;color:#888;margin-top:6px"></div>
 </div>
 <div id="comicBox" class="card" style="display:none">
-<b>💥 Publish Comic</b>
+<b>💥 Publish Comic LIVE</b>
 <input id="cTitle" class="input" placeholder="Comic Title *">
-<input id="cAuthor" class="input" placeholder="Author">
-<input id="cCover" class="input" placeholder="Cover URL (optional - uses page 1)">
+<input id="cAuthor" class="input" placeholder="Author" value="Akash">
+<input id="cCover" class="input" placeholder="Cover URL (optional)">
 <textarea id="cDesc" rows="2" placeholder="Description..."></textarea>
 <input type="file" id="cPages" multiple accept="image/*" onchange="prev(event)" style="color:#fff;width:100%">
 <div class="prev" id="preview"></div>
 <div id="sizeInfo" style="font-size:11px;color:#ff8800;margin:6px 0"></div>
 <button class="btn btn-c" onclick="publishComic()">💥 Publish Comic (Compressed)</button>
 <div id="cStat" style="font-size:11px;color:#888;margin-top:6px"></div>
-<small style="color:#666;display:block;margin-top:6px">Auto compress to 600px | Max 15 pages | 0.6 quality</small>
+<small style="color:#666">Auto 600px | Max 8 pages | 0.6 quality | Max 3.5MB</small>
 </div>
-<div class="card"><b>All Books (Local Device)</b><div id="list"></div></div>
+<div class="card"><b>Local Books</b><div id="list"></div></div>
 </div>
 <script>
 const API="https://gen-z-visual-2.onrender.com/api";
 let comicPages=[], token=localStorage.getItem('token')||localStorage.getItem('genz_token')||'';
 let user=JSON.parse(localStorage.getItem('user')||localStorage.getItem('genz_user')||'null');
-
-function switchTab(t){
- console.log('switch to',t);
- document.getElementById('novelBox').style.display=t==='novel'?'block':'none';
- document.getElementById('comicBox').style.display=t==='comic'?'block':'none';
- document.getElementById('tN').className=t==='novel'?'tab active':'tab';
- document.getElementById('tC').className=t==='comic'?'tab active':'tab';
- localStorage.setItem('lastTab',t);
- history.replaceState(null,'','?type='+t);
-}
-(function init(){
- const p=new URLSearchParams(location.search);
- switchTab(p.get('type')||localStorage.getItem('lastTab')||'novel');
- updateLoginUI();
- loadList();
-})();
-
-function updateLoginUI(){
- token=localStorage.getItem('token')||localStorage.getItem('genz_token')||'';
- user=JSON.parse(localStorage.getItem('user')||localStorage.getItem('genz_user')||'null');
- if(token && user){
-  document.getElementById('adminStatus').innerText='✅ '+user.email+' ('+user.role+')';
-  document.getElementById('loginInfo').innerText='LIVE Publish Enabled';
-  document.getElementById('loginBtn').style.display='none';
-  document.getElementById('logoutBtn').style.display='block';
-  document.getElementById('authStatus').innerText='Token OK - '+token.substring(0,20)+'...';
- } else {
-  document.getElementById('adminStatus').innerText='👤 Guest Mode - Local Only';
-  document.getElementById('loginInfo').innerText='Login to enable LIVE';
-  document.getElementById('loginBtn').style.display='block';
-  document.getElementById('logoutBtn').style.display='none';
- }
-}
-async function realLogin(){
- const email=prompt('Email:','xhettriakash1@gmail.com');
- const pass=prompt('Password:','Akash123');
- if(!email||!pass) return;
- document.getElementById('authStatus').innerText='Logging...';
- try{
-  const r=await fetch(API+'/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:pass})});
-  const d=await r.json();
-  if(r.ok && d.token){
-   localStorage.setItem('token',d.token); localStorage.setItem('genz_token',d.token);
-   localStorage.setItem('user',JSON.stringify(d.user)); localStorage.setItem('genz_user',JSON.stringify(d.user));
-   localStorage.setItem('isAdmin','true');
-   updateLoginUI(); alert('✅ Login OK: '+d.user.email);
-  } else alert('❌ Login fail: '+(d.error||JSON.stringify(d)));
- } catch(e){ document.getElementById('authStatus').innerText='❌ '+e.message+' - Render may be sleeping, wait 30 sec'; }
-}
-function logout(){
- localStorage.removeItem('token'); localStorage.removeItem('genz_token'); localStorage.removeItem('user'); localStorage.removeItem('genz_user'); localStorage.removeItem('isAdmin');
- token=''; updateLoginUI();
-}
-function prev(e){
- comicPages=[]; document.getElementById('preview').innerHTML=''; document.getElementById('sizeInfo').innerText='Compressing...';
- let files=[...e.target.files].slice(0,15); let done=0;
- files.forEach(f=>{
-  let r=new FileReader();
-  r.onload=ev=>{
-   let img=new Image(); img.onload=()=>{
-    let c=document.createElement('canvas'); let max=600; let ratio=Math.min(max/img.width,max/img.height,1);
-    c.width=img.width*ratio; c.height=img.height*ratio;
-    c.getContext('2d').drawImage(img,0,0,c.width,c.height);
-    let comp=c.toDataURL('image/jpeg',0.6);
-    comicPages.push(comp);
-    let im=document.createElement('img'); im.src=comp; document.getElementById('preview').appendChild(im);
-    done++; if(done===files.length){ document.getElementById('sizeInfo').innerText=done+' pages | ~'+Math.round(JSON.stringify(comicPages).length/1024)+'KB'; }
-   }; img.src=ev.target.result;
-  }; r.readAsDataURL(f);
- });
-}
-function loadList(){
- let a=JSON.parse(localStorage.getItem('myBooks')||'[]');
- let b=JSON.parse(localStorage.getItem('myComics')||'[]');
- let all=[...a,...b].slice(0,20);
- document.getElementById('list').innerHTML=all.map(x=>`<div style="display:flex;justify-content:space-between;padding:6px;border-bottom:1px solid #222;font-size:12px"><span>${x.title} ${x.pages?'(Comic '+x.pages.length+'p)':'(Novel)'}</span><span onclick="delItem(${x.id})" style="color:#f55;cursor:pointer">Del</span></div>`).join('')||'<small style="color:#666">No local books</small>';
-}
-function delItem(id){
- let a=JSON.parse(localStorage.getItem('myBooks')||'[]').filter(x=>x.id!=id); localStorage.setItem('myBooks',JSON.stringify(a));
- let b=JSON.parse(localStorage.getItem('myComics')||'[]').filter(x=>x.id!=id); localStorage.setItem('myComics',JSON.stringify(b)); loadList();
-}
-async function publishNovel(){
- let t=document.getElementById('nTitle').value.trim(); if(!t){alert('Title?');return;}
- let item={id:Date.now(),title:t,author:document.getElementById('nAuthor').value||'You',cover:document.getElementById('nCover').value||`https://picsum.photos/400/600?random=${Date.now()}`,description:document.getElementById('nDesc').value,content:document.getElementById('nContent').value,createdAt:Date.now()};
- // local
- let a=JSON.parse(localStorage.getItem('myNovels')||'[]'); a.unshift(item); localStorage.setItem('myNovels',JSON.stringify(a));
- let b=JSON.parse(localStorage.getItem('myBooks')||'[]'); b.unshift(item); localStorage.setItem('myBooks',JSON.stringify(b));
- document.getElementById('nStat').innerText='Saved locally... trying LIVE...';
- // live
- try{
-  if(token){
-   const r=await fetch(API+'/novels',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({...item,type:'novel'})});
-   const d=await r.json();
-   if(r.ok) document.getElementById('nStat').innerText='✅ Published LIVE + LOCAL'; else document.getElementById('nStat').innerText='Local OK, LIVE fail: '+(d.error||'');
-  } else document.getElementById('nStat').innerText='✅ Published LOCAL (Login for LIVE)';
- }catch(e){ document.getElementById('nStat').innerText='✅ Local OK, LIVE offline: '+e.message; }
- loadList();
-}
-async function publishComic(){
- let t=document.getElementById('cTitle').value.trim(); if(!t){alert('Title?');return;}
- if(!comicPages.length){alert('Select pages');return;}
- let item={id:Date.now(),title:t,author:document.getElementById('cAuthor').value||'You',cover:document.getElementById('cCover').value||comicPages[0],description:document.getElementById('cDesc').value,pages:comicPages,createdAt:Date.now()};
- let a=JSON.parse(localStorage.getItem('myBooks')||'[]'); a.unshift(item); localStorage.setItem('myBooks',JSON.stringify(a));
- let b=JSON.parse(localStorage.getItem('myComics')||'[]'); b.unshift(item); localStorage.setItem('myComics',JSON.stringify(b));
- document.getElementById('cStat').innerText='Saved locally... trying LIVE '+comicPages.length+' pages...';
- try{
-  if(token){
-   const r=await fetch(API+'/comics',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({...item,type:'comic'})});
-   const d=await r.json();
-   if(r.ok) document.getElementById('cStat').innerText='✅ Comic LIVE + LOCAL'; else document.getElementById('cStat').innerText='Local OK, LIVE fail: '+(d.error||JSON.stringify(d));
-  } else document.getElementById('cStat').innerText='✅ Comic LOCAL (Login for LIVE) - Go comic.html to see';
- }catch(e){ document.getElementById('cStat').innerText='✅ Local OK, LIVE offline: '+e.message; }
- loadList();
- if(comicPages.length) setTimeout(()=>location.href='comic.html?v=704.5',800);
-}
+function switchTab(t){ document.getElementById('novelBox').style.display=t==='novel'?'block':'none'; document.getElementById('comicBox').style.display=t==='comic'?'block':'none'; document.getElementById('tN').className=t==='novel'?'tab active':'tab'; document.getElementById('tC').className=t==='comic'?'tab active':'tab'; localStorage.setItem('lastTab',t); }
+(function(){ switchTab(new URLSearchParams(location.search).get('type')||localStorage.getItem('lastTab')||'novel'); updateLoginUI(); loadList(); })();
+function updateLoginUI(){ token=localStorage.getItem('token')||localStorage.getItem('genz_token')||''; user=JSON.parse(localStorage.getItem('user')||localStorage.getItem('genz_user')||'null'); if(token&&user){ document.getElementById('adminStatus').innerText='✅ '+user.email; document.getElementById('loginInfo').innerText='LIVE Enabled'; document.getElementById('loginBtn').style.display='none'; document.getElementById('logoutBtn').style.display='block'; } else { document.getElementById('adminStatus').innerText='👤 Guest Mode'; document.getElementById('loginInfo').innerText='Login for LIVE'; document.getElementById('loginBtn').style.display='block'; document.getElementById('logoutBtn').style.display='none'; } }
+async function realLogin(){ const email=prompt('Email:','xhettriakash1@gmail.com'); const pass=prompt('Password:','Akash123'); if(!email||!pass) return; document.getElementById('authStatus').innerText='Logging...'; for(let url of [API+'/auth/login',API+'/login']){ try{ const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:pass})}); const d=await r.json(); if(r.ok&&d.token){ localStorage.setItem('token',d.token); localStorage.setItem('genz_token',d.token); localStorage.setItem('user',JSON.stringify(d.user)); localStorage.setItem('genz_user',JSON.stringify(d.user)); localStorage.setItem('email',d.user.email); localStorage.setItem('isAdmin','true'); updateLoginUI(); alert('✅ Login OK'); return; } }catch(e){} } document.getElementById('authStatus').innerText='❌ Fail - Render sleeping 30s'; }
+function logout(){ localStorage.clear(); updateLoginUI(); }
+function prev(e){ comicPages=[]; document.getElementById('preview').innerHTML=''; document.getElementById('sizeInfo').innerText='Compressing...'; let files=[...e.target.files].slice(0,8); let done=0; files.forEach(f=>{ let r=new FileReader(); r.onload=ev=>{ let img=new Image(); img.onload=()=>{ let c=document.createElement('canvas'); let max=600; let ratio=Math.min(max/img.width,max/img.height,1); c.width=img.width*ratio; c.height=img.height*ratio; c.getContext('2d').drawImage(img,0,0,c.width,c.height); let comp=c.toDataURL('image/jpeg',0.6); comicPages.push(comp); let im=document.createElement('img'); im.src=comp; document.getElementById('preview').appendChild(im); done++; if(done===files.length) document.getElementById('sizeInfo').innerText=done+' pages | '+Math.round(JSON.stringify(comicPages).length/1024)+'KB'; }; img.src=ev.target.result; }; r.readAsDataURL(f); }); }
+function loadList(){ let a=JSON.parse(localStorage.getItem('myBooks')||'[]'); let b=JSON.parse(localStorage.getItem('myComics')||'[]'); let all=[...a,...b].slice(0,20); document.getElementById('list').innerHTML=all.map(x=>`<div style="display:flex;justify-content:space-between;padding:6px;border-bottom:1px solid #222;font-size:12px"><span>${x.title}</span><span onclick="delItem(${x.id})" style="color:#f55">Del</span></div>`).join('')||'No books'; }
+function delItem(id){ let a=JSON.parse(localStorage.getItem('myBooks')||'[]').filter(x=>x.id!=id); localStorage.setItem('myBooks',JSON.stringify(a)); let b=JSON.parse(localStorage.getItem('myComics')||'[]').filter(x=>x.id!=id); localStorage.setItem('myComics',JSON.stringify(b)); loadList(); }
+async function publishNovel(){ let t=document.getElementById('nTitle').value.trim(); if(!t){alert('Title?');return;} let item={id:Date.now(),title:t,author:document.getElementById('nAuthor').value||'You',cover:document.getElementById('nCover').value||`https://picsum.photos/400/600?random=${Date.now()}`,description:document.getElementById('nDesc').value,content:document.getElementById('nContent').value,createdAt:Date.now(),creatorEmail:localStorage.getItem('email')||user?.email}; let a=JSON.parse(localStorage.getItem('myNovels')||'[]'); a.unshift(item); localStorage.setItem('myNovels',JSON.stringify(a)); let b=JSON.parse(localStorage.getItem('myBooks')||'[]'); b.unshift(item); localStorage.setItem('myBooks',JSON.stringify(b)); document.getElementById('nStat').innerText='Trying LIVE...'; try{ if(token){ const r=await fetch(API+'/novels',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify(item)}); document.getElementById('nStat').innerText=r.ok?'✅ LIVE + LOCAL':'Local OK, LIVE fail'; } else document.getElementById('nStat').innerText='✅ LOCAL (Login for LIVE)'; }catch(e){ document.getElementById('nStat').innerText='✅ LOCAL'; } loadList(); }
+async function publishComic(){ let t=document.getElementById('cTitle').value.trim(); if(!t){alert('Title?');return;} if(!comicPages.length){alert('Select pages');return;} let kb=Math.round(JSON.stringify(comicPages).length/1024); if(kb>3500){ document.getElementById('cStat').innerText='Too big '+kb+'KB, use 5 pages'; return; } let item={id:Date.now(),title:t,author:document.getElementById('cAuthor').value||'You',cover:document.getElementById('cCover').value||comicPages[0],description:document.getElementById('cDesc').value,pages:comicPages,createdAt:Date.now(),creatorEmail:localStorage.getItem('email')||user?.email}; let b=JSON.parse(localStorage.getItem('myComics')||'[]'); b.unshift(item); localStorage.setItem('myComics',JSON.stringify(b)); let a=JSON.parse(localStorage.getItem('myBooks')||'[]'); a.unshift(item); localStorage.setItem('myBooks',JSON.stringify(a)); document.getElementById('cStat').innerText='Trying LIVE...'; try{ if(token){ const r=await fetch(API+'/comics',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify(item)}); document.getElementById('cStat').innerText=r.ok?'✅ Comic LIVE + LOCAL':'Local OK, LIVE fail'; } else document.getElementById('cStat').innerText='✅ LOCAL'; }catch(e){ document.getElementById('cStat').innerText='✅ LOCAL'; } loadList(); }
 </script>
 </body></html>
