@@ -1,15 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<novels v="704.5">
+<novels v="705.0" note="NEVER EMPTY FALLBACK - v705 PRO DYNAMIC + PAID">
   <novel>
     <id>live_n101</id>
     <title>Alone - The Silent Echo</title>
     <author>GenZ Studio</author>
     <genre>Drama</genre>
     <cover>https://picsum.photos/400/600?random=21</cover>
-    <description>A boy lost in neon city, searching for meaning in silence. Gen-Z's first visual novel. v704.5 LIVE FALLBACK.</description>
-    <pdf>https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf</pdf>
-    <content>Chapter 1: The Silent Echo... This is demo content for v704.5. Replace with real novel content when publishing from Dashboard.</content>
+    <description>v705 PRO: A boy lost in neon city, searching for meaning in silence. Gen-Z's first visual novel. Fallback when MongoDB wakes.</description>
+    <content>Chapter 1: The Silent Echo
+
+The city never slept, but I did — in pieces. Neon lights flickered like my thoughts, broken and bright.
+
+This is v705 PRO DYNAMIC demo content. When you publish from Dashboard, this XML is backup. Readers never see empty page.
+
+Gen-Z Visual is now with VIEWS tracking + PAID support. If you set novel as PAID, server checks UPI before publish.
+
+Welcome to v705.</content>
     <type>novel</type>
+    <access>free</access>
   </novel>
 
   <novel>
@@ -18,21 +26,59 @@
     <author>Akash Chettri</author>
     <genre>Romance</genre>
     <cover>https://picsum.photos/400/600?random=22</cover>
-    <description>Love, betrayal and neon nights. A story that hits like 2AM thoughts. v704.5</description>
-    <pdf>https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf</pdf>
-    <content>Chapter 1: Broken Hearts... Demo content v704.5</content>
+    <description>v705 PRO: Love, betrayal and neon nights. A story that hits like 2AM thoughts.</description>
+    <content>Chapter 1: Broken Hearts at 2AM
+
+She said city lights are beautiful. I said they are lonely.
+
+v705 PRO content - full dynamic novel support with UPI payment integration.
+
+If this novel is PAID, backend blocks read until payment.
+
+Demo - Replace with real when you publish LIVE.</content>
     <type>novel</type>
+    <access>free</access>
   </novel>
 
   <novel>
     <id>live_n103</id>
-    <title>Neon Dreams v704.5</title>
+    <title>Neon Dreams v705 PRO</title>
     <author>Akash x Gen-Z</author>
     <genre>Tech Thriller</genre>
     <cover>https://picsum.photos/400/600?random=24</cover>
-    <description>When backend goes down, the firewall rises. The story of gen-z-visual-2 LIVE backend. v704.5 FALLBACK GUARANTEE.</description>
-    <pdf>https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf</pdf>
-    <content>Firewall v704.5 - The Uprising: When the API sleeps, the XML wakes. This ensures reader never sees empty page.</content>
+    <description>v705 PRO DYNAMIC: When backend sleeps, XML wakes. Now with PAID + VIEWS + SLUG. NEVER EMPTY guarantee.</description>
+    <content>Chapter 1: Firewall - The Uprising
+
+v704.7 had firewall that cleaned every 5 min. v705 PRO cleans every 30 sec + tracks views.
+
+This novel ensures Gen-Z Visual never shows "No novels yet" - always 3+ fallback stories.
+
+Backend: gen-z-visual-2.onrender.com
+Version: v705 PRO DYNAMIC
+Features: UPI, PAID/FREE, VIEWS, SLUG, Rate Limit Advance
+
+This is story of backend that never sleeps.</content>
     <type>novel</type>
+    <access>free</access>
+  </novel>
+
+  <novel>
+    <id>live_n104</id>
+    <title>Quantum Love - GenZ 2026</title>
+    <author>GenZ Studio</author>
+    <genre>Sci-Fi Romance</genre>
+    <cover>https://picsum.photos/400/600?random=25</cover>
+    <description>NEW v705: Sci-fi love in quantum city. Added to make NEVER EMPTY 4+ stories guarantee!</description>
+    <content>Chapter 1: Quantum Entanglement
+
+We were two particles, entangled across neon timeline.
+
+v705 PRO NEW story - added for extra NEVER EMPTY safety. Now you have 4 novels + 4 comics = 8 total fallback minimum.
+
+No reader will ever see empty page.
+
+This is Gen-Z Visual v705 promise.</content>
+    <type>novel</type>
+    <access>free</access>
   </novel>
 </novels>
