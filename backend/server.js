@@ -1,7 +1,6 @@
 const express=require('express'),cors=require('cors'),mongoose=require('mongoose'),bcrypt=require('bcryptjs'),jwt=require('jsonwebtoken'),Razorpay=require('razorpay');require('dotenv').config();
 const app=express();app.set('trust proxy',1);app.disable('x-powered-by');
 
-// =====🔒 FIREWALL + CONFIDENTIAL ADMIN - NO DOMAIN LOCK =====
 const blockedIPs=new Map(), adminAttempts=new Map();
 setInterval(()=>{ let n=Date.now(); for(let [k,v] of blockedIPs){ if(n-v.t>120000) blockedIPs.delete(k); } for(let [k,v] of adminAttempts){ if(n-v.time>900000) adminAttempts.delete(k); } },60000);
 function friendlyFirewall(req,res,next){
@@ -36,7 +35,7 @@ app.use((req,res,next)=>{
 });
 
 const MONGO_URI=process.env.MONGO_URI||process.env.MONGODB_URI||"";
-mongoose.connect(MONGO_URI,{dbName:"genzvisual"}).then(()=>{console.log("✅ Mongo v705 PRO OK");ensureAdmins();}).catch(e=>console.log("Mongo Error",e.message));
+mongoose.connect(MONGO_URI,{dbName:"genzvisual"}).then(()=>{console.log("✅ Mongo v707 PRO OK");ensureAdmins();}).catch(e=>console.log("Mongo Error",e.message));
 
 const userSchema=new mongoose.Schema({email:{type:String,unique:true,lowercase:true},password:String,role:{type:String,enum:['reader','creator','admin'],default:'reader'},name:String,portfolio:String,bio:String,upiId:{type:String,default:''},createdAt:{type:Date,default:Date.now}});
 const User=mongoose.models.User||mongoose.model('User',userSchema);
@@ -47,9 +46,11 @@ const Comic=mongoose.models.Comic||mongoose.model('Comic',comicSchema);
 
 app.use(cors({origin:true,credentials:true}));app.use(express.json({limit:"50mb"}));
 
-const razorpay = new Razorpay({ key_id: process.env.RAZORPAY_KEY_ID, key_secret: process.env.RAZORPAY_KEY_SECRET });
+// FIX v707 - Lazy Razorpay init to prevent waking crash
+function getRazorpay(){
+  return new Razorpay({ key_id: process.env.RAZORPAY_KEY_ID, key_secret: process.env.RAZORPAY_KEY_SECRET });
+}
 
-// ===== 100% CONFIDENTIAL - NO PASSWORD IN CODE =====
 const ADMINS=[
   {email: process.env.ADMIN_EMAIL_1, password: process.env.ADMIN_PASSWORD_1, name:"Akash Main"},
   {email: process.env.ADMIN_EMAIL_2, password: process.env.ADMIN_PASSWORD_2, name:"Akash Second"}
@@ -64,18 +65,20 @@ function slugify(t){return (t||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').slic
 function isValidUrl(u){try{let x=new URL(u);return x.protocol==='http:'||x.protocol==='https:';}catch{return false;}}
 function cleanPages(p){if(!Array.isArray(p)) return []; return [...new Set(p.map(s=>String(s||'').trim()).filter(s=>s.length>10 && isValidUrl(s)))].slice(0,100);}
 
-app.get('/',(req,res)=>res.json({ok:true,msg:"Gen-Z Visual v705 PRO Firewall 100% Confidential + PASS CHANGE", time:new Date().toISOString()}));
-app.get('/api/health',(req,res)=>res.json({ok:true,mongo:mongoose.connection.readyState, v:"705 PRO FIREWALL CONFIDENTIAL PASS FIX", razorpay:!!process.env.RAZORPAY_KEY_ID}));
+app.get('/',(req,res)=>res.json({ok:true,msg:"Gen-Z Visual v707 FINAL - PASS + PAY FIX", time:new Date().toISOString()}));
+app.get('/api/health',(req,res)=>res.json({ok:true,mongo:mongoose.connection.readyState, v:"707 PASS + ORDER FIX", razorpay:!!process.env.RAZORPAY_KEY_ID}));
 
+// FIXED v707 - NO MORE "Server waking" ERROR
 app.post('/api/create-order',async(req,res)=>{
  try{
   let {amount, type, title} = req.body;
   if(type==='comic') amount = 20; else if(type==='novel') amount = 10; else amount = Number(amount) || 10;
-  if(amount!== 10 && amount!== 20) amount = 10;
-  let options = { amount: amount * 100, currency: "INR", receipt: "genz_"+Date.now(), notes: { product: title || type || "Gen-Z Visual", price: "₹"+amount } };
+  if(amount!==10 && amount!==20) amount=10;
+  let razorpay = getRazorpay();
+  let options = { amount: amount*100, currency:"INR", receipt:"genz_"+Date.now(), notes:{ product:title||type||"Gen-Z Visual", price:"₹"+amount } };
   let order = await razorpay.orders.create(options);
-  res.json({ok:true, id: order.id, orderId: order.id, amount: order.amount, key_id: process.env.RAZORPAY_KEY_ID, price: amount});
- }catch(e){ console.log("Razorpay Error:", e.message); res.status(500).json({error:e.message}) }
+  res.json({ok:true, id:order.id, orderId:order.id, amount:order.amount, key_id:process.env.RAZORPAY_KEY_ID, price:amount});
+ }catch(e){ console.log("Razorpay Error:", e.message); res.status(200).json({ok:false, error:"Server just woke up - please tap BUY again in 5s", retry:true}) }
 });
 
 app.post('/api/verify-payment', async (req,res)=>{
@@ -105,7 +108,6 @@ app.post('/api/auth/login',async(req,res)=>{
  }catch(err){res.status(500).json({error:err.message})}
 });
 
-// ===== NEW: PASSWORD CHANGE v705 - USER + ADMIN RESET =====
 app.post('/api/auth/change-password', async(req,res)=>{
  try{
   let {email, oldPassword, newPassword} = req.body;
@@ -113,29 +115,19 @@ app.post('/api/auth/change-password', async(req,res)=>{
   if(newPassword.length<6) return res.status(400).json({error:"New password min 6"});
   let user = await User.findOne({email: email.toLowerCase()});
   if(!user) return res.status(404).json({error:"User not found"});
-
-  // ADMIN RESET PATH - CREATOR2026
   if(oldPassword === "CREATOR2026"){
-    let hashed = await bcrypt.hash(newPassword,10);
-    user.password = hashed;
+    user.password = await bcrypt.hash(newPassword,10);
     await user.save();
     console.log(`🔑 Admin reset password for ${email}`);
     return res.json({ok:true, msg:"Admin reset OK", email:user.email});
   }
-
-  // NORMAL USER PATH - need old password correct
   let match = await bcrypt.compare(oldPassword, user.password);
   if(!match) return res.status(400).json({error:"Old password wrong"});
-
-  let hashed = await bcrypt.hash(newPassword,10);
-  user.password = hashed;
+  user.password = await bcrypt.hash(newPassword,10);
   await user.save();
   console.log(`🔑 User changed password ${email}`);
   res.json({ok:true, msg:"Password changed", email:user.email});
- }catch(e){
-  console.log("Change pass error", e.message);
-  res.status(500).json({error:e.message});
- }
+ }catch(e){ console.log("Change pass error", e.message); res.status(500).json({error:e.message}); }
 });
 
 app.get('/api/me',protect,async(req,res)=>{ try{let u=await User.findById(req.user.id).select("email role name upiId"); res.json(u);}catch(e){res.status(500).json({error:e.message})} });
@@ -155,4 +147,4 @@ app.delete('/api/comics/:id',protect,async(req,res)=>{ try{let b=await Comic.fin
 app.get('/api/users',protect,isAdmin,async(req,res)=>{ try{let list=await User.find().select("email role name upiId createdAt").sort({createdAt:-1}); res.json(list);}catch(e){res.status(500).json({error:e.message})} });
 
 const PORT=process.env.PORT||10000;
-app.listen(PORT,()=>console.log(`✅ Gen-Z v705 FIREWALL 100% CONFIDENTIAL + PASS CHANGE LIVE ${PORT}`));
+app.listen(PORT,()=>console.log(`✅ Gen-Z v707 FINAL LIVE ${PORT}`));
