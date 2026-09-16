@@ -4,51 +4,29 @@
 <style>body{background:#000;color:#fff;font-family:sans-serif;padding:0;margin:0}.top{background:#111;padding:14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #222;position:sticky;top:0;z-index:99}.card{background:#151515;border:1px solid #222;border-radius:16px;padding:14px;margin:12px}.input,textarea,select{width:100%;padding:12px;background:#0a0a0a;border:1px solid #333;border-radius:10px;color:#fff;margin:6px 0;box-sizing:border-box}.btn{width:100%;padding:12px;background:#fff;color:#000;border:none;border-radius:10px;font-weight:900;margin-top:8px;cursor:pointer}.btn-c{background:linear-gradient(135deg,#ff8800,#ff5500);color:#fff}.tab{display:inline-block;padding:10px 18px;border-radius:99px;border:1px solid #333;margin:4px;font-weight:800;cursor:pointer;font-size:13px}.tab.active{background:#fff;color:#000}.prev img{width:56px;height:76px;object-fit:cover;border-radius:8px;border:1px solid #333;margin:4px}
 </style>
 </head><body>
-<div class="top">
-<div style="font-weight:900">Gen-Z <span style="color:#ff8800">Dashboard v704.5 FINAL</span></div>
-<div><a href="index.html?v=704.5" style="color:#888;text-decoration:none;font-size:12px;margin-right:8px">Home</a><a href="admin.html?v=704.5" style="color:#00ff88;text-decoration:none;font-size:12px;font-weight:800">Admin</a></div>
-</div>
+<div class="top"><div style="font-weight:900">Gen-Z <span style="color:#ff8800">Dashboard v704.5 FINAL</span></div><div><a href="index.html?v=704.5" style="color:#888;text-decoration:none;font-size:12px;margin-right:8px">Home</a><a href="admin.html?v=704.5" style="color:#00ff88;text-decoration:none;font-size:12px;font-weight:800">Admin</a></div></div>
 <div style="max-width:600px;margin:0 auto;padding:12px">
-<div class="card" style="background:#1a001a">
-<b id="adminStatus">👤 Guest Mode</b><br>
-<small style="color:#888" id="loginInfo">Login to publish LIVE for ALL</small><br><br>
-<div style="display:flex;gap:8px"><button class="btn" style="background:#ff00ff;color:#fff;margin:0" id="loginBtn" onclick="realLogin()">🔐 ADMIN LOGIN</button><button class="btn" style="background:#333;color:#fff;margin:0;display:none" id="logoutBtn" onclick="logout()">Logout</button></div>
-<div id="authStatus" style="font-size:11px;margin-top:8px;color:#ff8800"></div>
+<div class="card" style="background:#1a001a"><b id="adminStatus">👤 Guest Mode</b><br><small style="color:#888" id="loginInfo">Login to publish LIVE</small><br><br><div style="display:flex;gap:8px"><button class="btn" style="background:#ff00ff;color:#fff;margin:0" id="loginBtn" onclick="realLogin()">🔐 ADMIN LOGIN</button><button class="btn" style="background:#333;color:#fff;margin:0;display:none" id="logoutBtn" onclick="logout()">Logout</button></div><div id="authStatus" style="font-size:11px;margin-top:8px;color:#ff8800"></div></div>
+<div class="card" style="background:#001a00;border:1px solid #00ff88"><b>💰 Your UPI</b><br><small style="color:#888">Direct to you</small><input id="upiId" class="input" placeholder="yourname@okhdfcbank"><div style="display:flex;gap:8px"><button class="btn" style="background:#00ff88;color:#000" onclick="saveUpi()">Save UPI</button><button class="btn" style="background:#333;color:#fff" onclick="fixUpi()">Fix Old Books</button></div><div id="upiStat" style="font-size:11px;color:#00ff88;margin-top:6px"></div></div>
+<div class="card" style="text-align:center"><div class="tab active" id="tN" onclick="switchTab('novel')">📚 Novel</div><div class="tab" id="tC" onclick="switchTab('comic')">💥 Comic</div></div>
+<div id="novelBox" class="card"><b>📚 Publish Novel LIVE</b><input id="nTitle" class="input" placeholder="Novel Title *"><input id="nAuthor" class="input" placeholder="Author" value="Akash"><input id="nCover" class="input" placeholder="Cover URL"><textarea id="nDesc" rows="3" placeholder="Description..."></textarea><textarea id="nContent" rows="6" placeholder="Chapter content..."></textarea><select id="nAccess" class="input"><option value="free">FREE</option><option value="paid">PAID</option></select><input id="nPrice" class="input" placeholder="Price ₹" style="display:none" type="number"><button class="btn" onclick="publishNovel()">📚 Publish Novel</button><div id="nStat" style="font-size:11px;color:#888;margin-top:6px"></div></div>
+<div id="comicBox" class="card" style="display:none"><b>💥 Publish Comic LIVE</b><input id="cTitle" class="input" placeholder="Comic Title *"><input id="cAuthor" class="input" placeholder="Author" value="Akash"><input id="cCover" class="input" placeholder="Cover URL (optional)"><textarea id="cDesc" rows="2" placeholder="Description..."></textarea><input type="file" id="cPages" multiple accept="image/*" onchange="prev(event)" style="color:#fff;width:100%"><div class="prev" id="preview"></div><div id="sizeInfo" style="font-size:11px;color:#ff8800;margin:6px 0"></div><select id="cAccess" class="input"><option value="free">FREE</option><option value="paid">PAID</option></select><input id="cPrice" class="input" placeholder="Price ₹" style="display:none" type="number"><button class="btn btn-c" onclick="publishComic()">💥 Publish Comic</button><div id="cStat" style="font-size:11px;color:#888;margin-top:6px"></div></div>
+<div class="card"><b>📖 Your Local Books</b><div id="list"></div></div>
 </div>
-
-<div class="card" style="background:#001a00;border:1px solid #00ff88">
-<b>💰 Your UPI for Paid Books</b><br>
-<small style="color:#888">Money goes direct to you</small>
-<input id="upiId" class="input" placeholder="yourname@okhdfcbank">
-<div style="display:flex;gap:8px">
-<button class="btn" style="background:#00ff88;color:#000" onclick="saveUpi()">Save UPI</button>
-<button class="btn" style="background:#333;color:#fff" onclick="fixUpi()">Fix Old Books</button>
-</div>
-<div id="upiStat" style="font-size:11px;color:#00ff88;margin-top:6px"></div>
-</div>
-
-<div class="card" style="text-align:center">
-<div class="tab active" id="tN" onclick="switchTab('novel')">📚 Novel</div>
-<div class="tab" id="tC" onclick="switchTab('comic')">💥 Comic</div>
-</div>
-<div id="novelBox" class="card">
-<b>📚 Publish Novel LIVE</b>
-<input id="nTitle" class="input" placeholder="Novel Title *">
-<input id="nAuthor" class="input" placeholder="Author" value="Akash">
-<input id="nCover" class="input" placeholder="Cover URL https://...">
-<textarea id="nDesc" rows="3" placeholder="Description..."></textarea>
-<textarea id="nContent" rows="6" placeholder="Chapter 1 content..."></textarea>
-<select id="nAccess" class="input"><option value="free">FREE - All can read</option><option value="paid">PAID - UPI Payment</option></select>
-<input id="nPrice" class="input" placeholder="Price ₹ e.g. 20" style="display:none" type="number">
-<button class="btn" onclick="publishNovel()">📚 Publish Novel</button>
-<div id="nStat" style="font-size:11px;color:#888;margin-top:6px"></div>
-</div>
-<div id="comicBox" class="card" style="display:none">
-<b>💥 Publish Comic LIVE</b>
-<input id="cTitle" class="input" placeholder="Comic Title *">
-<input id="cAuthor" class="input" placeholder="Author" value="Akash">
-<input id="cCover" class="input" placeholder="Cover URL (optional)">
-<textarea id="cDesc" rows="2" placeholder="Description..."></textarea>
-<input type="file" id="cPages" multiple accept="image/*" onchange="prev(event)" style="color:#fff;width:100%">
-<div class="prev" id="preview"></div>
-<div id="sizeInfo" style="font-size:11px;color:#ff
+<script>
+const API="https://gen-z-visual-2.onrender.com/api";
+let comicPages=[], token=localStorage.getItem('token')||localStorage.getItem('genz_token')||'';
+let user=JSON.parse(localStorage.getItem('user')||localStorage.getItem('genz_user')||'null');
+function switchTab(t){ document.getElementById('novelBox').style.display=t==='novel'?'block':'none'; document.getElementById('comicBox').style.display=t==='comic'?'block':'none'; document.getElementById('tN').className=t==='novel'?'tab active':'tab'; document.getElementById('tC').className=t==='comic'?'tab active':'tab'; }
+(function(){ switchTab('novel'); updateLoginUI(); loadList(); document.getElementById('nAccess').onchange=e=>document.getElementById('nPrice').style.display=e.target.value==='paid'?'block':'none'; document.getElementById('cAccess').onchange=e=>document.getElementById('cPrice').style.display=e.target.value==='paid'?'block':'none'; if(token) loadUpi(); })();
+function updateLoginUI(){ token=localStorage.getItem('token')||localStorage.getItem('genz_token')||''; user=JSON.parse(localStorage.getItem('user')||localStorage.getItem('genz_user')||'null'); if(token&&user){ document.getElementById('adminStatus').innerText='✅ '+user.email; document.getElementById('loginInfo').innerText='LIVE Enabled ✅'; document.getElementById('loginBtn').style.display='none'; document.getElementById('logoutBtn').style.display='block'; document.getElementById('authStatus').innerText='Token OK'; } else { document.getElementById('adminStatus').innerText='👤 Guest Mode'; document.getElementById('loginInfo').innerText='Login for LIVE'; document.getElementById('loginBtn').style.display='block'; document.getElementById('logoutBtn').style.display='none'; } }
+async function realLogin(){ const email=prompt('Email:','xhettriakash1@gmail.com'); const pass=prompt('Password:','Akash123'); if(!email||!pass) return; document.getElementById('authStatus').innerText='Logging... wait 30s if Render sleeping'; try{ const r=await fetch(API+'/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:pass})}); const d=await r.json(); console.log(d); const tk=d.token||d.accessToken||d.access_token; if(r.ok&&tk){ localStorage.setItem('token',tk); localStorage.setItem('genz_token',tk); localStorage.setItem('user',JSON.stringify(d.user||{email,role:'admin'})); localStorage.setItem('genz_user',JSON.stringify(d.user||{email,role:'admin'})); updateLoginUI(); alert('✅ Login OK'); location.reload(); }else{ document.getElementById('authStatus').innerText='❌ '+(d.error||d.message||'Fail'); alert(JSON.stringify(d)); } }catch(e){ document.getElementById('authStatus').innerText='❌ '+e.message; } }
+function logout(){ localStorage.clear(); updateLoginUI(); location.reload(); }
+async function loadUpi(){ try{ let r=await fetch(API+'/me',{headers:{Authorization:'Bearer '+token}}); let d=await r.json(); if(d.upiId){ document.getElementById('upiId').value=d.upiId; document.getElementById('upiStat').innerText='✅ Saved: '+d.upiId; } }catch{} }
+async function saveUpi(){ let upi=document.getElementById('upiId').value.trim(); if(!upi.includes('@')){alert('Valid UPI');return;} document.getElementById('upiStat').innerText='Saving...'; try{ let r=await fetch(API+'/save-upi',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},body:JSON.stringify({upiId:upi})}); let d=await r.json(); if(d.ok){ document.getElementById('upiStat').innerText='✅ Saved: '+d.upiId; } else document.getElementById('upiStat').innerText='❌ '+d.error; }catch(e){ document.getElementById('upiStat').innerText=e.message; } }
+async function fixUpi(){ document.getElementById('upiStat').innerText='Fixing...'; try{ let r=await fetch(API+'/fix-upi-all',{method:'POST',headers:{Authorization:'Bearer '+token}}); let d=await r.json(); document.getElementById('upiStat').innerText=d.ok?'✅ Fixed: '+d.upiId:d.error; }catch(e){ document.getElementById('upiStat').innerText=e.message; } }
+function prev(e){ comicPages=[]; document.getElementById('preview').innerHTML=''; let files=[...e.target.files].slice(0,8); let done=0; files.forEach(f=>{ let r=new FileReader(); r.onload=ev=>{ let img=new Image(); img.onload=()=>{ let c=document.createElement('canvas'); let max=600; let ratio=Math.min(max/img.width,max/img.height,1); c.width=img.width*ratio; c.height=img.height*ratio; c.getContext('2d').drawImage(img,0,0,c.width,c.height); let comp=c.toDataURL('image/jpeg',0.6); comicPages.push(comp); let im=document.createElement('img'); im.src=comp; document.getElementById('preview').appendChild(im); done++; if(done===files.length) document.getElementById('sizeInfo').innerText=done+' pages'; }; img.src=ev.target.result; }; r.readAsDataURL(f); }); }
+function loadList(){ let a=JSON.parse(localStorage.getItem('myNovels')||'[]'); let b=JSON.parse(localStorage.getItem('myComics')||'[]'); let all=[...a,...b].slice(0,10); document.getElementById('list').innerHTML=all.map(x=>`<div style="padding:6px 0;border-bottom:1px solid #222;font-size:12px">${x.title}</div>`).join('')||'No local'; }
+async function publishNovel(){ let t=document.getElementById('nTitle').value.trim(); if(!t||!token){alert('Title/Login');return;} document.getElementById('nStat').innerText='Publishing...'; let item={title:t,author:document.getElementById('nAuthor').value,cover:document.getElementById('nCover').value||`https://picsum.photos/seed/${Date.now()}/400/600`,coverImage:document.getElementById('nCover').value,description:document.getElementById('nDesc').value,content:document.getElementById('nContent').value,access:document.getElementById('nAccess').value,price:parseInt(document.getElementById('nPrice').value)||0}; try{ let r=await fetch(API+'/novels',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},body:JSON.stringify(item)}); let d=await r.json(); document.getElementById('nStat').innerText=r.ok?'✅ LIVE ID='+d.novel._id:'❌ '+d.error; if(r.ok){ let my=JSON.parse(localStorage.getItem('myNovels')||'[]'); my.unshift({id:d.novel._id,title:t}); localStorage.setItem('myNovels',JSON.stringify(my)); } }catch(e){ document.getElementById('nStat').innerText=e.message; } }
+async function publishComic(){ let t=document.getElementById('cTitle').value.trim(); if(!t||!comicPages.length){alert('Title/pages');return;} document.getElementById('cStat').innerText='Publishing...'; let item={title:t,author:document.getElementById('cAuthor').value,cover:document.getElementById('cCover').value||comicPages[0],coverImage:document.getElementById('cCover').value||comicPages[0],description:document.getElementById('cDesc').value,pages:comicPages,access:document.getElementById('cAccess').value,price:parseInt(document.getElementById('cPrice').value)||0}; try{ let r=await fetch(API+'/comics',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},body:JSON.stringify(item)}); let d=await r.json(); document.getElementById('cStat').innerText=r.ok?'✅ Comic LIVE':'❌ '+d.error; }catch(e){ document.getElementById('cStat').innerText=e.message; } }
+</script></body></html>
