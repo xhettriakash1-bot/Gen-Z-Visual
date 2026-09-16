@@ -1,77 +1,74 @@
 <!DOCTYPE html>
 <html><head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Comics v704.2</title>
+<title>Comics v704.5 LIVE</title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#07070a;color:#fff;font-family:system-ui,sans-serif}
+*{box-sizing:border-box}body{margin:0;background:#07070a;color:#fff;font-family:system-ui}
 .top{position:sticky;top:0;z-index:99;display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#111;border-bottom:1px solid #222}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:16px;max-width:800px;margin:0 auto 120px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:16px;max-width:900px;margin:0 auto 120px}
 @media(min-width:600px){.grid{grid-template-columns:repeat(3,1fr)}}
 .card{background:#15151a;border:1px solid #222;border-radius:18px;overflow:hidden;position:relative;cursor:pointer}
-.card img{width:100%;height:200px;object-fit:cover;background:#222}
+.card img{width:100%;height:220px;object-fit:cover;background:#222}
 .info{padding:10px}
-.badge{position:absolute;top:8px;left:8px;background:#ff8800;color:#000;font-size:9px;font-weight:900;padding:3px 8px;border-radius:20px}
+.badge{position:absolute;top:8px;left:8px;font-size:9px;font-weight:900;padding:4px 8px;border-radius:20px}
+.live{background:#00ff88;color:#000}.my{background:#ff00ff;color:#fff}.demo{background:#333;color:#aaa}
 .btn{width:100%;background:#fff;color:#000;border:none;padding:8px;border-radius:20px;font-weight:800;margin-top:6px;cursor:pointer;font-size:12px}
 .nav{position:fixed;bottom:0;left:0;right:0;background:#111;border-top:1px solid #222;display:flex;justify-content:space-around;padding:8px 0;z-index:100}
-.nav a{color:#666;text-decoration:none;font-size:11px;text-align:center}
-.nav a.active{color:#ff8800}
-.publish-fab{position:fixed;bottom:80px;right:16px;background:linear-gradient(135deg,#ff8800,#ff5500);color:#fff;padding:14px 22px;border-radius:99px;font-weight:900;text-decoration:none;box-shadow:0 10px 30px #ff880060;z-index:50}
+.nav a{color:#666;text-decoration:none;font-size:11px;text-align:center}.nav a.active{color:#ff8800}
+.fab{position:fixed;bottom:80px;right:16px;background:linear-gradient(135deg,#ff8800,#ff5500);color:#fff;padding:14px 22px;border-radius:99px;font-weight:900;text-decoration:none;box-shadow:0 10px 30px #ff880060;z-index:50}
 </style>
 </head><body>
 <div class="top">
-  <div style="font-weight:900">🎨 Comics <span style="color:#ff8800">v704.2 FIXED</span></div>
-  <div style="display:flex;gap:10px"><a href="index.html" style="color:#888;text-decoration:none;font-size:12px">Home</a><a href="dashboard.html?v=704" style="color:#ff8800;text-decoration:none;font-size:12px;font-weight:800">+ Studio</a></div>
+  <div style="font-weight:900">🎨 Comics <span style="color:#ff8800">v704.5 LIVE</span></div>
+  <div style="display:flex;gap:10px"><a href="index.html?v=704.5" style="color:#888;text-decoration:none;font-size:12px">Home</a><a href="dashboard.html?v=704.5" style="color:#ff8800;text-decoration:none;font-size:12px;font-weight:800">+ Studio</a></div>
 </div>
-
-<div style="max-width:800px;margin:0 auto;padding:16px">
+<div style="max-width:900px;margin:0 auto;padding:16px">
   <h2 style="margin:0;font-size:22px;font-weight:900">All Comics <span style="color:#ff8800">PUBLIC</span></h2>
-  <p style="color:#666;font-size:11px;margin-top:4px">v704.2 • Compressed + Both keys read</p>
-  <div id="debug" style="font-size:10px;color:#555;margin-top:6px"></div>
+  <p style="color:#666;font-size:11px;margin-top:4px" id="status">v704.5 • LIVE + DEVICE + XML fallback = NEVER EMPTY</p>
 </div>
-
 <div class="grid" id="list"></div>
-
-<a href="dashboard.html?type=comic&v=704.1" class="publish-fab">+ Publish Comic</a>
-
+<a href="dashboard.html?v=704.5&type=comic" class="fab">+ Publish Comic</a>
 <div class="nav">
-<a href="index.html">🏠<br>Home</a><a href="novels.html">📚<br>Novels</a><a href="comic.html" class="active">💥<br>Comics</a><a href="dashboard.html">📝<br>Studio</a>
+<a href="index.html?v=704.5">🏠<br>Home</a><a href="novels.html?v=704.5">📚<br>Novels</a><a href="comic.html?v=704.5" class="active">💥<br>Comics</a><a href="dashboard.html?v=704.5">📝<br>Studio</a>
 </div>
-
 <script>
-const API="https://gen-z-visual-2.onrender.com/api";
+const API="https://gen-z-visual-2.onrender.com";
 async function load(){
- let all=[];
- let log=[];
- try{ 
-   let books = JSON.parse(localStorage.getItem("myBooks")||"[]");
-   let comics = JSON.parse(localStorage.getItem("myComics")||"[]");
-   // MERGE BOTH KEYS, DEDUP BY ID
-   let map={};
-   [...books,...comics].forEach(c=>{ map[c.id||c._id]=c; });
-   let deviceComics = Object.values(map);
-   log.push(`Device: ${deviceComics.length} (${books.length} myBooks + ${comics.length} myComics)`);
-   all=all.concat(deviceComics.map(c=>({...c,source:"DEVICE"}))); 
- }catch(e){ log.push("Local error: "+e.message); }
- 
- try{ 
-   let r=await fetch(`${API}/comics`); 
-   if(r.ok){ 
-     let b=await r.json(); 
-     b=Array.isArray(b)?b:b.comics||[]; 
-     log.push(`Live: ${b.length}`);
-     all=all.concat(b.map(c=>({...c,source:"LIVE"}))); 
-   } else { log.push("API: "+r.status); }
- }catch(e){ log.push("API offline"); }
- 
- document.getElementById("debug").innerText=log.join(" | ");
-
- if(!all.length){
-   document.getElementById("list").innerHTML=`<div style="grid-column:1/-1;text-align:center;color:#666;padding:40px"><div style="font-size:40px">💥</div><br>No comics yet<br><small>Publish from Studio - will auto compress</small><br><br><a href="dashboard.html?type=comic&v=704.1" style="background:#ff8800;color:#000;padding:12px 24px;border-radius:99px;text-decoration:none;font-weight:900;display:inline-block">+ Publish Your First Comic</a></div>`;
+ let all=[]; let logs=[];
+ // 1. DEVICE
+ try{
+   let b=JSON.parse(localStorage.getItem("myBooks")||"[]");
+   let c=JSON.parse(localStorage.getItem("myComics")||"[]");
+   let map={}; [...b,...c].forEach(x=>{map[x.id||x._id]=x;});
+   let device=Object.values(map);
+   logs.push("DEVICE:"+device.length);
+   all=all.concat(device.map(x=>({...x,source:"MY",badge:"my"})));
+ }catch(e){logs.push("DEVICE err");}
+ // 2. LIVE
+ try{
+   let r=await fetch(API+"/api/comics"); if(r.ok){let d=await r.json(); let arr=Array.isArray(d)?d:d.comics||[]; logs.push("LIVE:"+arr.length); all=all.concat(arr.map(x=>({...x,source:"LIVE",badge:"live"})));}
+   else logs.push("LIVE:"+r.status);
+ }catch(e){logs.push("LIVE offline");}
+ // 3. XML FALLBACK - NEVER EMPTY GUARANTEE
+ if(all.length===0){
+   try{
+     let r=await fetch("data/comics.xml?v=704.5"); if(r.ok){let txt=await r.text(); let doc=new DOMParser().parseFromString(txt,"text/xml"); let nodes=doc.querySelectorAll("comic"); let xml=[]; nodes.forEach(n=>{ xml.push({id:n.querySelector("id")?.textContent||Date.now(),title:n.querySelector("title")?.textContent||"Untitled",author:n.querySelector("author")?.textContent||"GenZ",cover:n.querySelector("cover")?.textContent||"",pages:(n.querySelector("pages")?.textContent||"").split(",").map(s=>s.trim()).filter(Boolean),source:"DEMO",badge:"demo"}); }); logs.push("XML:"+xml.length); all=all.concat(xml);}
+   }catch(e){logs.push("XML fail");}
+ }
+ document.getElementById("status").innerText=logs.join(" | ")+" • v704.5 NEVER EMPTY";
+ if(all.length===0){
+   document.getElementById("list").innerHTML=`<div style="grid-column:1/-1;text-align:center;color:#666;padding:40px">No comics yet<br><a href="dashboard.html?v=704.5&type=comic" style="background:#ff8800;color:#000;padding:12px 24px;border-radius:99px;text-decoration:none;font-weight:900;display:inline-block;margin-top:12px">+ Publish First</a></div>`;
    return;
  }
- document.getElementById("list").innerHTML=all.map(c=>`
-  <div class="card" onclick="location.href='read-comic.html?id=${c._id||c.id}'"><span class="badge">${c.source} • ${c.pages?c.pages.length:1}p</span><img src="${c.cover||(c.pages&&c.pages[0])||'https://picsum.photos/400/600'}" loading="lazy" onerror="this.src='https://picsum.photos/400/600'"><div class="info"><b style="font-size:12px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${c.title||'Untitled'}</b><small style="color:#888">${c.author||'GenZ'}</small><button class="btn">Read • ${c.pages?c.pages.length:1}p</button></div></div>
- `).join("");
+ // DEDUP by title to avoid double show
+ let seen=new Set(); let uniq=[];
+ all.forEach(c=>{ let k=(c.title||"").toLowerCase(); if(!seen.has(k)){seen.add(k); uniq.push(c);} });
+ document.getElementById("list").innerHTML=uniq.map(c=>`
+  <div class="card" onclick="location.href='read-comic.html?v=704.5&id=${c._id||c.id}'">
+   <span class="badge ${c.badge}">${c.source} • ${c.pages?c.pages.length:1}p</span>
+   <img src="${c.cover||c.coverImage||c.pages?.[0]||'https://picsum.photos/400/600'}" loading="lazy" onerror="this.src='https://picsum.photos/400/600'">
+   <div class="info"><b style="font-size:12px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${c.title}</b><small style="color:#888">${c.author||'GenZ'}</small><button class="btn">Read</button></div>
+  </div>`).join("");
 }
 load();
 </script>
