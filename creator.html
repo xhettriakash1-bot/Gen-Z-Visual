@@ -1,138 +1,114 @@
 <!DOCTYPE html>
 <html><head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Creator Studio ULTRA - Gen-Z Visual v700</title>
-<link rel="stylesheet" href="style.css?v=700">
-<script>
-// ===== FIREWALL v700 + DOMAIN LOCK FIXED =====
-(function(){
-  const ALLOWED_DOMAINS = ["kash1-bot.github.io","xhettriak.github.io","localhost","127.0.0.1"];
-  const host = location.hostname;
-  const isAllowed = location.protocol==="file:" || host==="" || host.includes("github.io") || ALLOWED_DOMAINS.some(h=>host.includes(h));
-  if(!isAllowed){
-    document.documentElement.innerHTML=`<h1 style='color:red;text-align:center;margin-top:20%;font-family:system-ui'>⛔ Domain Blocked ${host}</h1>`;
-    throw new Error("Blocked: "+host);
-  }
-  if(window.top!==window.self) window.top.location=window.self.location;
-})();
-
-const Firewall={
-  patterns:[/<script/gi,/javascript:/gi,/onerror=/gi,/onload=/gi,/union.*select/gi,/<iframe/gi,/eval\(/gi],
-  scan(v){return this.patterns.some(p=>p.test(v))},
-  protect(){
-    document.addEventListener('input',e=>{
-      if(e.target.tagName==="INPUT"||e.target.tagName==="TEXTAREA"){
-        if(this.scan(e.target.value)){e.target.value="";e.target.style.border="2px solid #ff00ff";e.target.style.boxShadow="0 0 15px #ff00ff60";e.target.placeholder="⛔ Blocked by Firewall v700";}
-      }
-    });
-  }
-};
-window.addEventListener('DOMContentLoaded',()=>Firewall.protect());
-
-(function(){
-  const user = JSON.parse(localStorage.getItem("user")||localStorage.getItem("genz_user")||"{}");
-  const role = (localStorage.getItem("role")||user.role||"").toLowerCase();
-  const email = (localStorage.getItem("email")||user.email||"").toLowerCase();
-  const ALLOWED_ADMINS = ["xhettriakash1@gmail.com","akashchettri2003@gmail.com"];
-  const allowed = role==="creator"||role==="admin"||ALLOWED_ADMINS.includes(email);
-  if(!allowed){
-    document.addEventListener('DOMContentLoaded',()=>{
-      document.body.innerHTML=`<div style="background:#070708;color:white;height:100vh;display:flex;align-items:center;justify-content:center;flex-direction:column;font-family:Space Grotesk;text-align:center;padding:20px"><h1 style="color:#ff00ff;font-size:40px">⛔ CREATOR ONLY</h1><p style="color:#666;margin-top:10px">Firewall v700 ACTIVE<br>Current: ${email} (${role||'guest'})</p><a href="login.html" style="margin-top:24px;background:white;color:black;padding:14px 28px;border-radius:99px;text-decoration:none;font-weight:900">Login as Creator</a></div>`;
-    });
-    throw new Error("Not creator");
-  }
-})();
-</script>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Creator v704.5 - Comic + Novel LIVE</title>
 <style>
-.wrap{max-width:640px;margin:24px auto;padding:0 20px 110px}
-.card-ultra{background:rgba(20,20,23,0.85);backdrop-filter:blur(25px) saturate(180%);border:1px solid rgba(255,255,255,0.08);border-top:1px solid rgba(255,255,255,0.14);border-radius:28px;padding:28px;box-shadow:0 20px 60px rgba(0,0,0,0.6),inset 0 1px 1px rgba(255,255,255,0.08);position:relative;overflow:hidden}
-.card-ultra::before{content:"";position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle,rgba(255,0,255,0.06) 1px,transparent 1px);background-size:28px 28px;animation:stars 20s linear infinite;pointer-events:none}
-.card-ultra h2{display:flex;align-items:center;gap:10px;font-size:22px;font-weight:900;position:relative;z-index:1}
-.card-ultra h2::before{content:"";width:6px;height:26px;background:linear-gradient(var(--neon),var(--neon3));border-radius:99px;box-shadow:0 0 15px #ff00ff}
-input,textarea,select{width:100%;padding:15px 18px;margin:9px 0;background:rgba(10,10,12,0.9);border:1px solid rgba(255,255,255,0.08);border-radius:14px;color:white;outline:none;transition:0.4s;font-size:14px;position:relative;z-index:1}
-input:focus,textarea:focus,select:focus{border-color:var(--neon);box-shadow:0 0 0 4px #ff00ff18,0 0 25px #ff00ff20;transform:translateY(-1px);background:#0e0e10}
-.btn-ultra{width:100%;padding:15px;background:linear-gradient(135deg,#ff00ff,#7a00ff);color:white;border:none;border-radius:99px;font-weight:900;cursor:pointer;margin-top:14px;font-size:15px;box-shadow:0 10px 25px #ff00ff45;transition:all 0.3s cubic-bezier(0.175,0.885,0.32,1.275);position:relative;z-index:1}
-.btn-ultra:hover{transform:translateY(-3px) scale(1.01);box-shadow:0 18px 35px #ff00ff60}
-.btn-ghost{width:100%;padding:13px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:white;border-radius:99px;font-weight:700;margin-top:10px;backdrop-filter:blur(10px);transition:0.3s;position:relative;z-index:1}
-.btn-ghost:hover{background:rgba(255,255,255,0.1);transform:translateY(-1px)}
-.badge-live{padding:7px 14px;border-radius:99px;background:#00ff8815;border:1px solid #00ff8840;color:#00ff88;font-size:11px;font-weight:800;display:inline-flex;align-items:center;gap:6px;backdrop-filter:blur(10px)}
-.badge-live::before{content:"";width:6px;height:6px;background:#00ff88;border-radius:50%;box-shadow:0 0 10px #00ff88;animation:livePulse 1.5s infinite}
-.upload-item{background:rgba(255,255,255,0.04);padding:12px 14px;border-radius:16px;margin:8px 0;border:1px solid rgba(255,255,255,0.06);transition:0.3s}
-.upload-item:hover{background:rgba(255,255,255,0.07);border-color:#ff00ff30;transform:translateX(3px)}
-@keyframes livePulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(1.4)}}
+*{box-sizing:border-box;font-family:system-ui}body{margin:0;background:#080808;color:#fff}
+header{padding:12px 16px;border-bottom:1px solid #222;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:#080808;z-index:10}
+.wrap{max-width:700px;margin:18px auto;padding:0 16px 120px}
+.card{background:#15151a;border:1px solid #222;border-radius:20px;padding:20px}
+input,textarea,select{width:100%;padding:13px;margin:7px 0;background:#0e0e12;border:1px solid #2a2a2a;border-radius:12px;color:#fff;outline:none}
+input:focus,textarea:focus{border-color:#ff00ff}
+.btn{width:100%;padding:13px;border:none;border-radius:99px;font-weight:900;cursor:pointer;margin-top:10px}
+.btn-p{background:linear-gradient(135deg,#ff00ff,#7a00ff);color:#fff}.btn-g{background:#1f1f1f;color:#fff;border:1px solid #2a2a2a}
+.tabs{display:flex;gap:8px;margin:10px 0}.tab{flex:1;padding:12px;border-radius:99px;text-align:center;cursor:pointer;border:1px solid #2a2a2a;background:#1a1a1e;font-weight:800;font-size:13px}
+.tab.active{background:#fff;color:#000}
+.item{display:flex;gap:10px;background:#0e0e12;border:1px solid #222;padding:10px;border-radius:12px;margin:6px 0}
+.item img{width:48px;height:66px;object-fit:cover;border-radius:8px}
 </style>
-</head>
-<body>
+</head><body>
 <header>
-<div class="logo">Gen-Z <span>Visual</span> <span style="font-size:10px;background:linear-gradient(90deg,#ff00ff,#00ff88);padding:3px 8px;border-radius:99px;color:white;margin-left:6px;font-weight:800">STUDIO ULTRA</span></div>
-<div style="display:flex;gap:8px;align-items:center">
-<span id="creatorEmail" style="font-size:11px;color:#888;max-width:110px;overflow:hidden;text-overflow:ellipsis"></span>
-<a href="index.html" class="top-btn">Home</a>
-<button onclick="localStorage.clear();location.href='login.html'" style="background:#1a1a1e;border:1px solid #2a2a2e;color:white;padding:8px 14px;border-radius:99px;font-size:12px;cursor:pointer">Logout</button>
-</div>
+<b>Creator Studio <span style="background:#00ff88;color:#000;padding:3px 8px;border-radius:20px;font-size:10px">v704.5 COMIC+NOVEL</span></b>
+<a href="index.html?v=704.5" style="background:#222;color:#fff;padding:8px 12px;border-radius:20px;text-decoration:none;font-size:12px">Home</a>
 </header>
 
 <div class="wrap">
-<div class="card-ultra">
-<h2>Creator Studio <span class="badge-live" id="statusBadge">LIVE v700</span></h2>
-<p style="font-size:12px;color:#666;margin:10px 0 20px;position:relative;z-index:1">Backend: <b style="color:#00ff88">gen-z-visual-2.onrender.com ✅</b><br>Firewall v700 + Domain Lock ACTIVE 🔒</p>
-
-<input id="cName" placeholder="Creator Name*">
-<input id="novelName" placeholder="Novel / Comic Title*">
-<select id="type"><option value="novel">📚 Novel - Text Story</option><option value="comic">🎨 Comic / Visual Novel</option></select>
-<textarea id="desc" placeholder="Description* min 20 chars - Make it Gen-Z attractive 🔥" rows="4"></textarea>
-<input id="coverUrl" placeholder="Cover Image URL (optional - auto random if empty)">
-<input id="fileInput" type="file" accept=".pdf,.epub,.zip,.jpg,.png" style="font-size:12px;color:#888">
-
-<button class="btn-ultra" id="btnUpload">📤 Upload to LIVE Homepage →</button>
-<button class="btn-ghost" onclick="window.open('https://drive.google.com','_blank')">☁️ Backup to Drive (Step 5)</button>
-<p id="msg" style="font-size:13px;margin-top:16px;text-align:center;font-weight:800;position:relative;z-index:1"></p>
-
-<div style="margin-top:26px;border-top:1px solid rgba(255,255,255,0.08);padding-top:18px;position:relative;z-index:1">
-<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><h4 style="font-size:14px">📦 Your Uploads</h4><span style="font-size:10px;color:#666" id="count">0</span></div>
-<div id="myUploads" style="font-size:12px"><div class="skeleton" style="height:60px;border-radius:16px"></div></div>
-</div>
-</div>
+<div class="card">
+<div class="tabs">
+<div class="tab active" id="tabNovel" onclick="setType('novel')">📚 Novel</div>
+<div class="tab" id="tabComic" onclick="setType('comic')">🎨 Comic</div>
 </div>
 
-<div class="nav">
-<a href="index.html">🏠<span>Home</span></a>
-<a href="dashboard.html">📚<span>Library</span></a>
-<a href="author.html" class="active">✍️<span>Create</span></a>
-<a href="login.html">👤<span>Me</span></a>
+<input id="title" placeholder="Title *">
+<input id="cover" placeholder="Cover URL * https://...">
+<textarea id="desc" rows="3" placeholder="Description *"></textarea>
+<div id="novelBox">
+<textarea id="content" rows="8" placeholder="Novel Content * Full story / chapter text"></textarea>
+</div>
+<div id="comicBox" style="display:none">
+<textarea id="pages" rows="8" placeholder="Comic Pages * comma separated URLs: https://page1.jpg, https://page2.jpg, https://page3.jpg"></textarea>
+<p style="font-size:10px;color:#666">Upload pages to imgur / postimages and paste links here separated by comma</p>
+</div>
+
+<select id="genre"><option>Fantasy</option><option>Action</option><option>Romance</option><option>Drama</option><option>Comics</option><option>Manga</option><option>Horror</option><option>City</option><option>Neon</option></select>
+
+<button class="btn btn-p" onclick="publish()">🚀 Publish LIVE - Visible to ALL</button>
+<p id="msg" style="font-size:12px;text-align:center;margin-top:10px;white-space:pre-wrap"></p>
+
+<div style="margin-top:18px;border-top:1px solid #222;padding-top:12px">
+<b style="font-size:13px">📦 My LIVE</b> <span id="cnt" style="font-size:11px;color:#666"></span>
+<div id="list" style="margin-top:8px">Loading...</div>
+</div>
+</div>
 </div>
 
 <script>
-const API_BASE="https://gen-z-visual-2.onrender.com";const API=`${API_BASE}/api`;
-const user=JSON.parse(localStorage.getItem("user")||"{}");
-document.getElementById("creatorEmail").innerText=user.email||localStorage.getItem("email")||"";
-document.getElementById("cName").value=user.name||user.displayName||"";
+const API="https://gen-z-visual-2.onrender.com";
+let TYPE="novel";
+let USER={}; try{USER=JSON.parse(localStorage.getItem("user")||localStorage.getItem("genz_user")||"{}");}catch{}
+let TOKEN=localStorage.getItem("token")||localStorage.getItem("genz_token")||"";
 
-document.getElementById("btnUpload").onclick=async()=>{
-  const name=cName.value.trim(),novel=novelName.value.trim(),desc=desc.value.trim(),type=document.getElementById("type").value,cover=coverUrl.value.trim(),file=fileInput.files[0],m=msg;
-  if(!name||!novel||!desc){m.style.color="#ff4444";m.innerText="⛔ Fill all required*";return}
-  if(desc.length<20){m.style.color="#ff4444";m.innerText="⛔ Description min 20 chars";return}
-  m.style.color="#f59e0b";m.innerText="⏳ Uploading to LIVE v700...";statusBadge.innerText="UPLOADING...";statusBadge.style.color="#f59e0b";
-  try{
-    let payload={creatorEmail:user.email||localStorage.getItem("email"),title:novel,description:desc,type,coverImage:cover||`https://picsum.photos/600/800?random=${Date.now()}`,fileName:file?file.name:"",author:name,date:new Date().toISOString()};
-    let r=await fetch(API+"/novels",{method:"POST",headers:{"Content-Type":"application/json",Authorization:`Bearer ${localStorage.getItem("token")||localStorage.getItem("genz_token")}`},body:JSON.stringify(payload)});
-    let d=await r.json();
-    if(r.ok){m.style.color="#00ff88";m.innerText="✅ LIVE on homepage! Refresh index.html ✨";statusBadge.innerText="SAVED ✅";statusBadge.style.color="#00ff88";loadUploads();cName.value="";novelName.value="";desc.value="";coverUrl.value="";}
-    else{m.style.color="#ff4444";m.innerText="❌ "+(d.error||"Failed");statusBadge.innerText="FAILED";}
-  }catch(e){m.style.color="#ff4444";m.innerText="❌ Error: "+e.message;statusBadge.innerText="OFFLINE";}
-};
-
-async function loadUploads(){
-  try{
-    let r=await fetch(API+"/novels");let data=await r.json();
-    let email=(user.email||localStorage.getItem("email")||"").toLowerCase();
-    let my=data.filter(n=>(n.creatorEmail||"").toLowerCase()===email);
-    document.getElementById("count").innerText=my.length+" items";
-    myUploads.innerHTML=my.length?my.map(n=>`<div class="upload-item"><div style="display:flex;justify-content:space-between"><b style="color:white">${n.title}</b><span style="font-size:9px;background:#ff00ff20;border:1px solid #ff00ff40;color:#ff88ff;padding:3px 8px;border-radius:99px">${n.type}</span></div><small style="color:#666">${(n.description||'').slice(0,70)}...</small></div>`).join(""):"<div style='text-align:center;padding:20px;color:#555'><div style='font-size:30px'>🎨</div>No uploads yet<br><small>Upload first story!</small></div>";
-  }catch{myUploads.innerHTML="<span style='color:#ef4444'>Backend sleeping, retry</span>"}
+function setType(t){
+ TYPE=t;
+ document.getElementById("tabNovel").classList.toggle("active",t==="novel");
+ document.getElementById("tabComic").classList.toggle("active",t==="comic");
+ document.getElementById("novelBox").style.display=t==="novel"?"block":"none";
+ document.getElementById("comicBox").style.display=t==="comic"?"block":"none";
 }
-loadUploads();
-function logout(){localStorage.clear();location.href='login.html'}
+async function publish(){
+ let title=document.getElementById("title").value.trim();
+ let cover=document.getElementById("cover").value.trim();
+ let desc=document.getElementById("desc").value.trim();
+ let genre=document.getElementById("genre").value;
+ let m=document.getElementById("msg");
+ if(!title||!cover||!desc){m.style.color="#f44";m.innerText="⛔ Title+Cover+Desc required";return;}
+ if(!TOKEN){m.style.color="#f44";m.innerHTML="⛔ Not logged in <a href='login.html?v=704.5' style='color:#ff00ff'>Login</a>";return;}
+ m.style.color="#fa0"; m.innerText="Publishing "+TYPE+" LIVE...";
+ let body={title,cover,coverImage:cover,description:desc,author:USER.name||USER.email||"GenZ",creatorEmail:USER.email||localStorage.getItem("email"),genre};
+ let endpoint="";
+ if(TYPE==="novel"){
+  let content=document.getElementById("content").value.trim();
+  if(!content){m.style.color="#f44";m.innerText="⛔ Novel content required";return;}
+  body.content=content;
+  endpoint="/api/novels";
+ } else {
+  let p=document.getElementById("pages").value.trim();
+  let pages=p? p.split(",").map(s=>s.trim()).filter(Boolean) : [cover];
+  if(pages.length===0){m.style.color="#f44";m.innerText="⛔ Add page URLs";return;}
+  body.pages=pages;
+  endpoint="/api/comics";
+ }
+ try{
+  let r=await fetch(API+endpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+TOKEN},body:JSON.stringify(body)});
+  let d=await r.json();
+  if(!r.ok) throw new Error(JSON.stringify(d));
+  m.style.color="#0f8"; m.innerText="✅ PUBLISHED LIVE! "+title+" as "+TYPE.toUpperCase()+"\nID: "+(d._id||"ok")+" → Check "+(TYPE==="novel"?"novels.html":"comic.html")+" in incognito";
+  load();
+ }catch(e){m.style.color="#f44";m.innerText="❌ "+e.message;}
+}
+async function load(){
+ try{
+  let [rn,rc]=await Promise.all([fetch(API+"/api/novels"),fetch(API+"/api/comics")]);
+  let n=await rn.json(); let c=await rc.json();
+  let all=[...n.map(x=>({...x,_t:"NOVEL"})),...c.map(x=>({...x,_t:"COMIC"}))];
+  let email=(USER.email||localStorage.getItem("email")||"").toLowerCase();
+  let mine=all.filter(x=>(x.creatorEmail||"").toLowerCase()===email); if(mine.length===0) mine=all.slice(0,5);
+  document.getElementById("cnt").innerText=mine.length;
+  document.getElementById("list").innerHTML=mine.map(x=>`<div class="item"><img src="${x.cover||x.coverImage}"><div style="flex:1"><b style="font-size:12px">${x.title}</b> <span style="font-size:8px;background:#00ff8815;border:1px solid #00ff8840;color:#00ff88;padding:2px 6px;border-radius:20px">${x._t} LIVE</span><br><small style="color:#666">${x._id||""}</small></div></div>`).join("");
+ }catch(e){document.getElementById("list").innerText="Waking backend... "+e.message;}
+}
+load();
+// auto detect?type=comic from URL
+if(new URLSearchParams(location.search).get("type")==="comic") setType("comic");
 </script>
 </body></html>
