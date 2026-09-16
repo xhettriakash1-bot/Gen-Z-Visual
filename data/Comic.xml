@@ -1,19 +1,27 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <comics>
   <comic>
     <id>1</id>
     <title>Alone - The Beginning</title>
     <author>GenZ Studio</author>
-    <cover>https://via.placeholder.com/300x400/ff00ff/ffffff?text=Alone+Comic</cover>
-    <desc>First chapter of Alone comic series.</desc>
-    <pages>https://via.placeholder.com/800x1200/111/fff?text=Page+1,https://via.placeholder.com/800x1200/222/fff?text=Page+2,https://via.placeholder.com/800x1200/333/fff?text=Page+3</pages>
+    <cover>https://picsum.photos/400/600?random=11</cover>
+    <description>First chapter of Alone comic series. A Gen-Z journey of solitude in neon city.</description>
+    <pages>https://picsum.photos/800/1200?random=101,https://picsum.photos/800/1200?random=102,https://picsum.photos/800/1200?random=103</pages>
   </comic>
   <comic>
     <id>2</id>
     <title>City Lights</title>
     <author>GenZ Studio</author>
-    <cover>https://via.placeholder.com/300x400/00ff88/000000?text=City+Lights</cover>
-    <desc>Life in the city at night.</desc>
-    <pages>https://via.placeholder.com/800x1200/111/fff?text=Page+1</pages>
+    <cover>https://picsum.photos/400/600?random=12</cover>
+    <description>Life in the city at night. Neon, love, and chaos.</description>
+    <pages>https://picsum.photos/800/1200?random=201,https://picsum.photos/800/1200?random=202</pages>
+  </comic>
+  <comic>
+    <id>3</id>
+    <title>Neon Dreams v700</title>
+    <author>Akash x Gen-Z</author>
+    <cover>https://picsum.photos/400/600?random=13</cover>
+    <description>ULTRA v700 LIVE demo comic. Firewall + Glass theme.</description>
+    <pages>https://picsum.photos/800/1200?random=301,https://picsum.photos/800/1200?random=302,https://picsum.photos/800/1200?random=303,https://picsum.photos/800/1200?random=304</pages>
   </comic>
 </comics>
