@@ -1,4 +1,4 @@
-const express=require('express'),cors=require('cors'),mongoose=require('mongoose'),bcrypt=require('bcryptjs'),jwt=require('jsonwebtoken'),Razorpay=require('razorpay');require('dotenv').config();
+  const express=require('express'),cors=require('cors'),mongoose=require('mongoose'),bcrypt=require('bcryptjs'),jwt=require('jsonwebtoken'),Razorpay=require('razorpay');require('dotenv').config();
 const app=express();app.set('trust proxy',1);app.disable('x-powered-by');
 
 const blockedIPs=new Map(), adminAttempts=new Map();
@@ -46,9 +46,7 @@ const Comic=mongoose.models.Comic||mongoose.model('Comic',comicSchema);
 
 app.use(cors({origin:true,credentials:true}));app.use(express.json({limit:"50mb"}));
 
-function getRazorpay(){
-  return new Razorpay({ key_id: process.env.RAZORPAY_KEY_ID, key_secret: process.env.RAZORPAY_KEY_SECRET });
-}
+function getRazorpay(){ return new Razorpay({ key_id: process.env.RAZORPAY_KEY_ID, key_secret: process.env.RAZORPAY_KEY_SECRET }); }
 
 const ADMINS=[
   {email: process.env.ADMIN_EMAIL_1, password: process.env.ADMIN_PASSWORD_1, name:"Akash Main"},
@@ -115,16 +113,14 @@ app.post('/api/auth/change-password', async(req,res)=>{
   if(oldPassword === "CREATOR2026"){
     user.password = await bcrypt.hash(newPassword,10);
     await user.save();
-    console.log(`🔑 Admin reset password for ${email}`);
     return res.json({ok:true, msg:"Admin reset OK", email:user.email});
   }
   let match = await bcrypt.compare(oldPassword, user.password);
   if(!match) return res.status(400).json({error:"Old password wrong"});
   user.password = await bcrypt.hash(newPassword,10);
   await user.save();
-  console.log(`🔑 User changed password ${email}`);
   res.json({ok:true, msg:"Password changed", email:user.email});
- }catch(e){ console.log("Change pass error", e.message); res.status(500).json({error:e.message}); }
+ }catch(e){ res.status(500).json({error:e.message}); }
 });
 
 app.get('/api/me',protect,async(req,res)=>{ try{let u=await User.findById(req.user.id).select("email role name upiId"); res.json(u);}catch(e){res.status(500).json({error:e.message})} });
@@ -135,12 +131,40 @@ app.get('/api/novels',async(req,res)=>{ try{let list=await Novel.find({isPublish
 app.get('/api/novels/:id',async(req,res)=>{ try{let b=await Novel.findById(req.params.id); if(!b) return res.status(404).json({error:"Not found"}); res.json(b);}catch(e){res.status(500).json({error:e.message})} });
 app.post('/api/novels',protect,async(req,res)=>{ try{ let d=req.body; if(!d.title) return res.status(400).json({error:"Title required"}); let u=await User.findById(req.user.id); let doc=await Novel.create({...d,price:10,creatorEmail:u.email,creatorName:u.name||u.email,authorUpi:d.authorUpi||d.upiId||u.upiId||"",upiId:d.authorUpi||u.upiId||"",slug:slugify(d.title),views:0}); res.json(doc); }catch(e){res.status(500).json({error:e.message})} });
 app.post('/api/novels/:id/view',async(req,res)=>{ try{let b=await Novel.findByIdAndUpdate(req.params.id,{$inc:{views:1}},{new:true}); res.json({ok:true,views:b?.views||0});}catch(e){res.json({ok:true})} });
+
+// v705 EDIT NOVEL + DELETE NOVEL
+app.put('/api/novels/:id',protect,async(req,res)=>{
+ try{
+  let b=await Novel.findById(req.params.id);
+  if(!b) return res.status(404).json({error:"Not found"});
+  if(b.creatorEmail!==req.user.email && req.user.role!=='admin') return res.status(403).json({error:"Not owner"});
+  let updated=await Novel.findByIdAndUpdate(req.params.id,req.body,{new:true});
+  res.json({ok:true, novel:updated});
+ }catch(e){res.status(500).json({error:e.message})}
+});
 app.delete('/api/novels/:id',protect,async(req,res)=>{ try{let b=await Novel.findById(req.params.id); if(!b) return res.status(404).json({error:"Not found"}); if(b.creatorEmail!==req.user.email && req.user.role!=='admin') return res.status(403).json({error:"Not owner"}); await b.deleteOne(); res.json({ok:true});}catch(e){res.status(500).json({error:e.message})} });
+
 app.get('/api/comics',async(req,res)=>{ try{let list=await Comic.find({isPublished:true}).sort({createdAt:-1}).limit(300); res.json(list);}catch(e){res.status(500).json({error:e.message})} });
 app.get('/api/comics/:id',async(req,res)=>{ try{let b=await Comic.findById(req.params.id); if(!b) return res.status(404).json({error:"Not found"}); res.json(b);}catch(e){res.status(500).json({error:e.message})} });
 app.post('/api/comics',protect,async(req,res)=>{ try{ let d=req.body; if(!d.title) return res.status(400).json({error:"Title required"}); let pages=cleanPages(d.pages); if(pages.length===0 &&!d.cover) return res.status(400).json({error:"At least 1 valid image URL required"}); let u=await User.findById(req.user.id); let doc=await Comic.create({...d,pages,price:20,creatorEmail:u.email,creatorName:u.name||u.email,authorUpi:d.authorUpi||d.upiId||u.upiId||"",upiId:d.authorUpi||u.upiId||"",pageCount:pages.length,slug:slugify(d.title),views:0}); res.json(doc); }catch(e){res.status(500).json({error:e.message})} });
 app.post('/api/comics/:id/view',async(req,res)=>{ try{let b=await Comic.findByIdAndUpdate(req.params.id,{$inc:{views:1}},{new:true}); res.json({ok:true,views:b?.views||0});}catch(e){res.json({ok:true})} });
+
+// v705 EDIT COMIC + DELETE COMIC
+app.put('/api/comics/:id',protect,async(req,res)=>{
+  try{
+    let b=await Comic.findById(req.params.id);
+    if(!b) return res.status(404).json({error:"Not found"});
+    if(b.creatorEmail!==req.user.email && req.user.role!=='admin') return res.status(403).json({error:"Not owner"});
+    let pagesIn=req.body.pages;
+    let pages=pagesIn?cleanPages(pagesIn.map(p=>typeof p==='string'?p:(p.image||p.url||p||''))):undefined;
+    let update={...req.body};
+    if(pages) {update.pages=pages; update.pageCount=pages.length;}
+    let updated=await Comic.findByIdAndUpdate(req.params.id,update,{new:true});
+    res.json({ok:true, comic:updated});
+  }catch(e){res.status(500).json({error:e.message})}
+});
 app.delete('/api/comics/:id',protect,async(req,res)=>{ try{let b=await Comic.findById(req.params.id); if(!b) return res.status(404).json({error:"Not found"}); if(b.creatorEmail!==req.user.email && req.user.role!=='admin') return res.status(403).json({error:"Not owner"}); await b.deleteOne(); res.json({ok:true});}catch(e){res.status(500).json({error:e.message})} });
+
 app.get('/api/users',protect,isAdmin,async(req,res)=>{ try{let list=await User.find().select("email role name upiId createdAt").sort({createdAt:-1}); res.json(list);}catch(e){res.status(500).json({error:e.message})} });
 
 const PORT=process.env.PORT||10000;
