@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Admin v704.5 - Gen-Z Visual LIVE</title>
+<title>Admin v704.7 - Gen-Z Visual LIVE</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#07070a;color:#fff;font-family:system-ui,sans-serif}
 header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#111;border-bottom:1px solid #222;position:sticky;top:0;z-index:99}
@@ -22,18 +22,18 @@ input{width:100%;padding:12px 14px;margin:6px 0;background:#0e0e12;border:1px so
 </style>
 </head><body>
 <header>
-<div class="logo">Gen-Z <span>Admin</span> <span style="font-size:9px;background:#00ff88;color:#000;padding:3px 8px;border-radius:20px">v704.5 LIVE</span></div>
+<div class="logo">Gen-Z <span>Admin</span> <span style="font-size:9px;background:#00ff88;color:#000;padding:3px 8px;border-radius:20px">v704.7 FIXED</span></div>
 <div style="display:flex;gap:8px;align-items:center">
 <span id="adminEmail" style="font-size:11px;color:#888"></span>
-<a href="index.html?v=704.5" style="background:#222;color:#aaa;padding:8px 12px;border-radius:20px;text-decoration:none;font-size:12px">Home</a>
+<a href="index.html?v=704.7" style="background:#222;color:#aaa;padding:8px 12px;border-radius:20px;text-decoration:none;font-size:12px">Home</a>
 <button onclick="logout()" style="background:#ef4444;color:#fff;border:none;padding:8px 12px;border-radius:20px;font-size:12px">Logout</button>
 </div>
 </header>
 
 <div class="wrap">
 <div class="card live">
-<b>👑 Admin v704.5 - LIVE DELETE FIX</b><br>
-<small style="color:#888">This admin deletes LIVE MongoDB + DEVICE both. Old v703.2 only deleted local.</small><br>
+<b>👑 Admin v704.7 - LIVE DELETE FIXED</b><br>
+<small style="color:#888">Deletes LIVE MongoDB for ALL readers + local. v704.7 wakeup optimized.</small><br>
 <div style="margin-top:10px">
 <span class="stat">LIVE Novels: <b id="cLiveNov">0</b></span>
 <span class="stat">LIVE Comics: <b id="cLiveCom">0</b></span>
@@ -49,7 +49,7 @@ input{width:100%;padding:12px 14px;margin:6px 0;background:#0e0e12;border:1px so
 
 <div class="grid2">
 <div class="card">
-<h3 style="margin:0 0 8px">📚 LIVE Novels + Comics (Delete from MongoDB)</h3>
+<h3 style="margin:0 0 8px">📚 LIVE Novels + Comics</h3>
 <div id="liveList">Loading LIVE...</div>
 </div>
 <div class="card">
@@ -64,22 +64,26 @@ input{width:100%;padding:12px 14px;margin:6px 0;background:#0e0e12;border:1px so
 <script>
 const API="https://gen-z-visual-2.onrender.com";
 function getToken(){return localStorage.getItem("token")||localStorage.getItem("genz_token")||"";}
-function logout(){localStorage.clear();location.href="login.html?v=704.5";}
+function logout(){localStorage.clear();location.href="login.html?v=704.7";}
+async function wake(){ try{ await fetch(API+"/",{cache:"no-store"}); }catch{} }
 async function loadLive(){
- document.getElementById("apiStatus").innerText="API: Checking...";
+ document.getElementById("apiStatus").innerText="API: Waking...";
  document.getElementById("liveList").innerText="Loading LIVE...";
  try{
-  let [rN,rC]=await Promise.all([fetch(API+"/api/novels"),fetch(API+"/api/comics")]);
+  await wake();
+  let [rN,rC]=await Promise.all([fetch(API+"/api/novels",{cache:"no-store"}),fetch(API+"/api/comics",{cache:"no-store"})]);
   let novels=await rN.json(); let comics=await rC.json();
-  document.getElementById("cLiveNov").innerText=novels.length;
-  document.getElementById("cLiveCom").innerText=comics.length;
-  document.getElementById("apiStatus").innerText=`API: LIVE ✅ - ${novels.length} novels, ${comics.length} comics`;
+  let nArr=Array.isArray(novels)?novels:(novels.novels||[]); 
+  let cArr=Array.isArray(comics)?comics:(comics.comics||[]);
+  document.getElementById("cLiveNov").innerText=nArr.length;
+  document.getElementById("cLiveCom").innerText=cArr.length;
+  document.getElementById("apiStatus").innerText=`API: LIVE ✅ v704.7 - ${nArr.length} novels, ${cArr.length} comics`;
   let html="";
-  novels.forEach(n=>{
-    html+=`<div class="novel"><img src="${n.cover||n.coverImage||'https://picsum.photos/100/140'}"><div style="flex:1"><span class="badge badge-live">LIVE</span> <b style="font-size:12px">${n.title}</b><br><small style="color:#666">${n.author||n.creatorEmail}</small></div><button class="btn btn-f" style="padding:6px 10px;font-size:11px" onclick="delLive('novels','${n._id}')">DEL LIVE</button></div>`;
+  nArr.forEach(n=>{
+    html+=`<div class="novel"><img src="${n.cover||n.coverImage||'https://picsum.photos/100/140'}"><div style="flex:1"><span class="badge badge-live">LIVE</span> <b style="font-size:12px">${(n.title||'').replace(/"/g,'')}</b><br><small style="color:#666">${n.author||n.creatorEmail}</small></div><button class="btn btn-f" style="padding:6px 10px;font-size:11px" onclick="delLive('novels','${n._id}')">DEL LIVE</button></div>`;
   });
-  comics.forEach(c=>{
-    html+=`<div class="novel"><img src="${c.cover||c.coverImage||c.pages?.[0]||'https://picsum.photos/100/140'}"><div style="flex:1"><span class="badge badge-live">LIVE COMIC</span> <b style="font-size:12px">${c.title}</b><br><small style="color:#666">${c.author||c.creatorEmail}</small></div><button class="btn btn-f" style="padding:6px 10px;font-size:11px" onclick="delLive('comics','${c._id}')">DEL LIVE</button></div>`;
+  cArr.forEach(c=>{
+    html+=`<div class="novel"><img src="${c.cover||c.coverImage||c.pages?.[0]||'https://picsum.photos/100/140'}"><div style="flex:1"><span class="badge badge-live">LIVE COMIC</span> <b style="font-size:12px">${(c.title||'').replace(/"/g,'')}</b><br><small style="color:#666">${c.author||c.creatorEmail}</small></div><button class="btn btn-f" style="padding:6px 10px;font-size:11px" onclick="delLive('comics','${c._id}')">DEL LIVE</button></div>`;
   });
   document.getElementById("liveList").innerHTML=html||"No LIVE data - Publish from Dashboard";
  }catch(e){
@@ -89,12 +93,12 @@ async function loadLive(){
  showMy();
 }
 async function delLive(type,id){
- if(!confirm("Delete LIVE "+type+" "+id+"? This removes for ALL readers!"))return;
+ if(!confirm("Delete LIVE "+type+" "+id+"? Removes for ALL!"))return;
  try{
   let r=await fetch(`${API}/api/${type}/${id}`,{method:"DELETE",headers:{Authorization:`Bearer ${getToken()}`}});
   let d=await r.json();
   if(d.ok||r.ok){alert("Deleted LIVE ✅"); loadLive();} else alert("Fail: "+JSON.stringify(d));
- }catch(e){alert("Error: "+e.message+" - Are you logged in as admin?");}
+ }catch(e){alert("Error: "+e.message+" - Login as admin first");}
 }
 function showMy(){
  try{
@@ -103,7 +107,7 @@ function showMy(){
    document.getElementById("cMy").innerText=n.length+b.length;
    let html="";
    [...n.map(x=>({...x,_k:"myNovels"})),...b.map(x=>({...x,_k:"myBooks"}))].forEach(it=>{
-     html+=`<div class="novel"><img src="${it.cover||it.coverImage||'https://picsum.photos/100/140'}"><div style="flex:1"><span class="badge badge-my">MY</span> <b style="font-size:12px">${it.title}</b></div><button class="btn btn-f" style="padding:6px 10px;font-size:11px" onclick="delMy('${it._k}','${it.id||it._id}')">DEL MY</button></div>`;
+     html+=`<div class="novel"><img src="${it.cover||it.coverImage||'https://picsum.photos/100/140'}"><div style="flex:1"><span class="badge badge-my">MY</span> <b style="font-size:12px">${(it.title||'').replace(/"/g,'')}</b></div><button class="btn btn-f" style="padding:6px 10px;font-size:11px" onclick="delMy('${it._k}','${it.id||it._id}')">DEL MY</button></div>`;
    });
    document.getElementById("myList").innerHTML=html||"No MY data";
    document.getElementById("adminEmail").innerText=JSON.parse(localStorage.getItem("user")||"{}").email||localStorage.getItem("email")||"Guest";
