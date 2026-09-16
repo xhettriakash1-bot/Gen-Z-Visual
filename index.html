@@ -1,4 +1,16 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Gen-Z Visual v704.5 FINAL</title>
+<!DOCTYPE html><html><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gen-Z Visual - Stories for Gen-Z by Gen-Z | Read Novels & Comics</title>
+<meta name="description" content="Gen-Z Visual is a platform to read, create and share visual stories, novels and comics. LIVE + LOCAL merged. Created by Akash.">
+<meta name="keywords" content="Gen-Z Visual, Gen Z stories, novels, comics, visual stories, Akash, akash1-bot, webcomic, webnovel">
+<meta name="author" content="Akash">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://akash1-bot.github.io/">
+<meta property="og:title" content="Gen-Z Visual - Stories for Gen-Z by Gen-Z">
+<meta property="og:description" content="Read, create, and share visual stories. LIVE + LOCAL merged.">
+<meta property="og:url" content="https://akash1-bot.github.io/">
+<meta property="og:type" content="website">
+<meta name="google-site-verification" content="PASTE_YOUR_CODE_HERE_AFTER_SEARCH_CONSOLE">
 <style>*{box-sizing:border-box}body{margin:0;background:#07070a;color:#fff;font-family:system-ui}
 header{position:sticky;top:0;z-index:99;display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:rgba(15,15,18,0.95);backdrop-filter:blur(20px);border-bottom:1px solid #222}
 .logo{font-weight:900;font-size:20px}.logo span{color:#ff00ff}
@@ -17,7 +29,9 @@ header{position:sticky;top:0;z-index:99;display:flex;justify-content:space-betwe
 .card-body{padding:10px}.card-body b{font-size:13px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.card-body small{color:#666;font-size:11px}
 .nav{position:fixed;bottom:0;left:0;right:0;background:#111;border-top:1px solid #222;display:flex;justify-content:space-around;padding:8px 0;z-index:99}
 .nav a{color:#666;text-decoration:none;font-size:11px;text-align:center}.nav a.active{color:#ff00ff}
-</style></head><body>
+</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Gen-Z Visual","url":"https://akash1-bot.github.io/","description":"Read, create, and share visual stories for Gen-Z"}</script>
+</head><body>
 <header><div class="logo">Gen-Z <span>Visual</span> <span style="font-size:10px;background:#00ff88;color:#000;padding:2px 6px;border-radius:20px">v704.5 FINAL</span></div>
 <div style="display:flex;gap:6px"><a href="login.html?v=704.5" class="top-btn primary">Login</a><a href="dashboard.html?v=704.5" class="top-btn">Studio</a></div></header>
 <div class="search-wrap"><input id="searchBox" placeholder="Search novels, comics..." oninput="filterCards()"></div>
@@ -28,4 +42,23 @@ header{position:sticky;top:0;z-index:99;display:flex;justify-content:space-betwe
 const API="https://gen-z-visual-2.onrender.com/api";
 let allItems=[];
 async function loadAll(){
- let grid=document.getElementById('grid'), status=document
+ let grid=document.getElementById('grid'), status=document.getElementById('status');
+ try{
+  status.innerText='● LIVE Checking...';
+  let r1=await fetch(API+'/novels'); let d1=await r1.json();
+  let r2=await fetch(API+'/comics'); let d2=await r2.json();
+  let novels=(d1.novels||d1||[]).map(n=>({...n,type:'novel'}));
+  let comics=(d2.comics||d2||[]).map(c=>({...c,type:'comic'}));
+  allItems=[...novels,...comics];
+  if(allItems.length==0){ grid.innerHTML='<div style="grid-column:1/-1;color:#666">No stories yet. Be first to publish!</div>'; status.innerText='● LIVE Empty'; return; }
+  render(allItems); status.innerText='● LIVE '+allItems.length+' stories';
+ }catch(e){ status.innerText='● LOCAL Mode'; let local=JSON.parse(localStorage.getItem('myNovels')||'[]'); allItems=local; render(local); }
+}
+function render(items){
+ let g=document.getElementById('grid');
+ g.innerHTML=items.map(i=>`<div class="card" onclick="openItem('${i._id||i.id}','${i.type||'novel'}')"><img src="${i.cover||i.coverImage||'https://picsum.photos/seed/'+(i._id||i.id)+'/400/600'}" loading="lazy"><div class="card-body"><b>${i.title||'Untitled'}</b><small>${i.author||'Akash'} • ${i.type||'novel'}</small></div></div>`).join('');
+}
+function filterCards(){ let q=document.getElementById('searchBox').value.toLowerCase(); render(allItems.filter(i=>(i.title||'').toLowerCase().includes(q))); }
+function openItem(id,type){ if(type=='comic') location.href='read-comic.html?id='+id; else location.href='read.html?id='+id; }
+loadAll();
+</script></body></html>
