@@ -1,80 +1,41 @@
 <!DOCTYPE html><html><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Gen-Z Visual v705 PRO - Stories for Gen-Z by Gen-Z</title>
-<meta name="description" content="Gen-Z Visual v705 PRO - Read, create and share visual stories, novels and comics LIVE + PAID + VIEWS. Created by Akash.">
-<meta name="author" content="Akash"><meta name="robots" content="index, follow">
-<link rel="canonical" href="https://xhettriakash1-bot.github.io/Gen-Z-Visual/">
-<meta property="og:title" content="Gen-Z Visual v705 PRO">
-<meta property="og:description" content="Read, create, and share visual stories LIVE + PAID + VIEWS">
-<meta property="og:url" content="https://xhettriakash1-bot.github.io/Gen-Z-Visual/">
-<meta name="google-site-verification" content="0PKQXsZ56wfXAtHi_2mM74ex5QUM0S9YN4yIBq8Z_vw" />
+<title>Gen-Z Visual v705 PRO</title>
 <style>*{box-sizing:border-box}body{margin:0;background:#07070a;color:#fff;font-family:system-ui}
-header{position:sticky;top:0;z-index:99;display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:rgba(15,15,18,0.95);backdrop-filter:blur(20px);border-bottom:1px solid #222}
+header{position:sticky;top:0;z-index:99;display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:rgba(15,15,18,0.95);border-bottom:1px solid #222}
 .logo{font-weight:900;font-size:20px}.logo span{color:#ff00ff}
 .top-btn{padding:8px 14px;border-radius:20px;border:1px solid #333;background:#1a1a1e;color:#aaa;text-decoration:none;font-size:12px;font-weight:700}
 .top-btn.primary{background:#fff;color:#000}
 .search-wrap{max-width:700px;margin:16px auto;padding:0 16px}
 .search-wrap input{width:100%;padding:14px 16px;background:#15151a;border:1px solid #25252c;border-radius:99px;color:#fff;outline:none}
 .hero{max-width:700px;margin:0 auto;padding:30px 20px}
-.hero h1{font-size:42px;line-height:0.9;letter-spacing:-2px;font-weight:900}
+.hero h1{font-size:42px;line-height:0.9;font-weight:900}
 .hero h1 span{background:linear-gradient(90deg,#ff00ff,#7a00ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.hero p{color:#888;font-size:14px;margin:14px 0;max-width:400px}
 .grid{max-width:700px;margin:0 auto;padding:0 16px 120px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.card{background:#15151a;border:1px solid #222;border-radius:16px;overflow:hidden;cursor:pointer;transition:transform .2s;position:relative}
-.card:hover{transform:translateY(-3px);border-color:#ff00ff44}
+.card{background:#15151a;border:1px solid #222;border-radius:16px;overflow:hidden;position:relative}
 .card img{width:100%;height:180px;object-fit:cover}
 .card-body{padding:10px}.card-body b{font-size:13px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.card-body small{color:#666;font-size:11px}
-.badge{position:absolute;top:8px;left:8px;padding:3px 8px;border-radius:20px;font-size:9px;font-weight:900}.live{background:#00ff88;color:#000}.paid{background:#facc15;color:#000}.xml{background:#333;color:#aaa}
-.nav{position:fixed;bottom:0;left:0;right:0;background:#111;border-top:1px solid #222;display:flex;justify-content:space-around;padding:8px 0;z-index:99}
+.badge{position:absolute;top:8px;left:8px;padding:3px 8px;border-radius:20px;font-size:9px;font-weight:900}.live{background:#00ff88;color:#000}.paid{background:#facc15;color:#000}
+.nav{position:fixed;bottom:0;left:0;right:0;background:#111;border-top:1px solid #222;display:flex;justify-content:space-around;padding:8px 0}
 .nav a{color:#666;text-decoration:none;font-size:11px;text-align:center}.nav a.active{color:#ff00ff}
+.footer{max-width:700px;margin:0 auto;padding:40px 20px 120px;text-align:center;border-top:1px solid #222;margin-top:30px}.footer a{color:#888;text-decoration:none;margin:0 8px;font-size:12px}
 </style>
 </head><body>
-<header><div class="logo">Gen-Z <span>Visual</span> <span style="font-size:10px;background:#00ff88;color:#000;padding:2px 6px;border-radius:20px">v705 PRO FINAL CLOSED</span></div>
-<div style="display:flex;gap:6px"><a href="login.html?v=705" class="top-btn primary">Login</a><a href="dashboard.html?v=705" class="top-btn">Studio</a></div></header>
-<div class="search-wrap"><input id="searchBox" placeholder="Search novels, comics, PAID, FREE..." oninput="filterCards()"></div>
-<div class="hero"><h1>Stories for<br><span>Gen-Z</span><br>by Gen-Z</h1><p>LIVE + PAID ₹ + 👁️ VIEWS + XML fallback — NEVER EMPTY v705 PRO</p><div style="display:flex;gap:10px"><a href="novels.html?v=705" style="padding:12px 20px;background:#fff;color:#000;border-radius:99px;text-decoration:none;font-weight:900;font-size:13px">📚 Novels →</a><a href="comics.html?v=705" style="padding:12px 20px;background:#ffffff15;color:#fff;border-radius:99px;text-decoration:none;font-weight:800;font-size:13px;border:1px solid #333">🎨 Comics</a></div><div id="status" style="margin-top:16px;font-size:11px;color:#00ff88">● Waking LIVE v705...</div><div id="stats" style="margin-top:6px;font-size:10px;color:#666"></div></div>
-<div id="grid" class="grid"><div style="grid-column:1/-1;text-align:center;color:#555;padding:20px">⏳ Waking LIVE v705 PRO... 15s<br><small>Free hosting sleeps - first load 15s</small></div></div>
-<div class="nav"><a href="index.html?v=705" class="active">🏠<br>Home</a><a href="novels.html?v=705">📚<br>Novels</a><a href="comics.html?v=705">💥<br>Comics</a><a href="dashboard.html?v=705">📝<br>Studio</a></div>
+<header><div class="logo">Gen-Z <span>Visual</span></div><div style="display:flex;gap:6px"><a href="login.html" class="top-btn primary">Login</a><a href="dashboard.html" class="top-btn">Studio</a></div></header>
+<div class="search-wrap"><input id="searchBox" placeholder="Search novels, comics..." oninput="filterCards()"></div>
+<div class="hero"><h1>Stories for<br><span>Gen-Z</span><br>by Gen-Z</h1><p>LIVE + PAID ₹ + VIEWS - NEVER EMPTY</p><div id="status" style="margin-top:16px;font-size:11px;color:#00ff88">● Waking LIVE...</div></div>
+<div id="grid" class="grid"></div>
+
+<footer class="footer">
+<div style="color:#666;font-size:11px;margin-bottom:12px">Gen-Z Visual © 2025 | Digital Novels ₹10 & Comics ₹20</div>
+<a href="terms.html">Terms</a> | <a href="privacy.html">Privacy</a> | <a href="refund.html">Refund</a> | <a href="cancellation.html">Cancellation</a> | <a href="contact.html">Contact</a>
+<div style="margin-top:12px;color:#555;font-size:10px">xhettriakash1@gmail.com | Instant Digital Delivery</div>
+</footer>
+
+<div class="nav"><a href="index.html" class="active">🏠<br>Home</a><a href="novels.html">📚<br>Novels</a><a href="comics.html">💥<br>Comics</a><a href="dashboard.html">📝<br>Studio</a></div>
 <script>
-const API_BASE="https://gen-z-visual-2.onrender.com";
-const API=API_BASE+"/api";
-let allItems=[];
-async function getLive(){
- try{
-  await fetch(API_BASE+"/",{cache:"no-store"});
-  let [r1,r2]=await Promise.all([fetch(API+'/novels',{cache:"no-store"}),fetch(API+'/comics',{cache:"no-store"})]);
-  let n=await r1.json(); let c=await r2.json();
-  n=Array.isArray(n)?n:(n.novels||[]); c=Array.isArray(c)?c:(c.comics||[]);
-  return [...n.map(x=>({...x,type:'novel'})), ...c.map(x=>({...x,type:'comic'}))];
- }catch{ return []; }
-}
-async function getXML(){
- try{
-  let [t1,t2]=await Promise.all([fetch("data/novels.xml?v=705",{cache:"no-store"}).then(r=>r.text()).catch(()=>""), fetch("data/comics.xml?v=705",{cache:"no-store"}).then(r=>r.text()).catch(()=>"" )]);
-  let items=[];
-  if(t1){ let doc=new DOMParser().parseFromString(t1,"text/xml"); [...doc.querySelectorAll("novel")].forEach(n=>{ items.push({ _id:n.querySelector("id")?.textContent, title:n.querySelector("title")?.textContent, author:n.querySelector("author")?.textContent||"GenZ", cover:n.querySelector("cover")?.textContent, type:'novel', access:'free', views:0, isXML:true }); }); }
-  if(t2){ let doc=new DOMParser().parseFromString(t2,"text/xml"); [...doc.querySelectorAll("comic")].forEach(n=>{ items.push({ _id:n.querySelector("id")?.textContent, title:n.querySelector("title")?.textContent, author:n.querySelector("author")?.textContent||"GenZ", cover:n.querySelector("cover")?.textContent, type:'comic', access:'free', views:0, isXML:true }); }); }
-  return items;
- }catch{ return []; }
-}
-async function loadAll(){
- let grid=document.getElementById('grid'), status=document.getElementById('status'), stats=document.getElementById('stats');
- let countdown=15; let timer=setInterval(()=>{countdown--; if(countdown>=0) status.innerText='● Waking LIVE v705... '+countdown+'s ⏳';},1000);
- let live=await getLive();
- clearInterval(timer);
- if(live.length>0){ allItems=live; render(allItems); status.innerText='● LIVE v705 PRO ✅ '+live.length+' stories'; stats.innerText='👁️ Total views: '+live.reduce((s,x)=>s+(x.views||0),0)+' • PAID: '+live.filter(x=>x.access==='paid').length; return; }
- let xml=await getXML();
- if(xml.length>0){ allItems=xml; render(allItems); status.innerText='⚠️ LIVE empty → XML fallback NEVER EMPTY'; stats.innerText=xml.length+' XML stories'; return; }
- grid.innerHTML='<div style="grid-column:1/-1;color:#666;text-align:center;padding:20px">No stories yet<br><a href="creator.html?v=705" style="background:#fff;color:#000;padding:10px 20px;border-radius:20px;text-decoration:none;font-weight:900;display:inline-block;margin-top:10px">Be first to publish!</a><br><br><button onclick="loadAll()" style="padding:10px 20px;border-radius:20px;background:#222;color:#fff;border:1px solid #333">🔄 Retry Wake</button></div>'; status.innerText='● Empty - backend waking retry';
-}
-function render(items){
- let g=document.getElementById('grid');
- g.innerHTML=items.map(i=>`<div class="card" onclick="openItem('${i._id}','${i.type}',${!!i.isXML})"><span class="badge ${i.isXML?'xml':(i.access==='paid'?'paid':'live')}">${i.isXML?'XML':(i.access==='paid'?'₹'+(i.price||'PAID'):'LIVE')} • 👁️ ${i.views||0}</span><img src="${i.cover||i.coverImage||i.pages?.[0]||'https://picsum.photos/seed/'+(i._id||'x')+'/400/600'}" loading="lazy"><div class="card-body"><b>${(i.title||'Untitled').slice(0,30)}</b><small>${i.author||'GenZ'} • ${i.type} • ${i.access==='paid'?'PAID':'FREE'}</small></div></div>`).join('');
-}
-function filterCards(){ let q=document.getElementById('searchBox').value.toLowerCase(); render(allItems.filter(i=> (i.title||'').toLowerCase().includes(q) || (i.author||'').toLowerCase().includes(q) || (i.type||'').toLowerCase().includes(q) || (i.access||'').toLowerCase().includes(q) )); }
-function openItem(id,type,isXML){
- if(isXML) location.href=(type==='comic'? 'read-comic.html?xml='+encodeURIComponent(id)+'&v=705' : 'read-novel.html?xml='+encodeURIComponent(id)+'&v=705');
- else location.href=(type==='comic'? 'read-comic.html?id='+id+'&v=705' : 'read-novel.html?id='+id+'&v=705');
-}
+const API_BASE="https://gen-z-visual-2.onrender.com"; const API=API_BASE+"/api"; let allItems=[];
+async function getLive(){ try{ let [r1,r2]=await Promise.all([fetch(API+'/novels'),fetch(API+'/comics')]); let n=await r1.json(); let c=await r2.json(); n=Array.isArray(n)?n:(n.novels||[]); c=Array.isArray(c)?c:(c.comics||[]); return [...n.map(x=>({...x,type:'novel'})), ...c.map(x=>({...x,type:'comic'}))]; }catch{ return []; } }
+async function loadAll(){ let live=await getLive(); let g=document.getElementById('grid'); if(live.length>0){ g.innerHTML=live.map(i=>`<div class="card"><span class="badge ${i.access==='paid'?'paid':'live'}">${i.access==='paid'?'₹'+(i.price||10):'LIVE'}</span><img src="${i.cover||i.coverImage}"><div class="card-body"><b>${i.title}</b><small>${i.author}</small></div></div>`).join(''); } }
 loadAll();
 </script></body></html>
