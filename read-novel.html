@@ -1,7 +1,6 @@
-  <!DOCTYPE html>
-<html lang="en"><head>
+<!DOCTYPE html><html lang="en"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Read Novel - Gen-Z Visual v704.5</title>
+<title>Read Novel - Gen-Z Visual v704.6</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#07070a;color:#fff;font-family:system-ui,sans-serif}
 header{position:sticky;top:0;z-index:99;display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:rgba(17,17,17,0.9);backdrop-filter:blur(20px);border-bottom:1px solid #222}
@@ -24,5 +23,82 @@ header{position:sticky;top:0;z-index:99;display:flex;justify-content:space-betwe
 </style>
 </head><body>
 <header>
-  <div class="logo">Gen-Z <span>Novel</span> <span style="font-size:9px;background:#00ff88;color:#000;padding:2px 6px;border-radius:10px">v704.5</span></div>
-  <a href="novels.html?v    
+  <div class="logo">Gen-Z <span>Novel</span> <span style="font-size:9px;background:#00ff88;color:#000;padding:2px 6px;border-radius:10px">v704.6</span></div>
+  <a href="novels.html?v=704.6" class="top-btn">✕ Close</a>
+</header>
+<div class="progress"><div class="progress-bar" id="bar"></div></div>
+<div class="reader-wrap">
+  <div class="info-card">
+    <img id="cover" src="https://picsum.photos/300/400?random=99" alt="">
+    <div class="info-text">
+      <h2 id="title">Loading novel...</h2>
+      <p id="author" style="font-size:12px;color:#888;margin-top:6px">by ...</p>
+      <p id="desc" style="font-size:11px;color:#aaa;margin-top:8px;line-height:1.4"></p>
+      <span class="badge" id="badge">🔍 Searching...</span>
+      <div class="controls">
+        <button class="ctrl" onclick="share()">↗ Share</button>
+        <button class="ctrl" onclick="toggleFS()">⛶ Fullscreen</button>
+      </div>
+    </div>
+  </div>
+  <div class="content-box" id="content">Loading story...</div>
+  <p style="text-align:center;color:#444;font-size:10px;margin-top:20px">Gen-Z Visual v704.6 LIVE Reader</p>
+</div>
+<div id="paywall" class="paywall"><div class="pay-box">
+<div style="font-size:40px">💎</div>
+<h2 style="margin:10px 0">Premium Novel</h2>
+<p id="payTitle" style="color:#888;font-size:13px"></p>
+<h1 id="payPrice" style="color:#00ff88;margin:10px 0">₹49</h1>
+<p style="font-size:11px;color:#666">Money goes directly to author via UPI</p>
+<button onclick="doPay()" style="width:100%;padding:14px;background:#00ff88;color:#000;border:none;border-radius:12px;font-weight:900;margin-top:12px;cursor:pointer">🔓 Pay & Unlock Now</button>
+<button onclick="mockUnlock()" style="width:100%;padding:10px;background:#222;color:#888;border:1px solid #333;border-radius:12px;margin-top:8px;font-size:11px;cursor:pointer">I already paid (Demo)</button>
+</div></div>
+<script>
+const API="https://gen-z-visual-2.onrender.com/api";
+let currentBook=null,currentId=null;
+async function loadStory(){
+  let params=new URLSearchParams(location.search);
+  let novelId=params.get("id");currentId=novelId;
+  if(!novelId){document.getElementById("title").innerText="No ID";return;}
+  let realId=novelId.replace("my_","");let book=null,source="";
+  document.getElementById("badge").innerText="🔍 Direct check...";
+  try{let r=await fetch(API+"/novels/"+realId);if(r.ok){book=await r.json();source="DIRECT ✅";}}catch(e){}
+  if(!book){try{let r=await fetch(API+"/comics/"+realId);if(r.ok){let b=await r.json();if(b.content){book=b;source="DIRECT COMIC";}}}catch(e){}}
+  if(!book){document.getElementById("badge").innerText="🔍 Searching list...";try{let res=await fetch(API+"/novels");if(res.ok){let list=await res.json();list=Array.isArray(list)?list:list.novels||[];book=list.find(x=>String(x._id)===String(realId)||String(x._id)===String(novelId)||String(x.id)===String(realId));if(book)source="LIVE LIST ✅";}}catch(e){}}
+  if(!book){try{let myNovels=JSON.parse(localStorage.getItem("myNovels")||"[]");let myBooks=JSON.parse(localStorage.getItem("myBooks")||"[]").filter(b=>!b.pages);let all=[...myNovels,...myBooks];book=all.find(x=>String(x.id||x._id)===String(realId)||String(x.id||x._id)===String(novelId));if(book)source="DEVICE";}catch(e){}}
+  if(!book){document.getElementById("title").innerText="Novel not found";document.getElementById("content").innerText=`ID ${novelId} not found on LIVE. Check ${API}/novels`;document.getElementById("badge").innerText="❌ Not Found";return;}
+  currentBook=book;
+  let access=(book.access||'free').toLowerCase();let price=book.price||49;
+  if(access==='paid'){
+    let user=null;try{user=JSON.parse(localStorage.getItem('user')||localStorage.getItem('genz_user')||'null')}catch{}
+    let bought=localStorage.getItem('bought_'+novelId)||localStorage.getItem('bought_'+realId);
+    let isOwner=false;if(user){let u=(user.email||'').toLowerCase();let c=(book.creatorEmail||'').toLowerCase();if(c&&u&&c===u)isOwner=true;if(u==='xhettriakash1@gmail.com')isOwner=true;}
+    if(source==="DEVICE")isOwner=true;
+    if(!bought&&!isOwner){
+      document.getElementById("title").innerText=book.title;
+      document.getElementById("author").innerText="by "+(book.author||'GenZ');
+      document.getElementById("cover").src=book.cover||book.coverImage||'';
+      document.getElementById("badge").innerText='💎 PAID • ₹'+price;
+      document.getElementById("payTitle").innerText=book.title;
+      document.getElementById("payPrice").innerText='₹'+price;
+      document.getElementById("paywall").classList.add('on');
+      document.getElementById("content").innerText='🔒 This novel is PAID. Please pay to unlock.';
+      return;
+    }
+  }
+  document.getElementById("title").innerText=book.title||"Untitled";
+  document.getElementById("author").innerText="by "+(book.author||book.creatorName||"Anonymous")+" • "+source+(access==='paid'?' • PAID ₹'+price:' • FREE');
+  document.getElementById("desc").innerText=book.description||"";
+  document.getElementById("cover").src=book.cover||book.coverImage||book.coverUrl||`https://picsum.photos/400/600?random=${realId}`;
+  document.getElementById("badge").innerText=source+" • "+(access==='paid'?'PAID ₹'+price:'FREE');
+  document.getElementById("content").innerText=book.content||book.pdf||book.description||"No content";
+  document.title=book.title+" - Gen-Z Visual";
+  document.getElementById("bar").style.width="100%";document.getElementById("bar").style.background="#00ff88";
+  window.addEventListener('scroll',()=>{let scrolled=(window.scrollY/(document.body.scrollHeight-window.innerHeight))*100;document.getElementById('bar').style.width=scrolled+'%';});
+}
+function doPay(){let upi=currentBook.authorUpi||'';let amt=currentBook.price||49;if(upi&&upi.includes('@')){window.location.href=`upi://pay?pa=${upi}&pn=GenZ Author&am=${amt}&cu=INR&tn=${encodeURIComponent(currentBook.title)}`;setTimeout(()=>{if(confirm('After payment, click OK to unlock')){localStorage.setItem('bought_'+currentId,'yes');location.reload();}},2000);}else{localStorage.setItem('bought_'+currentId,'yes');location.reload();}}
+function mockUnlock(){localStorage.setItem('bought_'+currentId,'yes');location.reload();}
+function share(){if(navigator.share) navigator.share({title:currentBook.title,text:currentBook.description,url:location.href});else{navigator.clipboard.writeText(location.href);alert("Link copied!");}}
+function toggleFS(){let el=document.getElementById("content");if(el.requestFullscreen)el.requestFullscreen();}
+loadStory();
+</script></body></html>
