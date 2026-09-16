@@ -24,7 +24,7 @@ const Comic=mongoose.models.Comic||mongoose.model('Comic',comicSchema);
 
 app.use(cors({origin:true,credentials:true}));app.use(express.json({limit:"50mb"}));
 
-// RAZORPAY SETUP - ADD KEYS IN RENDER ENV
+// RAZORPAY SETUP
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID || "rzp_test_xxxx",
   key_secret: process.env.RAZORPAY_KEY_SECRET || "xxxx"
@@ -44,7 +44,7 @@ function cleanPages(p){if(!Array.isArray(p)) return []; return [...new Set(p.map
 app.get('/',(req,res)=>res.json({ok:true,msg:"Gen-Z Visual v705 PRO FINAL CLOSED LIVE", time:new Date().toISOString()}));
 app.get('/api/health',(req,res)=>res.json({ok:true,mongo:mongoose.connection.readyState, v:"705 PRO RAZORPAY READY"}));
 
-// --- RAZORPAY ORDER API FOR Rs 10 / Rs 20 ---
+// --- RAZORPAY APIS - FINAL ---
 app.post('/api/create-order',async(req,res)=>{
  try{
   let {amount, title} = req.body;
@@ -58,6 +58,20 @@ app.post('/api/create-order',async(req,res)=>{
   let order = await razorpay.orders.create(options);
   res.json({ok:true, orderId: order.id, amount: order.amount, key_id: process.env.RAZORPAY_KEY_ID});
  }catch(e){ console.log(e); res.status(500).json({error:e.message}) }
+});
+
+app.post('/api/verify-payment', async (req,res)=>{
+ try{
+  const crypto = require('crypto');
+  const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+  const body = razorpay_order_id + "|" + razorpay_payment_id;
+  const expected = crypto.createHmac("sha256", process.env.RAZORPAY_KEY_SECRET).update(body).digest("hex");
+  if(expected === razorpay_signature){
+    res.json({ok:true, message:"Payment Verified!"});
+  } else {
+    res.status(400).json({ok:false, error:"Invalid Payment!"});
+  }
+ }catch(e){ res.status(500).json({error:e.message}) }
 });
 
 app.post('/api/auth/register',async(req,res)=>{
