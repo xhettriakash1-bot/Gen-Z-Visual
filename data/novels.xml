@@ -1,8 +1,52 @@
-<novel>
-  <id>3</id>
-  <title>Your New Title</title>
-  <author>GenZ Author</author>
-  <cover>your-image-link.jpg</cover>
-  <desc>Your description</desc>
-  <pdf>your-pdf-link.pdf</pdf>
-</novel>
+<?xml version="1.0" encoding="UTF-8"?>
+<novels>
+  <novel>
+    <id>1</id>
+    <title>Alone - The Silent Echo</title>
+    <author>GenZ Studio</author>
+    <cover>https://picsum.photos/400/600?random=21</cover>
+    <description>A boy lost in neon city, searching for meaning in silence. Gen-Z's first visual novel.</description>
+    <pdf>https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf</pdf>
+    <genre>Drama</genre>
+  </novel>
+
+  <novel>
+    <id>2</id>
+    <title>City of Broken Hearts</title>
+    <author>Akash Chettri</author>
+    <cover>https://picsum.photos/400/600?random=22</cover>
+    <description>Love, betrayal and neon nights. A story that hits like 2AM thoughts.</description>
+    <pdf>https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf</pdf>
+    <genre>Romance</genre>
+  </novel>
+
+  <novel>
+    <id>3</id>
+    <title>Your New Title</title>
+    <author>GenZ Author</author>
+    <cover>https://picsum.photos/400/600?random=23</cover>
+    <description>Your description - ULTRA v700 edition. Replace this with your real story description. This is now LIVE!</description>
+    <pdf>https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf</pdf>
+    <genre>Your Genre</genre>
+  </novel>
+
+  <novel>
+    <id>4</id>
+    <title>Firewall v700 - The Uprising</title>
+    <author>Gen-Z Visual Team</author>
+    <cover>https://picsum.photos/400/600?random=24</cover>
+    <description>When backend goes down, the firewall rises. The story of gen-z-visual-2 LIVE backend.</description>
+    <pdf>https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf</pdf>
+    <genre>Tech Thriller</genre>
+  </novel>
+
+  <novel>
+    <id>5</id>
+    <title>Neon Dreams - ULTRA</title>
+    <author>kash1-bot</author>
+    <cover>https://picsum.photos/400/600?random=25</cover>
+    <description>Glass, blur, neon. The aesthetic that made Gen-Z Visual v700.</description>
+    <pdf>https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf</pdf>
+    <genre>Aesthetic</genre>
+  </novel>
+</novels>
