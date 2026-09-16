@@ -1,7 +1,7 @@
 {
   "name": "gen-z-visual-backend",
   "version": "705.0",
-  "description": "Gen-Z Visual v705 PRO DYNAMIC + ADVANCE + USERFRIENDLY + UPI + VIEWS + SLUG",
+  "description": "Gen-Z Visual v705 PRO DYNAMIC + ADVANCE + USERFRIENDLY + UPI + VIEWS + SLUG + RAZORPAY",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
@@ -12,7 +12,8 @@
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "mongoose": "^8.4.0",
-    "jsonwebtoken": "^9.0.2"
+    "jsonwebtoken": "^9.0.2",
+    "razorpay": "^2.9.2"
   },
   "engines": {
     "node": "20.x"
