@@ -15,19 +15,16 @@ mongoose.connect(MONGO_URI,{dbName:"genzvisual"}).then(()=>{console.log("✅ Mon
 
 const userSchema=new mongoose.Schema({email:{type:String,unique:true,lowercase:true},password:String,role:{type:String,enum:['reader','creator','admin'],default:'reader'},name:String,portfolio:String,bio:String,upiId:{type:String,default:''},createdAt:{type:Date,default:Date.now}});
 const User=mongoose.models.User||mongoose.model('User',userSchema);
-
-const novelSchema=new mongoose.Schema({title:String,author:String,genre:String,description:String,cover:String,coverImage:String,content:String,type:String,creatorEmail:String,creatorName:String,chapters:Array,access:{type:String,enum:['free','paid'],default:'free'},price:{type:Number,default:0},authorUpi:String,upiId:String,upi:String,slug:String,views:{type:Number,default:0},isPublished:{type:Boolean,default:true}},{strict:false,timestamps:true});
+const novelSchema=new mongoose.Schema({title:String,author:String,genre:String,description:String,cover:String,coverImage:String,content:String,type:String,creatorEmail:String,creatorName:String,chapters:Array,access:{type:String,enum:['free','paid'],default:'free'},price:{type:Number,default:10},authorUpi:String,upiId:String,upi:String,slug:String,views:{type:Number,default:0},isPublished:{type:Boolean,default:true}},{strict:false,timestamps:true});
 const Novel=mongoose.models.Novel||mongoose.model('Novel',novelSchema);
-
-const comicSchema=new mongoose.Schema({title:String,author:String,description:String,cover:String,coverImage:String,pages:Array,type:String,creatorEmail:String,creatorName:String,access:{type:String,enum:['free','paid'],default:'free'},price:{type:Number,default:0},authorUpi:String,upiId:String,upi:String,slug:String,pageCount:Number,views:{type:Number,default:0},isPublished:{type:Boolean,default:true}},{strict:false,timestamps:true});
+const comicSchema=new mongoose.Schema({title:String,author:String,description:String,cover:String,coverImage:String,pages:Array,type:String,creatorEmail:String,creatorName:String,access:{type:String,enum:['free','paid'],default:'free'},price:{type:Number,default:20},authorUpi:String,upiId:String,upi:String,slug:String,pageCount:Number,views:{type:Number,default:0},isPublished:{type:Boolean,default:true}},{strict:false,timestamps:true});
 const Comic=mongoose.models.Comic||mongoose.model('Comic',comicSchema);
 
 app.use(cors({origin:true,credentials:true}));app.use(express.json({limit:"50mb"}));
 
-// RAZORPAY SETUP
 const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID || "rzp_test_xxxx",
-  key_secret: process.env.RAZORPAY_KEY_SECRET || "xxxx"
+  key_id: process.env.RAZORPAY_KEY_ID,
+  key_secret: process.env.RAZORPAY_KEY_SECRET
 });
 
 const ADMINS=[{email:"xhettriakash1@gmail.com",password:"Akash123",name:"Akash Main"},{email:"akashchettri2003@gmail.com",password:"Akashchettri2003",name:"Akash Second"}];
@@ -41,23 +38,29 @@ function slugify(t){return (t||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').slic
 function isValidUrl(u){try{let x=new URL(u);return x.protocol==='http:'||x.protocol==='https:';}catch{return false;}}
 function cleanPages(p){if(!Array.isArray(p)) return []; return [...new Set(p.map(s=>String(s||'').trim()).filter(s=>s.length>10 && isValidUrl(s)))].slice(0,100);}
 
-app.get('/',(req,res)=>res.json({ok:true,msg:"Gen-Z Visual v705 PRO FINAL CLOSED LIVE", time:new Date().toISOString()}));
-app.get('/api/health',(req,res)=>res.json({ok:true,mongo:mongoose.connection.readyState, v:"705 PRO RAZORPAY READY"}));
+app.get('/',(req,res)=>res.json({ok:true,msg:"Gen-Z Visual v705 PRO - Novel ₹10 Comic ₹20", time:new Date().toISOString()}));
+app.get('/api/health',(req,res)=>res.json({ok:true,mongo:mongoose.connection.readyState, v:"705 PRO - 10/20 LIVE", razorpay:!!process.env.RAZORPAY_KEY_ID}));
 
-// --- RAZORPAY APIS - FINAL ---
+// --- RAZORPAY - FIXED PRICE LOGIC ---
 app.post('/api/create-order',async(req,res)=>{
  try{
-  let {amount, title} = req.body;
-  amount = Number(amount) || 10;
+  let {amount, type, title} = req.body;
+  // FIXED: Force correct price
+  if(type==='comic') amount = 20;
+  else if(type==='novel') amount = 10;
+  else amount = Number(amount) || 10;
+
+  if(amount!== 10 && amount!== 20) amount = 10; // only allow 10 or 20
+
   let options = {
     amount: amount * 100,
     currency: "INR",
     receipt: "genz_"+Date.now(),
-    notes: { product: title || "Gen-Z Visual Story" }
+    notes: { product: title || type || "Gen-Z Visual", price: "₹"+amount }
   };
   let order = await razorpay.orders.create(options);
-  res.json({ok:true, orderId: order.id, amount: order.amount, key_id: process.env.RAZORPAY_KEY_ID});
- }catch(e){ console.log(e); res.status(500).json({error:e.message}) }
+  res.json({ok:true, id: order.id, orderId: order.id, amount: order.amount, key_id: process.env.RAZORPAY_KEY_ID, price: amount});
+ }catch(e){ console.log("Razorpay Error:", e.message); res.status(500).json({error:e.message}) }
 });
 
 app.post('/api/verify-payment', async (req,res)=>{
@@ -93,15 +96,15 @@ app.post('/api/save-upi',protect,async(req,res)=>{
 app.post('/api/fix-upi-all',protect,async(req,res)=>{ try{ let u=await User.findById(req.user.id); if(!u.upiId) return res.status(400).json({error:"Set UPI first"}); let n=await Novel.updateMany({creatorEmail:u.email},{authorUpi:u.upiId,upiId:u.upiId,upi:u.upiId}); let c=await Comic.updateMany({creatorEmail:u.email},{authorUpi:u.upiId,upiId:u.upiId,upi:u.upiId}); res.json({ok:true,count:(n.modifiedCount||0)+(c.modifiedCount||0),upiId:u.upiId}); }catch(e){res.status(500).json({error:e.message})} });
 app.get('/api/novels',async(req,res)=>{ try{let list=await Novel.find({isPublished:true}).sort({createdAt:-1}).limit(300); res.json(list);}catch(e){res.status(500).json({error:e.message})} });
 app.get('/api/novels/:id',async(req,res)=>{ try{let b=await Novel.findById(req.params.id); if(!b) return res.status(404).json({error:"Not found"}); res.json(b);}catch(e){res.status(500).json({error:e.message})} });
-app.post('/api/novels',protect,async(req,res)=>{ try{ let d=req.body; if(!d.title) return res.status(400).json({error:"Title required"}); let u=await User.findById(req.user.id); let doc=await Novel.create({...d,creatorEmail:u.email,creatorName:u.name||u.email,authorUpi:d.authorUpi||d.upiId||u.upiId||"",upiId:d.authorUpi||u.upiId||"",slug:slugify(d.title),views:0}); res.json(doc); }catch(e){res.status(500).json({error:e.message})} });
+app.post('/api/novels',protect,async(req,res)=>{ try{ let d=req.body; if(!d.title) return res.status(400).json({error:"Title required"}); let u=await User.findById(req.user.id); let doc=await Novel.create({...d,price:10,creatorEmail:u.email,creatorName:u.name||u.email,authorUpi:d.authorUpi||d.upiId||u.upiId||"",upiId:d.authorUpi||u.upiId||"",slug:slugify(d.title),views:0}); res.json(doc); }catch(e){res.status(500).json({error:e.message})} });
 app.post('/api/novels/:id/view',async(req,res)=>{ try{let b=await Novel.findByIdAndUpdate(req.params.id,{$inc:{views:1}},{new:true}); res.json({ok:true,views:b?.views||0});}catch(e){res.json({ok:true})} });
 app.delete('/api/novels/:id',protect,async(req,res)=>{ try{let b=await Novel.findById(req.params.id); if(!b) return res.status(404).json({error:"Not found"}); if(b.creatorEmail!==req.user.email && req.user.role!=='admin') return res.status(403).json({error:"Not owner"}); await b.deleteOne(); res.json({ok:true});}catch(e){res.status(500).json({error:e.message})} });
 app.get('/api/comics',async(req,res)=>{ try{let list=await Comic.find({isPublished:true}).sort({createdAt:-1}).limit(300); res.json(list);}catch(e){res.status(500).json({error:e.message})} });
 app.get('/api/comics/:id',async(req,res)=>{ try{let b=await Comic.findById(req.params.id); if(!b) return res.status(404).json({error:"Not found"}); res.json(b);}catch(e){res.status(500).json({error:e.message})} });
-app.post('/api/comics',protect,async(req,res)=>{ try{ let d=req.body; if(!d.title) return res.status(400).json({error:"Title required"}); let pages=cleanPages(d.pages); if(pages.length===0 &&!d.cover) return res.status(400).json({error:"At least 1 valid image URL required"}); let u=await User.findById(req.user.id); let doc=await Comic.create({...d,pages,creatorEmail:u.email,creatorName:u.name||u.email,authorUpi:d.authorUpi||d.upiId||u.upiId||"",upiId:d.authorUpi||u.upiId||"",pageCount:pages.length,slug:slugify(d.title),views:0}); res.json(doc); }catch(e){res.status(500).json({error:e.message})} });
+app.post('/api/comics',protect,async(req,res)=>{ try{ let d=req.body; if(!d.title) return res.status(400).json({error:"Title required"}); let pages=cleanPages(d.pages); if(pages.length===0 &&!d.cover) return res.status(400).json({error:"At least 1 valid image URL required"}); let u=await User.findById(req.user.id); let doc=await Comic.create({...d,pages,price:20,creatorEmail:u.email,creatorName:u.name||u.email,authorUpi:d.authorUpi||d.upiId||u.upiId||"",upiId:d.authorUpi||u.upiId||"",pageCount:pages.length,slug:slugify(d.title),views:0}); res.json(doc); }catch(e){res.status(500).json({error:e.message})} });
 app.post('/api/comics/:id/view',async(req,res)=>{ try{let b=await Comic.findByIdAndUpdate(req.params.id,{$inc:{views:1}},{new:true}); res.json({ok:true,views:b?.views||0});}catch(e){res.json({ok:true})} });
 app.delete('/api/comics/:id',protect,async(req,res)=>{ try{let b=await Comic.findById(req.params.id); if(!b) return res.status(404).json({error:"Not found"}); if(b.creatorEmail!==req.user.email && req.user.role!=='admin') return res.status(403).json({error:"Not owner"}); await b.deleteOne(); res.json({ok:true});}catch(e){res.status(500).json({error:e.message})} });
 app.get('/api/users',protect,isAdmin,async(req,res)=>{ try{let list=await User.find().select("email role name upiId createdAt").sort({createdAt:-1}); res.json(list);}catch(e){res.status(500).json({error:e.message})} });
 
 const PORT=process.env.PORT||10000;
-app.listen(PORT,()=>console.log(`✅ Gen-Z Visual v705 PRO RAZORPAY READY on ${PORT}`));
+app.listen(PORT,()=>console.log(`✅ Gen-Z Visual v705 LIVE - Novel ₹10 Comic ₹20 on ${PORT}`));
