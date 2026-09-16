@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Creator v705 PRO - Gen-Z Visual</title>
@@ -26,6 +26,9 @@ input:focus,textarea:focus{border-color:#ff00ff}
 <div class="wrap">
 <div class="card">
 <div id="upiBox" style="background:#00ff8815;border:1px solid #00ff8840;padding:10px;border-radius:12px;font-size:11px;margin-bottom:10px">💳 UPI: <span id="upiTxt">Checking...</span> <a href="dashboard.html?v=705" style="color:#00ff88">Set UPI</a></div>
+
+<!-- NEW PASSWORD CARD v705 -->
+<div style="background:#1a1a00;border:1px solid #ffcc00;padding:12px;border-radius:12px;margin-bottom:12px"><b style="font-size:13px">🔑 Change Password v705</b><br><input id="cpEmail" placeholder="Email*"><input id="cpOld" type="password" placeholder="Old OR CREATOR2026*"><input id="cpNew" type="password" placeholder="New Password*"><button class="btn" style="background:#ffcc00;color:#000" onclick="changePassCreator()">Change Password 🔑</button><div id="cpStat" style="font-size:11px;color:#ffcc00;margin-top:4px"></div></div>
 
 <div class="tabs">
 <div class="tab active" id="tabNovel" onclick="setType('novel')">📚 Novel</div>
@@ -80,9 +83,8 @@ document.getElementById("access").addEventListener("change", e=>{
 document.getElementById("content").addEventListener("input", e=>{
  document.getElementById("contentCnt").innerText=e.target.value.length+" / 30";
 });
-
 function isValidUrl(s){ try{ let u=new URL(s); return u.protocol==='http:'||u.protocol==='https:'; }catch{return false;} }
-
+async function changePassCreator(){ let email=cpEmail.value.trim(), oldP=cpOld.value, newP=cpNew.value; if(!email||!oldP||!newP){cpStat.innerText='Fill all';return;} if(newP.length<6){cpStat.innerText='Min 6';return;} cpStat.innerText='Changing v705...'; try{ await fetch(API+"/",{cache:"no-store"}); let r=await fetch(API+"/api/auth/change-password",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email, oldPassword:oldP, newPassword:newP})}); let d=await r.json(); cpStat.innerText=r.ok?'✅ Changed v705!':'❌ '+(d.error||'Add server.js route'); }catch(e){cpStat.innerText='❌ '+e.message;} }
 async function checkUpi(){
  try{
   await fetch(API+"/",{cache:"no-store"});
@@ -90,9 +92,9 @@ async function checkUpi(){
   let d=await r.json();
   if(d?.upiId){ UPI=d.upiId; document.getElementById("upiTxt").innerText=d.upiId+" ✅ PAID enabled"; document.getElementById("upiTxt").style.color="#00ff88"; }
   else { document.getElementById("upiTxt").innerText="Not set - PAID blocked ⚠️"; document.getElementById("upiTxt").style.color="#ffaa00"; }
+  document.getElementById("cpEmail").value=USER.email||localStorage.getItem("email")||"";
  }catch{ document.getElementById("upiTxt").innerText="Backend waking..."; }
 }
-
 async function publish(){
  let title=document.getElementById("title").value.trim();
  let cover=document.getElementById("cover").value.trim();
@@ -101,7 +103,6 @@ async function publish(){
  let access=document.getElementById("access").value;
  let price=Number(document.getElementById("price").value)||0;
  let m=document.getElementById("msg");
-
  if(!title||title.length<2){m.style.color="#f44";m.innerText="⛔ Title min 2 chars";return;}
  if(!desc||desc.length<10){m.style.color="#f44";m.innerText="⛔ Desc min 10 chars";return;}
  if(!TOKEN){m.style.color="#f44";m.innerHTML="⛔ Not logged in <a href='login.html?v=705' style='color:#ff00ff'>Login</a>";return;}
@@ -109,10 +110,8 @@ async function publish(){
    if(!UPI.includes('@')){m.style.color="#f44";m.innerText="❌ Save UPI in Dashboard first for PAID!";return;}
    if(price<10){m.style.color="#f44";m.innerText="❌ PAID price min ₹10";return;}
  }
-
  m.style.color="#fa0"; m.innerText="Publishing "+TYPE+" LIVE v705...";
  let body={title,description:desc,genre,access,price:access==='paid'?price:0, author:USER.name||USER.email||"GenZ", creatorEmail:USER.email};
-
  if(TYPE==="novel"){
   let content=document.getElementById("content").value.trim();
   if(!content||content.length<30){m.style.color="#f44";m.innerText="⛔ Novel content min 30, now "+content.length;return;}
