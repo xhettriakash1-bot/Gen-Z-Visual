@@ -1,4 +1,4 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Read Comic v704.6 FINAL</title>
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Read Comic v704.7 FIXED</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#07070a;color:#fff;font-family:system-ui}
 header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#111;border-bottom:1px solid #222;position:sticky;top:0;z-index:99}
@@ -17,12 +17,14 @@ header{display:flex;justify-content:space-between;align-items:center;padding:12p
 .paywall.on{display:flex}
 .pay-box{background:#15151a;border:1px solid #333;border-radius:24px;padding:24px;max-width:380px;width:100%;text-align:center}
 </style></head><body>
-<header><div class="logo">Gen-Z <span>Comics</span> <span style="font-size:10px;background:#00ff88;color:#000;padding:2px 6px;border-radius:10px">v704.6</span></div><a href="comics.html?v=704.6" class="top-btn">✕ Close</a></header>
+<header><div class="logo">Gen-Z <span>Comics</span> <span style="font-size:10px;background:#00ff88;color:#000;padding:2px 6px;border-radius:10px">v704.7 FIXED</span></div><a href="comic.html?v=704.7" class="top-btn">✕ Close</a></header>
 <div class="progress"><div class="progress-bar" id="bar"></div></div>
 <div class="reader-wrap">
 <div class="top-info"><img id="cover" src="https://picsum.photos/300/400"><div style="flex:1"><h2 id="t" style="margin:0;font-size:20px;font-weight:900">Loading...</h2><p id="author" style="font-size:12px;color:#888">...</p><p id="desc" style="font-size:11px;color:#666;margin-top:8px"></p><span id="badge" style="font-size:10px;background:#ff00ff22;border:1px solid #ff00ff40;padding:4px 10px;border-radius:20px;color:#ff8aff">Searching...</span><div style="margin-top:10px"><button class="ctrl" onclick="window.scrollBy({top:-innerHeight*0.8,behavior:'smooth'})">↑</button><button class="ctrl" onclick="window.scrollBy({top:innerHeight*0.8,behavior:'smooth'})">↓</button></div></div></div>
 <div class="comic-pages" id="pages"></div>
 </div>
+
+<!-- PAYWALL CLEAN - NO JS TEXT INSIDE -->
 <div id="paywall" class="paywall"><div class="pay-box">
 <div style="font-size:40px">💎</div>
 <h2 style="margin:10px 0">Premium Comic</h2>
@@ -30,26 +32,9 @@ header{display:flex;justify-content:space-between;align-items:center;padding:12p
 <h1 id="payPrice" style="color:#a855f7;margin:10px 0">₹49</h1>
 <p style="font-size:11px;color:#666">Money goes directly to author via UPI</p>
 <button onclick="doPay()" style="width:100%;padding:14px;background:#a855f7;color:#fff;border:none;border-radius:12px;font-weight:900;margin-top:12px;cursor:pointer">🔓 Pay & Unlock Now</button>
-function doPay(){
-  let upi=currentBook.authorUpi||''; 
-  let amt=currentBook.price||20;
-  if(!upi || !upi.includes('@')){alert('Author UPI not set');return;}
-  
-  // Open UPI app
-  window.location.href=`upi://pay?pa=${upi}&pn=GenZ Author&am=${amt}&cu=INR&tn=${encodeURIComponent(currentBook.title)}`;
-  
-  // Ask for Transaction ID - stops fraud!
-  setTimeout(()=>{
-    let txn=prompt('Enter UPI Transaction ID (12 digits) after payment:\n\nThis will be sent to author for verification');
-    if(txn && txn.length>=6){
-      localStorage.setItem('bought_'+currentId,'yes');
-      localStorage.setItem('txn_'+currentId,txn);
-      alert('Unlock request sent! Author will verify. If fake ID, access will be revoked.');
-      location.reload();
-    }
-  },3000);
-}
+<p style="font-size:10px;color:#555;margin-top:10px">After payment, enter Transaction ID</p>
 </div></div>
+
 <script>
 const API="https://gen-z-visual-2.onrender.com/api";
 let currentBook=null,currentId=null;
@@ -58,11 +43,8 @@ let id=new URLSearchParams(location.search).get("id");currentId=id;
 if(!id){document.getElementById("t").innerText="No ID";return;}
 let realId=id.replace("my_","");let book=null,source="";
 document.getElementById("badge").innerText="🔍 Direct check...";
-// 1. DIRECT ID - THIS FIXES YOUR SCREENSHOT BUG
 try{let r=await fetch(API+"/comics/"+realId);if(r.ok){book=await r.json();source="DIRECT ✅";}}catch(e){}
-// 2. LIST FALLBACK
 if(!book){try{let r=await fetch(API+"/comics");if(r.ok){let list=await r.json();list=Array.isArray(list)?list:list.comics||[];book=list.find(x=>String(x._id)===String(realId)||String(x._id)===String(id)||String(x.id)===String(realId));if(book)source="LIVE LIST ✅";}}catch(e){}}
-// 3. DEVICE
 if(!book){try{let my=JSON.parse(localStorage.getItem("myComics")||"[]");book=my.find(x=>String(x.id||x._id)===String(realId)||String(x.id||x._id)===String(id));if(book)source="DEVICE";}catch(e){}}
 if(!book){document.getElementById("t").innerText="Comic not found";document.getElementById("pages").innerHTML=`ID ${id} not found on LIVE.<br>Wake up Render: <a href="${API}/comics" style="color:#a855f7" target="_blank">${API}/comics</a>`;document.getElementById("badge").innerText="❌ Not Found";return;}
 currentBook=book;
@@ -82,7 +64,23 @@ let pages=book.pages||[];let html="";pages.forEach((p,i)=>{html+=`<div><img src=
 document.getElementById("pages").innerHTML=html||"No pages";
 window.addEventListener('scroll',()=>{let s=(window.scrollY/(document.body.scrollHeight-window.innerHeight))*100;document.getElementById('bar').style.width=s+'%';});
 }
-function doPay(){let upi=currentBook.authorUpi||'';let amt=currentBook.price||49;if(upi&&upi.includes('@')){window.location.href=`upi://pay?pa=${upi}&pn=GenZ&am=${amt}&cu=INR&tn=${encodeURIComponent(currentBook.title)}`;setTimeout(()=>{if(confirm('Paid? Click OK to unlock')){localStorage.setItem('bought_'+currentId,'yes');location.reload();}},2000);}else{localStorage.setItem('bought_'+currentId,'yes');location.reload();}}
-function mockUnlock(){localStorage.setItem('bought_'+currentId,'yes');location.reload();}
+
+function doPay(){
+  let upi=currentBook.authorUpi||currentBook.upi||'';
+  let amt=currentBook.price||20;
+  if(!upi || !upi.includes('@')){alert('Author UPI not set');return;}
+  window.location.href=`upi://pay?pa=${upi}&pn=GenZ-Visual&am=${amt}&cu=INR&tn=${encodeURIComponent(currentBook.title)}`;
+  setTimeout(()=>{
+    let txn=prompt('Enter UPI Transaction ID (12 digits) after payment:\n\nThis will be sent to author for verification');
+    if(txn && txn.length>=6){
+      localStorage.setItem('bought_'+currentId,'yes');
+      localStorage.setItem('txn_'+currentId,txn);
+      localStorage.setItem('bought_'+currentId.replace('my_',''),'yes');
+      alert('Unlock request sent! Author will verify. If fake ID, access will be revoked.');
+      location.reload();
+    }
+  },3000);
+}
+
 loadStory();
 </script></body></html>
