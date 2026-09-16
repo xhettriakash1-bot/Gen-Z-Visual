@@ -1,4 +1,4 @@
-// GEN-Z VISUAL - v704.5 FINAL SAFE + FIREWALL FRIENDLY - 16 Sep 2026
+// GEN-Z VISUAL - v704.5 FINAL SAFE + FIREWALL FRIENDLY - 16 Sep 2026 + FREE/PAID TOGGLE
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
@@ -43,10 +43,13 @@ const userSchema = new mongoose.Schema({
 });
 const User = mongoose.models.User || mongoose.model('User', userSchema);
 
+// === UPDATED WITH FREE/PAID ===
 const novelSchema = new mongoose.Schema({
   title: String, author: String, genre: String, description: String,
   cover: String, coverImage: String, content: String, type: String,
   creatorEmail: String, creatorName: String, chapters: Array,
+  access: { type: String, enum: ['free','paid'], default: 'free' },
+  price: { type: Number, default: 0 },
 }, { strict: false, timestamps: true });
 const Novel = mongoose.models.Novel || mongoose.model('Novel', novelSchema);
 
@@ -54,6 +57,8 @@ const comicSchema = new mongoose.Schema({
   title: String, author: String, description: String,
   cover: String, coverImage: String, pages: Array, type: String,
   creatorEmail: String, creatorName: String,
+  access: { type: String, enum: ['free','paid'], default: 'free' },
+  price: { type: Number, default: 0 },
 }, { strict: false, timestamps: true });
 const Comic = mongoose.models.Comic || mongoose.model('Comic', comicSchema);
 
@@ -88,8 +93,8 @@ const isAdmin = (req,res,next)=>{
   next();
 };
 
-app.get('/api/health',(req,res)=>res.json({ok:true,v:"v704.5 FINAL",mongo:mongoose.connection.readyState===1?"connected":"disconnected",firewall:"ON ✅"}));
-app.get('/',(req,res)=>res.send("🟢 v704.5 FINAL LIVE - Gen-Z Visual"));
+app.get('/api/health',(req,res)=>res.json({ok:true,v:"v704.5 FINAL",mongo:mongoose.connection.readyState===1?"connected":"disconnected",firewall:"ON ✅", features: "FREE/PAID ✅"}));
+app.get('/',(req,res)=>res.send("🟢 v704.5 FINAL LIVE - Gen-Z Visual + FREE/PAID"));
 
 async function loginHandler(req,res){
   try{
@@ -124,13 +129,13 @@ app.post('/api/register-creator',registerHandler);
 app.get('/api/users',protect,isAdmin,async(req,res)=>res.json(await User.find().select('-password').sort({createdAt:-1})));
 app.get('/api/novels',async(req,res)=>res.json(await Novel.find().sort({createdAt:-1}).limit(200)));
 app.post('/api/novels',protect,async(req,res)=>{
-  let novel=await Novel.create({...req.body,type:'novel',creatorEmail:req.user.email,creatorName:req.user.email});
+  let novel=await Novel.create({...req.body,type:'novel',creatorEmail:req.user.email,creatorName:req.user.email, access: req.body.access||'free', price: req.body.price||0});
   res.json({ok:true,novel});
 });
 app.get('/api/comics',async(req,res)=>res.json(await Comic.find().sort({createdAt:-1}).limit(200)));
 app.post('/api/comics',protect,async(req,res)=>{
   if(JSON.stringify(req.body).length>4*1024*1024) return res.status(413).json({error:"Too large, use 8 pages max compressed"});
-  let comic=await Comic.create({...req.body,type:'comic',creatorEmail:req.user.email,creatorName:req.user.email,cover:req.body.cover||req.body.coverImage||(req.body.pages&&req.body.pages[0])});
+  let comic=await Comic.create({...req.body,type:'comic',creatorEmail:req.user.email,creatorName:req.user.email,cover:req.body.cover||req.body.coverImage||(req.body.pages&&req.body.pages[0]), access: req.body.access||'free', price: req.body.price||0});
   res.json({ok:true,comic});
 });
 app.get('/api/books',async(req,res)=>{
@@ -138,8 +143,21 @@ app.get('/api/books',async(req,res)=>{
   let c=await Comic.find().sort({createdAt:-1}).limit(100);
   res.json([...n,...c]);
 });
+
+// NEW - CHECK IF CAN READ
+app.get('/api/can-read/:id',protect,async(req,res)=>{
+  try{
+    let book = await Novel.findById(req.params.id) || await Comic.findById(req.params.id);
+    if(!book) return res.status(404).json({error:"Not found"});
+    if(book.access==='free' ||!book.access) return res.json({canRead:true});
+    if(req.user.role==='admin') return res.json({canRead:true});
+    if(book.creatorEmail===req.user.email) return res.json({canRead:true});
+    res.json({canRead:false, needSubscription:true, price: book.price||0});
+  }catch(e){ res.status(500).json({error:e.message}); }
+});
+
 app.delete('/api/novels/:id',protect,isAdmin,async(req,res)=>{await Novel.findByIdAndDelete(req.params.id); res.json({ok:true});});
 app.delete('/api/comics/:id',protect,isAdmin,async(req,res)=>{await Comic.findByIdAndDelete(req.params.id); res.json({ok:true});});
 
 const PORT=process.env.PORT||10000;
-app.listen(PORT,()=>console.log(`✅ v704.5 FINAL LIVE + FIREWALL ON ${PORT}`));
+app.listen(PORT,()=>console.log(`✅ v704.5 FINAL LIVE + FIREWALL + FREE/PAID ${PORT}`));
