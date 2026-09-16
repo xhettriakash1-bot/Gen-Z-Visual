@@ -1,28 +1,23 @@
 <!DOCTYPE html><html><head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Studio v704 - Novel + Comic</title>
+<title>Studio v704.1 - Fixed Comic</title>
 <style>body{background:#000;color:#fff;font-family:sans-serif;padding:0;margin:0}.top{background:#111;padding:14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #222;position:sticky;top:0;z-index:99}.card{background:#151515;border:1px solid #222;border-radius:16px;padding:14px;margin:12px}.input,textarea{width:100%;padding:12px;background:#0a0a0a;border:1px solid #333;border-radius:10px;color:#fff;margin:6px 0;box-sizing:border-box}.btn{width:100%;padding:12px;background:#fff;color:#000;border:none;border-radius:10px;font-weight:900;margin-top:8px;cursor:pointer}.btn-c{background:linear-gradient(135deg,#ff8800,#ff5500);color:#fff}.tab{display:inline-block;padding:10px 18px;border-radius:99px;border:1px solid #333;margin:4px;font-weight:800;cursor:pointer;font-size:13px}.tab.active{background:#fff;color:#000}.stat{display:inline-block;background:#1a1a1a;border:1px solid #222;border-radius:10px;padding:8px 14px;margin:4px;text-align:center;font-size:12px}.prev img{width:56px;height:76px;object-fit:cover;border-radius:8px;border:1px solid #333;margin:4px}
 </style>
 </head><body>
 <div class="top">
-<div style="font-weight:900">Gen-Z <span style="color:#ff8800">Studio v704</span></div>
-<div><a href="index.html" style="color:#888;text-decoration:none;font-size:12px;margin-right:8px">Home</a><a href="comic.html" style="color:#ff8800;text-decoration:none;font-size:12px;font-weight:800">Comics</a></div>
+<div style="font-weight:900">Gen-Z <span style="color:#ff8800">Studio v704.1</span></div>
+<div><a href="index.html" style="color:#888;text-decoration:none;font-size:12px;margin-right:8px">Home</a><a href="comic.html?v=704" style="color:#ff8800;text-decoration:none;font-size:12px;font-weight:800">Comics</a></div>
 </div>
-
 <div style="max-width:600px;margin:0 auto;padding:12px">
-
 <div class="card" style="background:#1a001a">
 <b id="adminStatus">👤 User Mode</b><br>
-<small style="color:#888">Pass: admin123 | Login to enable DELETE</small><br><br>
+<small style="color:#888">Pass: Akash123 | Login to enable DELETE</small><br><br>
 <div style="display:flex;gap:8px"><button class="btn" style="background:#ff00ff;color:#fff;margin:0" onclick="login()">🔐 ADMIN LOGIN</button><button class="btn" style="background:#333;color:#fff;margin:0;display:none" id="logoutBtn" onclick="logout()">Logout</button></div>
 </div>
-
 <div class="card" style="text-align:center">
 <div class="tab active" id="tN" onclick="tab('novel')">📚 Publish Novel</div>
 <div class="tab" id="tC" onclick="tab('comic')">💥 Publish Comic</div>
 </div>
-
-<!-- NOVEL -->
 <div id="novelBox" class="card">
 <b>📚 Publish Novel</b>
 <input id="nTitle" class="input" placeholder="Novel Title *">
@@ -32,54 +27,50 @@
 <textarea id="nContent" rows="6" placeholder="Chapter 1 content..."></textarea>
 <button class="btn" onclick="publishNovel()">📚 Publish Novel</button>
 </div>
-
-<!-- COMIC -->
 <div id="comicBox" class="card" style="display:none">
 <b>💥 Publish Comic</b>
 <input id="cTitle" class="input" placeholder="Comic Title *">
 <input id="cAuthor" class="input" placeholder="Author">
 <input id="cCover" class="input" placeholder="Cover URL (optional)">
 <textarea id="cDesc" rows="2" placeholder="Description..."></textarea>
-<input type="file" id="cPages" multiple accept="image/*" onchange="prev(event)" style="color:#fff">
+<input type="file" id="cPages" multiple accept="image/*" onchange="prev(event)" style="color:#fff;width:100%">
 <div class="prev" id="preview"></div>
-<button class="btn btn-c" onclick="publishComic()">💥 Publish Comic (from Device)</button>
-<small style="color:#666;display:block;margin-top:6px">Select multiple images = comic pages</small>
+<div id="sizeInfo" style="font-size:11px;color:#ff8800;margin:6px 0"></div>
+<button class="btn btn-c" onclick="publishComic()">💥 Publish Comic (Compressed)</button>
+<small style="color:#666;display:block;margin-top:6px">Auto compress to 600px | Max 15 pages at once</small>
 </div>
-
 <div id="adminBox" style="display:none">
-<div class="card">
-<div><span class="stat">Novels: <b id="c1">0</b></span> <span class="stat">Comics: <b id="c2">0</b></span> <span class="stat">Storage: <b id="c3">0</b></span></div>
+<div class="card"><div><span class="stat">Novels: <b id="c1">0</b></span> <span class="stat">Comics: <b id="c2">0</b></span> <span class="stat">Storage: <b id="c3">0</b></span></div></div>
+<div class="card"><b>Change Password</b><input id="newPass" class="input" placeholder="new password"><button class="btn" style="background:#0f8" onclick="changeP()">Update Password</button><div style="font-size:11px;color:#666;margin-top:6px">Current: <span id="curP"></span></div></div>
 </div>
-<div class="card">
-<b>Change Password</b>
-<input id="newPass" class="input" placeholder="new password">
-<button class="btn" style="background:#0f8" onclick="changeP()">Update Password</button>
-<div style="font-size:11px;color:#666;margin-top:6px">Current: <span id="curP"></span></div>
-</div>
-</div>
-
-<div class="card">
-<b>All Books (DELETE Control)</b>
-<div id="list"></div>
-</div>
-
+<div class="card"><b>All Books (DELETE Control)</b><div id="list"></div></div>
 </div>
 <script>
 let comicPages=[], isAdmin=localStorage.getItem("isAdmin")==="true";
 function getPass(){return localStorage.getItem("adminPass")||"Akash123";}
-function tab(t){
- document.getElementById('novelBox').style.display=t==='novel'?'block':'none';
- document.getElementById('comicBox').style.display=t==='comic'?'block':'none';
- document.getElementById('tN').className=t==='novel'?'tab active':'tab';
- document.getElementById('tC').className=t==='comic'?'tab active':'tab';
-}
-function login(){let p=prompt("Password?"); if(p===getPass()){localStorage.setItem("isAdmin","true");isAdmin=true;show();}else alert("Wrong - try Akash123");}
+function tab(t){ document.getElementById('novelBox').style.display=t==='novel'?'block':'none'; document.getElementById('comicBox').style.display=t==='comic'?'block':'none'; document.getElementById('tN').className=t==='novel'?'tab active':'tab'; document.getElementById('tC').className=t==='comic'?'tab active':'tab'; }
+function login(){let p=prompt("Password?"); if(p===getPass()){localStorage.setItem("isAdmin","true");isAdmin=true;show();}else alert("Wrong - try "+getPass());}
 function logout(){localStorage.removeItem("isAdmin");isAdmin=false;show();}
 function changeP(){let v=document.getElementById("newPass").value; if(v.length<4){alert("min 4");return;} localStorage.setItem("adminPass",v); show();}
+
+// COMPRESS IMAGES v704.1 FIX
 function prev(e){
- comicPages=[]; document.getElementById('preview').innerHTML='';
- [...e.target.files].forEach(f=>{
-  let r=new FileReader(); r.onload=ev=>{ comicPages.push(ev.target.result); let im=document.createElement('img'); im.src=ev.target.result; document.getElementById('preview').appendChild(im); }; r.readAsDataURL(f);
+ comicPages=[]; document.getElementById('preview').innerHTML=''; document.getElementById('sizeInfo').innerText='Compressing...';
+ let files=[...e.target.files].slice(0,15);
+ let done=0;
+ files.forEach(f=>{
+  let r=new FileReader();
+  r.onload=ev=>{
+   let img=new Image(); img.onload=()=>{
+    let c=document.createElement('canvas'); let max=600; let ratio=Math.min(max/img.width,max/img.height,1);
+    c.width=img.width*ratio; c.height=img.height*ratio;
+    c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+    let compressed=c.toDataURL('image/jpeg',0.6);
+    comicPages.push(compressed);
+    let im=document.createElement('img'); im.src=compressed; document.getElementById('preview').appendChild(im);
+    done++; if(done===files.length){ document.getElementById('sizeInfo').innerText=done+' pages | ~'+Math.round(JSON.stringify(comicPages).length/1024)+'KB (compressed)'; }
+   }; img.src=ev.target.result;
+  }; r.readAsDataURL(f);
  });
 }
 function publishNovel(){
@@ -90,29 +81,9 @@ function publishNovel(){
 }
 function publishComic(){
  let t=document.getElementById('cTitle').value; if(!t){alert('Title?');return;}
- if(!comicPages.length){alert('Select comic pages!');return;}
- let a=JSON.parse(localStorage.getItem('myBooks')||'[]');
- a.unshift({id:Date.now(),title:t,author:document.getElementById('cAuthor').value||'You',cover:document.getElementById('cCover').value||comicPages[0],description:document.getElementById('cDesc').value,pages:comicPages});
- localStorage.setItem('myBooks',JSON.stringify(a)); alert('Comic Published! '+comicPages.length+' pages'); location.href='comic.html?v=704';
-}
-function del(k,id){ if(!isAdmin){alert('Login as admin to delete');return;} if(!confirm("Delete?")) return; let a=JSON.parse(localStorage.getItem(k)||"[]"); a=a.filter(x=>String(x.id)!==String(id)); localStorage.setItem(k,JSON.stringify(a)); show(); }
-function show(){
- document.getElementById('adminStatus').innerText=isAdmin?"👑 ADMIN MODE":"👤 User Mode";
- document.getElementById('adminBox').style.display=isAdmin?"block":"none";
- document.getElementById('logoutBtn').style.display=isAdmin?"block":"none";
- document.getElementById('curP').innerText=getPass();
+ if(!comicPages.length){alert('Select comic pages first!');return;}
+ let item={id:Date.now(),title:t,author:document.getElementById('cAuthor').value||'You',cover:document.getElementById('cCover').value||comicPages[0],description:document.getElementById('cDesc').value,pages:comicPages,createdAt:Date.now()};
  try{
-  let n=JSON.parse(localStorage.getItem("myNovels")||"[]");
-  let c=JSON.parse(localStorage.getItem("myBooks")||"[]");
-  document.getElementById('c1').innerText=n.length; document.getElementById('c2').innerText=c.length;
-  document.getElementById('c3').innerText=Math.round(((localStorage.getItem("myNovels")||"").length+(localStorage.getItem("myBooks")||"").length)/1024)+"KB";
-  let html=""; [...n.map(x=>({...x,k:"myNovels",type:"📚"}),...c.map(x=>({...x,k:"myBooks",type:"💥"}))].forEach(it=>{
-   html+=`<div style="display:flex;gap:8px;align-items:center;background:#1e1e1e;padding:8px;border-radius:8px;margin:6px 0"><img src="${it.cover}" style="width:36px;height:50px;object-fit:cover;border-radius:6px"><div style="flex:1;font-size:12px"><b>${it.type} ${it.title}</b><br><small style="color:#666">${it.pages?it.pages.length+' pages':'novel'}</small></div><button onclick="del('${it.k}','${it.id}')" style="background:#f00;color:#fff;border:none;padding:6px 10px;border-radius:6px;font-size:11px">DEL</button></div>`;
-  });
-  document.getElementById('list').innerHTML=html||"Empty - Publish first";
- }catch(e){ document.getElementById('list').innerHTML=`Error: ${e.message} <br><button onclick="localStorage.clear();location.reload()" style="background:red;color:white;padding:8px;border:none;border-radius:6px;margin-top:8px">CLEAR ALL</button>`; }
-}
-let typ=new URLSearchParams(location.search).get('type'); if(typ==='comic') tab('comic');
-show();
-</script>
-</body></html>
+  let a=JSON.parse(localStorage.getItem('myBooks')||'[]'); a.unshift(item); localStorage.setItem('myBooks',JSON.stringify(a));
+  let b=JSON.parse(localStorage.getItem('myComics')||'[]'); b.unshift(item); localStorage.setItem('myComics',JSON.stringify(b));
+  alert('✅ Comic Published! '+comicPages.length
