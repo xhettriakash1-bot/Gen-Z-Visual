@@ -1,79 +1,37 @@
-<!DOCTYPE html>
-<html><head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Read Comic ULTRA v704.5</title>
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Read Comic v704.5 FINAL</title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#07070a;color:#fff;font-family:system-ui,sans-serif}
-header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:rgba(17,17,17,0.9);backdrop-filter:blur(20px);border-bottom:1px solid #222;position:sticky;top:0;z-index:99}
+*{box-sizing:border-box}body{margin:0;background:#07070a;color:#fff;font-family:system-ui}
+header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#111;border-bottom:1px solid #222;position:sticky;top:0;z-index:99}
 .logo{font-weight:900}.logo span{color:#ff8800}
-.top-btn{padding:8px 16px;border-radius:99px;text-decoration:none;font-weight:800;font-size:12px}
+.top-btn{padding:8px 16px;border-radius:99px;background:#fff;color:#000;text-decoration:none;font-weight:800;font-size:12px}
 .reader-wrap{max-width:700px;margin:0 auto;padding:16px 20px 120px}
-.top-info{background:rgba(20,20,23,0.85);backdrop-filter:blur(25px);border:1px solid rgba(255,255,255,0.08);border-top:1px solid rgba(255,255,255,0.12);border-radius:28px;padding:20px;margin-bottom:16px;display:flex;gap:16px;box-shadow:0 20px 50px rgba(0,0,0,0.5);position:relative;overflow:hidden}
-.top-info::before{content:"";position:absolute;inset:0;background:radial-gradient(400px circle at 0% 0%,rgba(255,0,255,0.08),transparent 60%);pointer-events:none}
-.top-info img{width:90px;height:130px;border-radius:16px;object-fit:cover;border:1px solid rgba(255,255,255,0.1);box-shadow:0 10px 30px rgba(0,0,0,0.5);position:relative;z-index:1}
-.top-text{position:relative;z-index:1;flex:1}
-.top-text h2{font-size:22px;font-weight:900;letter-spacing:-0.5px;margin:0}
-.top-text p{font-size:12px;color:#888;margin-top:4px}
-.badge-live{display:inline-flex;margin-top:10px;padding:5px 12px;border-radius:99px;background:linear-gradient(135deg,#ff00ff22,#7a00ff22);border:1px solid #ff00ff40;color:#ff8aff;font-size:10px;font-weight:800;letter-spacing:0.5px}
-.comic-pages{display:flex;flex-direction:column;gap:0;background:rgba(20,20,23,0.8);border-radius:24px;overflow:hidden;border:1px solid rgba(255,255,255,0.08);padding:6px}
-.comic-pages img{width:100%;max-width:700px;display:block;margin:0 auto;border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,0.3);transition:0.3s;cursor:zoom-in}
-.page-num{text-align:center;font-size:10px;color:#555;padding:8px 0;letter-spacing:1px;text-transform:uppercase}
-.progress{height:4px;background:rgba(255,255,255,0.08);border-radius:99px;margin:14px 0;overflow:hidden;position:sticky;top:60px;z-index:10}
-.progress-bar{height:100%;background:linear-gradient(90deg,#ff00ff,#00ff88);width:0%;box-shadow:0 0 10px #ff00ff;transition:0.2s}
-.ctrl{padding:10px 18px;border-radius:99px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);color:white;font-size:12px;font-weight:700;cursor:pointer;margin:4px}
-</style>
-</head><body>
-<header><div class="logo">Gen-Z <span>Visual</span> <span style="font-size:10px;background:linear-gradient(90deg,#ff00ff,#7a00ff);padding:3px 8px;border-radius:99px;color:white;margin-left:6px">COMIC ULTRA v704.5</span></div><a href="comic.html?v=704.5" class="top-btn" style="background:white;color:black">✕ Close</a></header>
-
+.top-info{background:#15151a;border:1px solid #222;border-radius:24px;padding:18px;display:flex;gap:14px;margin-bottom:16px}
+.top-info img{width:90px;height:130px;border-radius:12px;object-fit:cover}
+.comic-pages{display:flex;flex-direction:column;gap:0;background:#15151a;border-radius:24px;overflow:hidden;border:1px solid #222;padding:6px}
+.comic-pages img{width:100%;display:block;margin:0 auto;border-radius:12px;cursor:zoom-in}
+.page-num{text-align:center;font-size:10px;color:#555;padding:8px 0}
+.progress{height:4px;background:#222;border-radius:99px;margin:10px 0;overflow:hidden;position:sticky;top:55px;z-index:10}
+.progress-bar{height:100%;background:linear-gradient(90deg,#ff00ff,#00ff88);width:0%}
+.ctrl{padding:10px 18px;border-radius:99px;background:#222;border:1px solid #333;color:#fff;font-size:12px;font-weight:700;cursor:pointer;margin:4px}
+</style></head><body>
+<header><div class="logo">Gen-Z <span>Comics</span> <span style="font-size:10px;background:#00ff88;color:#000;padding:2px 6px;border-radius:10px">v704.5</span></div><a href="comic.html?v=704.5" class="top-btn">✕ Close</a></header>
 <div class="progress"><div class="progress-bar" id="bar"></div></div>
-
 <div class="reader-wrap">
-<div class="top-info">
-<img id="cover" src="https://picsum.photos/300/400?random=77" alt="">
-<div class="top-text">
-<h2 id="t">Loading comic...</h2>
-<p id="author">by ...</p>
-<p id="desc" style="font-size:11px;color:#666;margin-top:8px;line-height:1.5"></p>
-<span class="badge-live" id="badge">🔍 Searching LIVE...</span>
-<div style="margin-top:12px"><button class="ctrl" onclick="window.scrollBy({top: -window.innerHeight*0.8, behavior:'smooth'})">↑ Prev</button><button class="ctrl" onclick="window.scrollBy({top: window.innerHeight*0.8, behavior:'smooth'})">↓ Next</button></div>
-</div>
-</div>
-
+<div class="top-info"><img id="cover" src="https://picsum.photos/300/400"><div style="flex:1"><h2 id="t" style="margin:0;font-size:20px;font-weight:900">Loading...</h2><p id="author" style="font-size:12px;color:#888">...</p><p id="desc" style="font-size:11px;color:#666;margin-top:8px"></p><span id="badge" style="font-size:10px;background:#ff00ff22;border:1px solid #ff00ff40;padding:4px 10px;border-radius:20px;color:#ff8aff">Searching...</span><div style="margin-top:10px"><button class="ctrl" onclick="window.scrollBy({top:-innerHeight*0.8,behavior:'smooth'})">↑</button><button class="ctrl" onclick="window.scrollBy({top:innerHeight*0.8,behavior:'smooth'})">↓</button></div></div></div>
 <div class="comic-pages" id="pages"></div>
 </div>
-
 <script>
 const API="https://gen-z-visual-2.onrender.com/api";
-
 async function load(){
- const id=new URLSearchParams(location.search).get('id');
- if(!id){ document.getElementById('t').innerText='No ID'; return; }
-
+ let id=new URLSearchParams(location.search).get('id'); if(!id){t.innerText='No ID';return;}
  let comic=null, src="";
-
- // 1. DEVICE
- try{
-   let all=JSON.parse(localStorage.getItem("myBooks")||"[]").concat(JSON.parse(localStorage.getItem("myComics")||"[]"));
-   comic=all.find(c=>String(c._id||c.id)===String(id));
-   if(comic){ src="DEVICE"; }
- }catch(e){}
-
- // 2. LIVE API - THIS FIXES READER ISSUE
- if(!comic){
-   try{
-     let r=await fetch(API+'/comics');
-     let list=await r.json(); list=Array.isArray(list)?list:list.comics||[];
-     comic=list.find(c=>String(c._id)===String(id));
-     if(comic) src="LIVE ✅";
-   }catch(e){ console.log(e); }
- }
-
- if(!comic){
-  document.getElementById('t').innerText='Comic not found';
-  document.getElementById('desc').innerText=`ID ${id} not found. Publish with internet ON.`;
-  document.getElementById('badge').innerText='❌ Not Found';
-  return;
- }
-
- document.getElementById('t').innerText=comic.title||'Untitled';
- document.getElementById('
+ try{ let all=JSON.parse(localStorage.getItem("myComics")||"[]").concat(JSON.parse(localStorage.getItem("myBooks")||"[]").filter(b=>b.pages)); comic=all.find(c=>String(c._id||c.id)===String(id)||String(c._id||c.id)===String(id).replace('my_','')); if(comic) src="DEVICE"; }catch(e){}
+ if(!comic){ try{ let r=await fetch(API+'/comics'); let list=await r.json(); list=Array.isArray(list)?list:list.comics||[]; comic=list.find(c=>String(c._id)===String(id)); if(comic) src="LIVE ✅"; }catch(e){} }
+ if(!comic){ t.innerText='Not found'; badge.innerText='❌ Not found'; return; }
+ t.innerText=comic.title; author.innerText='by '+(comic.author||'GenZ'); desc.innerText=comic.description||''; cover.src=comic.cover||comic.coverImage||comic.pages?.[0]||'https://picsum.photos/300/400'; badge.innerText=src||'LIVE';
+ let imgs=comic.pages||[]; pages.innerHTML=imgs.map((p,i)=>`<img src="${p}" loading="lazy"><div class="page-num">Page ${i+1}/${imgs.length}</div>`).join('')||'<div style="text-align:center;color:#666;padding:20px">No pages</div>';
+ window.addEventListener('scroll',()=>{ let h=document.documentElement.scrollHeight-innerHeight, pct=h>0? (scrollY/h)*100:0; bar.style.width=pct+'%'; });
+}
+load();
+</script>
+</body></html>
