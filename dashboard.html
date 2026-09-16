@@ -2,41 +2,37 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Studio PRO ULTRA - Gen-Z Visual v701 FILE UPLOAD</title>
-<link rel="stylesheet" href="style.css?v=700">
+<title>Studio v703 ADMIN PRO</title>
+<link rel="stylesheet" href="style.css?v=703">
 <script>
-// FIREWALL v700 + DOMAIN LOCK FIXED - KEPT FROM YOUR FILE
-(function(){
-  const ALLOWED=["kash1-bot.github.io","xhettriak.github.io","localhost","127.0.0.1"];
-  const host=location.hostname;
-  if(!(location.protocol==="file:"||host===""||host.includes("github.io")||ALLOWED.some(h=>host.includes(h)))){
-    document.documentElement.innerHTML=`<h1 style="color:#ff00ff;text-align:center;margin-top:20%;font-family:Space Grotesk">⛔ Blocked ${host}</h1>`;
-    throw new Error("Blocked");
-  }
-  if(window.top!==window.self) window.top.location=window.self.location;
-})();
-const Firewall={patterns:[/<script/gi,/javascript:/gi,/onerror=/gi,/onload=/gi,/union.*select/gi,/<iframe/gi,/eval\(/gi],scan(v){return this.patterns.some(p=>p.test(v))},protect(){document.addEventListener('input',e=>{if(e.target.tagName==="INPUT"||e.target.tagName==="TEXTAREA"){if(this.scan(e.target.value)){e.target.value="";e.target.style.border="2px solid #ff00ff";e.target.placeholder="⛔ Blocked v700"}}})}};
+// NO DOMAIN LOCK - PUBLIC
+// Only simple XSS firewall kept
+const Firewall={patterns:[/<script/gi,/javascript:/gi,/onerror=/gi,/onload=/gi,/union.*select/gi],scan(v){return this.patterns.some(p=>p.test(v))},protect(){document.addEventListener('input',e=>{if(e.target.tagName==="INPUT"||e.target.tagName==="TEXTAREA"){if(this.scan(e.target.value)){e.target.value="";e.target.style.border="2px solid #ff00ff"}}})}};
 window.addEventListener('DOMContentLoaded',()=>Firewall.protect());
-(function(){const token=localStorage.getItem("token")||localStorage.getItem("genz_token");if(!token){location.href="login.html"}})();
 </script>
 <style>
-.studio{max-width:700px;margin:0 auto;padding:16px 20px 120px}
+.studio{max-width:800px;margin:0 auto;padding:16px 20px 140px}
+.top-ultra{position:sticky;top:0;z-index:99;display:flex;justify-content:space-between;align-items:center;padding:14px 20px;background:rgba(10,10,12,0.85);backdrop-filter:blur(25px);border-bottom:1px solid rgba(255,255,255,0.06)}
 .welcome-card{background:linear-gradient(135deg,rgba(255,0,255,0.15),rgba(122,0,255,0.15));backdrop-filter:blur(25px);border:1px solid rgba(255,0,255,0.2);border-radius:24px;padding:20px;margin:14px 0;position:relative;overflow:hidden}
-.welcome-card::before{content:"";position:absolute;top:-50%;right:-30%;width:200px;height:200px;background:radial-gradient(circle,rgba(255,0,255,0.2),transparent 70%);border-radius:50%}
-.top-ultra{position:sticky;top:0;z-index:99;display:flex;justify-content:space-between;align-items:center;padding:14px 20px;background:rgba(10,10,12,0.7);backdrop-filter:blur(25px);border-bottom:1px solid rgba(255,255,255,0.06)}
-.switcher{display:flex;background:rgba(20,20,23,0.8);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.08);border-radius:99px;padding:5px;margin:20px 0;box-shadow:inset 0 1px 1px rgba(255,255,255,0.05)}
-.switcher div{flex:1;text-align:center;padding:13px;border-radius:99px;font-weight:800;cursor:pointer;color:#666;transition:0.4s cubic-bezier(0.175,0.885,0.32,1.275);font-size:14px}
-.switcher div.on{background:white;color:black;box-shadow:0 8px 20px rgba(255,255,255,0.25);transform:scale(1.02)}
+.switcher{display:flex;background:rgba(20,20,23,0.8);border:1px solid rgba(255,255,255,0.08);border-radius:99px;padding:5px;margin:20px 0}
+.switcher div{flex:1;text-align:center;padding:13px;border-radius:99px;font-weight:800;cursor:pointer;color:#666;transition:0.3s;font-size:14px}
+.switcher div.on{background:white;color:black;transform:scale(1.02)}
 .card-ultra{background:rgba(20,20,23,0.85);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.07);border-radius:20px;padding:18px;margin:12px 0}
-.input-ultra{width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:14px;color:white;font-size:14px;outline:none;margin:8px 0;transition:0.3s}
-.input-ultra:focus{border-color:#ff00ff;background:rgba(255,0,255,0.06)}
+.input-ultra{width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:14px;color:white;font-size:14px;outline:none;margin:8px 0}
+.input-ultra:focus{border-color:#ff00ff}
 .file-box{background:rgba(255,255,255,0.03);border:1px dashed rgba(255,0,255,0.3);border-radius:16px;padding:14px;margin:10px 0}
-.btn-ultra{width:100%;padding:15px;border-radius:14px;border:none;font-weight:900;cursor:pointer;background:white;color:black;margin-top:12px;font-size:14px;letter-spacing:0.5px}
+.btn-ultra{width:100%;padding:15px;border-radius:14px;border:none;font-weight:900;cursor:pointer;background:white;color:black;margin-top:12px}
+.admin-bar{display:none;background:linear-gradient(90deg,#ff00ff,#7a00ff);padding:12px;border-radius:14px;margin:12px 0;gap:8px;align-items:center;justify-content:space-between}
+.admin-bar.show{display:flex}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:14px 0}
+.stat{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:12px;text-align:center}
+.admin-list-item{display:flex;gap:10px;align-items:center;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:10px;margin:8px 0}
+.admin-list-item img{width:44px;height:60px;object-fit:cover;border-radius:8px}
 </style>
 </head>
 <body>
 <div class="top-ultra">
-  <div style="font-weight:900;font-size:18px;letter-spacing:-1px">Gen-Z STUDIO <span style="color:#ff00ff">v701</span></div>
+  <div id="logoBtn" style="font-weight:900;font-size:18px;letter-spacing:-1px;cursor:pointer">Gen-Z STUDIO <span style="color:#ff00ff">v703 ADMIN</span></div>
   <div style="display:flex;gap:10px">
     <a href="index.html" style="color:#888;text-decoration:none;font-size:13px;font-weight:700">Home</a>
     <a href="novels.html" style="color:#888;text-decoration:none;font-size:13px">Novels</a>
@@ -46,145 +42,196 @@ window.addEventListener('DOMContentLoaded',()=>Firewall.protect());
 
 <div class="studio">
   <div class="welcome-card">
-    <div style="font-size:22px;font-weight:900;letter-spacing:-1px">Create <span style="color:#ff00ff">ULTRA</span></div>
-    <div style="color:#aaa;font-size:12px;margin-top:4px">v701 FILE UPLOAD - Upload from your phone gallery 📁</div>
+    <div style="font-size:22px;font-weight:900">Create <span style="color:#ff00ff">ULTRA</span> <span id="adminBadge" style="display:none;background:#00ff88;color:black;font-size:10px;padding:4px 8px;border-radius:20px;vertical-align:middle">ADMIN</span></div>
+    <div style="color:#aaa;font-size:12px;margin-top:4px">Tap logo 5x to unlock admin • File upload + monitor + control</div>
+    <div style="margin-top:10px;display:flex;gap:8px">
+      <button onclick="adminLogin()" style="background:#ff00ff;color:white;border:none;padding:6px 12px;border-radius:20px;font-size:11px;font-weight:800">🔐 Admin Login</button>
+      <button onclick="logoutAdmin()" id="logoutBtn" style="display:none;background:#333;color:white;border:none;padding:6px 12px;border-radius:20px;font-size:11px">Logout</button>
+    </div>
   </div>
 
-  <div class="switcher" id="switcher">
+  <!-- ADMIN PANEL -->
+  <div id="adminPanel" style="display:none">
+    <div class="admin-bar show">
+      <b>👑 ADMIN PANEL</b>
+      <span id="adminStatsSmall" style="font-size:11px"></span>
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat"><div id="totalNovels" style="font-weight:900;font-size:18px">0</div><div style="font-size:10px;color:#888">NOVELS</div></div>
+      <div class="stat"><div id="totalComics" style="font-weight:900;font-size:18px">0</div><div style="font-size:10px;color:#888">COMICS</div></div>
+      <div class="stat"><div id="storageUse" style="font-weight:900;font-size:18px">0KB</div><div style="font-size:10px;color:#888">STORAGE</div></div>
+    </div>
+
+    <div class="card-ultra">
+      <b style="font-size:13px">🔑 Change Admin Password</b>
+      <input id="newPassInput" type="password" class="input-ultra" placeholder="New password">
+      <button onclick="changePass()" style="background:#00ff88;color:black;border:none;padding:10px 14px;border-radius:10px;font-weight:800;width:100%;margin-top:6px">Update Password</button>
+    </div>
+
+    <div class="card-ultra">
+      <b style="font-size:13px">📚 Control All Content</b>
+      <div id="adminContentList" style="margin-top:10px;max-height:400px;overflow:auto"></div>
+    </div>
+  </div>
+
+  <!-- NORMAL PUBLISH PANEL -->
+  <div class="switcher">
     <div id="swNovel" class="on" onclick="setType('novel')">📚 Novel</div>
     <div id="swComic" onclick="setType('comic')">🖼️ Comic</div>
   </div>
 
   <div class="card-ultra">
-    <input id="titleInput" class="input-ultra" placeholder="Title - e.g. Alone Part 2">
-    <input id="authorInput" class="input-ultra" placeholder="Author - GenZ Studio" value="GenZ Studio">
+    <input id="titleInput" class="input-ultra" placeholder="Title">
+    <input id="authorInput" class="input-ultra" placeholder="Author" value="GenZ Studio">
     <textarea id="descInput" class="input-ultra" rows="3" placeholder="Description..."></textarea>
 
-    <!-- v701 FILE UPLOAD NEW -->
     <div class="file-box">
-      <label style="font-size:11px;color:#ff00ff;font-weight:800">📁 COVER FROM DEVICE (NEW v701)</label>
+      <label style="font-size:11px;color:#ff00ff;font-weight:800">📁 COVER FROM DEVICE</label>
       <input type="file" id="coverFile" accept="image/*" style="width:100%;margin-top:8px;color:#999;font-size:11px">
-      <img id="coverPreview" style="width:100%;height:180px;object-fit:cover;border-radius:12px;margin-top:10px;display:none;border:1px solid #ffffff15">
-      <input id="coverInput" class="input-ultra" placeholder="Or paste Cover URL... (fallback)" style="margin-top:10px">
+      <img id="coverPreview" style="width:100%;height:180px;object-fit:cover;border-radius:12px;margin-top:10px;display:none">
+      <input id="coverInput" class="input-ultra" placeholder="Or Cover URL fallback">
     </div>
 
     <div class="file-box" id="novelFileBox">
-      <label style="font-size:11px;color:#00ff88;font-weight:800">📄 NOVEL PDF FROM DEVICE (NEW)</label>
+      <label style="font-size:11px;color:#00ff88;font-weight:800">📄 NOVEL PDF FROM DEVICE</label>
       <input type="file" id="novelFile" accept=".pdf,.txt" style="width:100%;margin-top:8px;color:#999;font-size:11px">
       <div id="novelFileName" style="font-size:11px;color:#00ff88;margin-top:6px"></div>
-      <input id="pdfInput" class="input-ultra" placeholder="Or paste PDF URL... (fallback)" style="margin-top:10px">
+      <input id="pdfInput" class="input-ultra" placeholder="Or PDF URL fallback">
     </div>
 
     <div class="file-box" id="comicFileBox" style="display:none">
-      <label style="font-size:11px;color:#ff8800;font-weight:800">🖼️ COMIC PAGES - SELECT MULTIPLE (NEW)</label>
+      <label style="font-size:11px;color:#ff8800;font-weight:800">🖼️ COMIC PAGES - MULTIPLE</label>
       <input type="file" id="comicFiles" accept="image/*" multiple style="width:100%;margin-top:8px;color:#999;font-size:11px">
       <div id="comicPreview" style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px"></div>
-      <textarea id="pagesInput" class="input-ultra" rows="2" placeholder="Or paste page URLs comma separated... (fallback)" style="margin-top:10px"></textarea>
+      <textarea id="pagesInput" class="input-ultra" rows="2" placeholder="Or page URLs comma separated..."></textarea>
     </div>
 
-    <button class="btn-ultra" id="btnPublish">🚀 PUBLISH ULTRA v701</button>
+    <button class="btn-ultra" id="btnPublish">🚀 PUBLISH v703</button>
     <div id="status" style="text-align:center;font-size:11px;color:#666;margin-top:10px"></div>
   </div>
 </div>
 
 <script>
-let curType = "novel";
-let uploadedCoverBase64 = null;
-let uploadedPagesBase64 = [];
-let uploadedNovelFileBase64 = null;
+let curType="novel";
+let uploadedCoverBase64=null, uploadedPagesBase64=[], uploadedNovelFileBase64=null;
+let isAdmin = localStorage.getItem("isAdmin")==="true";
+const DEFAULT_PASS = "admin123";
+
+function getAdminPass(){ return localStorage.getItem("adminPass") || DEFAULT_PASS; }
 
 function setType(t){
-  curType = t;
-  document.getElementById("swNovel").classList.toggle("on", t==="novel");
-  document.getElementById("swComic").classList.toggle("on", t==="comic");
-  document.getElementById("novelFileBox").style.display = t==="novel"? "block":"none";
-  document.getElementById("comicFileBox").style.display = t==="comic"? "block":"none";
+  curType=t;
+  document.getElementById("swNovel").classList.toggle("on",t==="novel");
+  document.getElementById("swComic").classList.toggle("on",t==="comic");
+  document.getElementById("novelFileBox").style.display=t==="novel"?"block":"none";
+  document.getElementById("comicFileBox").style.display=t==="comic"?"block":"none";
 }
 
-// FILE LOGIC v701
-document.getElementById("coverFile").addEventListener("change", e=>{
-  const file = e.target.files[0];
-  if(!file) return;
-  if(file.size > 3*1024*1024){ alert("Cover max 3MB please"); return; }
-  const r = new FileReader();
-  r.onload = ev=>{
-    uploadedCoverBase64 = ev.target.result;
-    const prev = document.getElementById("coverPreview");
-    prev.src = uploadedCoverBase64;
-    prev.style.display="block";
-  };
-  r.readAsDataURL(file);
-});
+// ADMIN LOGIN
+function adminLogin(){
+  const pass = prompt("Enter Admin Password:");
+  if(pass===getAdminPass()){
+    localStorage.setItem("isAdmin","true");
+    isAdmin=true; updateAdminUI(); alert("Admin unlocked 👑");
+  }else{ alert("Wrong password! Default is admin123"); }
+}
+function logoutAdmin(){ localStorage.removeItem("isAdmin"); isAdmin=false; updateAdminUI(); location.reload(); }
+function changePass(){
+  const np=document.getElementById("newPassInput").value.trim();
+  if(np.length<4){ alert("Min 4 chars"); return; }
+  localStorage.setItem("adminPass",np); alert("Password changed to: "+np); document.getElementById("newPassInput").value="";
+}
+let logoClicks=0;
+document.getElementById("logoBtn").onclick=()=>{ logoClicks++; if(logoClicks>=5){ logoClicks=0; adminLogin(); } setTimeout(()=>logoClicks=0,2000); };
 
-document.getElementById("comicFiles").addEventListener("change", e=>{
-  uploadedPagesBase64 = [];
-  const files = [...e.target.files].slice(0,20);
-  const preview = document.getElementById("comicPreview");
-  preview.innerHTML="";
-  files.forEach(f=>{
-    if(f.size > 2*1024*1024) return;
-    const r = new FileReader();
-    r.onload = ev=>{
-      uploadedPagesBase64.push(ev.target.result);
-      preview.innerHTML += `<img src="${ev.target.result}" style="width:100%;height:70px;object-fit:cover;border-radius:8px;border:1px solid #ffffff15">`;
-    };
-    r.readAsDataURL(f);
+function updateAdminUI(){
+  document.getElementById("adminBadge").style.display=isAdmin?"inline-block":"none";
+  document.getElementById("logoutBtn").style.display=isAdmin?"block":"none";
+  document.getElementById("adminPanel").style.display=isAdmin?"block":"none";
+  if(isAdmin) loadAdminStats();
+}
+
+function loadAdminStats(){
+  const novels = JSON.parse(localStorage.getItem("myNovels")||"[]");
+  const comics = JSON.parse(localStorage.getItem("myBooks")||"[]");
+  document.getElementById("totalNovels").innerText=novels.length;
+  document.getElementById("totalComics").innerText=comics.length;
+  const allStr = localStorage.getItem("myNovels")||"" + localStorage.getItem("myBooks")||"";
+  document.getElementById("storageUse").innerText=(allStr.length/1024).toFixed(1)+"KB";
+  document.getElementById("adminStatsSmall").innerText=`${novels.length+comics.length} items`;
+
+  // List with delete control
+  const listEl=document.getElementById("adminContentList");
+  let html="";
+  [...novels.map(n=>({...n,type:"novel"})),...comics.map(c=>({...c,type:"comic"}))].forEach(item=>{
+    html+=`<div class="admin-list-item">
+      <img src="${item.cover}">
+      <div style="flex:1"><b style="font-size:12px">${item.title}</b><br><small style="color:#666">${item.type}</small></div>
+      <button onclick="deleteItem('${item.id}','${item.type}')" style="background:#ff0044;color:white;border:none;padding:6px 10px;border-radius:8px;font-size:11px;font-weight:800">DELETE</button>
+    </div>`;
   });
+  listEl.innerHTML=html||"<small style='color:#666'>No content</small>";
+}
+
+function deleteItem(id,type){
+  if(!confirm("Delete this?")) return;
+  if(type==="novel"){
+    let arr=JSON.parse(localStorage.getItem("myNovels")||"[]");
+    arr=arr.filter(x=>String(x.id)!==String(id));
+    localStorage.setItem("myNovels",JSON.stringify(arr));
+  }else{
+    let arr=JSON.parse(localStorage.getItem("myBooks")||"[]");
+    arr=arr.filter(x=>String(x.id)!==String(id));
+    localStorage.setItem("myBooks",JSON.stringify(arr));
+  }
+  loadAdminStats();
+}
+
+// FILE HANDLERS - same v701
+document.getElementById("coverFile").addEventListener("change",e=>{
+  const file=e.target.files[0]; if(!file) return;
+  const r=new FileReader(); r.onload=ev=>{ uploadedCoverBase64=ev.target.result; const p=document.getElementById("coverPreview"); p.src=uploadedCoverBase64; p.style.display="block"; }; r.readAsDataURL(file);
+});
+document.getElementById("comicFiles").addEventListener("change",e=>{
+  uploadedPagesBase64=[]; const files=[...e.target.files].slice(0,20); const prev=document.getElementById("comicPreview"); prev.innerHTML="";
+  files.forEach(f=>{ const r=new FileReader(); r.onload=ev=>{ uploadedPagesBase64.push(ev.target.result); prev.innerHTML+=`<img src="${ev.target.result}" style="width:100%;height:70px;object-fit:cover;border-radius:8px">`; }; r.readAsDataURL(f); });
+});
+document.getElementById("novelFile").addEventListener("change",e=>{
+  const file=e.target.files[0]; if(!file) return;
+  document.getElementById("novelFileName").innerText=file.name;
+  const r=new FileReader(); r.onload=ev=>uploadedNovelFileBase64=ev.target.result; r.readAsDataURL(file);
 });
 
-document.getElementById("novelFile").addEventListener("change", e=>{
-  const file = e.target.files[0];
-  if(!file) return;
-  document.getElementById("novelFileName").innerText = "Selected: " + file.name + " ("+(file.size/1024).toFixed(0)+"KB)";
-  const r = new FileReader();
-  r.onload = ev=>{ uploadedNovelFileBase64 = ev.target.result; };
-  r.readAsDataURL(file);
-});
-
-document.getElementById("btnPublish").onclick = async ()=>{
-  const title = document.getElementById("titleInput").value.trim();
-  const author = document.getElementById("authorInput").value.trim() || "GenZ Studio";
-  const desc = document.getElementById("descInput").value.trim() || "Gen-Z Visual Novel";
-  const coverUrlFallback = document.getElementById("coverInput").value.trim();
-  const pdfFallback = document.getElementById("pdfInput").value.trim();
-  const pagesFallback = document.getElementById("pagesInput").value.trim().split(",").map(s=>s.trim()).filter(Boolean);
-
+document.getElementById("btnPublish").onclick=async()=>{
+  const title=document.getElementById("titleInput").value.trim();
   if(!title){ alert("Title required"); return; }
-
-  const finalCover = uploadedCoverBase64 || coverUrlFallback || `https://picsum.photos/400/600?random=${Date.now()}`;
-  const finalPages = uploadedPagesBase64.length? uploadedPagesBase64 : pagesFallback;
-  const finalPdf = uploadedNovelFileBase64 || pdfFallback || "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf";
-
-  const status = document.getElementById("status");
-  status.innerText = "Publishing v701...";
-
-  // SAVE TO LOCAL + BACKEND LIKE BEFORE - BUT NOW WITH FILE SUPPORT
+  const author=document.getElementById("authorInput").value.trim()||"GenZ Studio";
+  const desc=document.getElementById("descInput").value.trim();
+  const finalCover=uploadedCoverBase64||document.getElementById("coverInput").value.trim()||`https://picsum.photos/400/600?random=${Date.now()}`;
+  const finalPages=uploadedPagesBase64.length?uploadedPagesBase64:document.getElementById("pagesInput").value.trim().split(",").map(s=>s.trim()).filter(Boolean);
+  const finalPdf=uploadedNovelFileBase64||document.getElementById("pdfInput").value.trim()||"https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf";
+  const status=document.getElementById("status"); status.innerText="Publishing...";
   try{
     if(curType==="novel"){
-      const key = "myNovels"; // same key your novels.html reads
-      let arr = JSON.parse(localStorage.getItem(key)||"[]");
-      arr.unshift({id:Date.now(), title, author, cover:finalCover, description:desc, pdf:finalPdf, genre:"File Upload", created:Date.now()});
-      localStorage.setItem(key, JSON.stringify(arr));
-
-      // Try LIVE backend too
+      let arr=JSON.parse(localStorage.getItem("myNovels")||"[]");
+      arr.unshift({id:Date.now(),title,author,cover:finalCover,description:desc,pdf:finalPdf,created:Date.now()});
+      localStorage.setItem("myNovels",JSON.stringify(arr));
       try{ await fetch("https://gen-z-visual-2.onrender.com/api/novels",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({title,author,description:desc,cover:finalCover,pdfUrl:finalPdf})}) }catch(e){}
-
-      status.innerText="✅ Novel Published! Check novels.html";
+      status.innerText="✅ Novel Published";
     }else{
-      const key = "myBooks"; // same key your comic.html reads
-      let arr = JSON.parse(localStorage.getItem(key)||"[]");
-      arr.unshift({id:Date.now(), title, author, cover:finalCover, description:desc, pages:finalPages, created:Date.now()});
-      localStorage.setItem(key, JSON.stringify(arr));
-
+      let arr=JSON.parse(localStorage.getItem("myBooks")||"[]");
+      arr.unshift({id:Date.now(),title,author,cover:finalCover,description:desc,pages:finalPages,created:Date.now()});
+      localStorage.setItem("myBooks",JSON.stringify(arr));
       try{ await fetch("https://gen-z-visual-2.onrender.com/api/comics",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({title,author,description:desc,cover:finalCover,pages:finalPages})}) }catch(e){}
-
-      status.innerText="✅ Comic Published! Check comic.html - "+finalPages.length+" pages";
+      status.innerText="✅ Comic Published "+finalPages.length+" pages";
     }
-    setTimeout(()=>location.href = curType==="novel"? "novels.html" : "comic.html", 1200);
-  }catch(err){
-    status.innerText="❌ "+err.message;
-  }
+    if(isAdmin) loadAdminStats();
+    setTimeout(()=>location.href=curType==="novel"?"novels.html":"comic.html",1000);
+  }catch(err){ status.innerText="❌ "+err.message; }
 };
+
+updateAdminUI();
 </script>
 </body>
   </html>
