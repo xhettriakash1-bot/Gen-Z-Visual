@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Admin v703.2 - Gen-Z Visual PUBLIC</title>
+<title>Admin v704.5 - Gen-Z Visual LIVE</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#07070a;color:#fff;font-family:system-ui,sans-serif}
 header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#111;border-bottom:1px solid #222;position:sticky;top:0;z-index:99}
@@ -12,95 +12,108 @@ header{display:flex;justify-content:space-between;align-items:center;padding:12p
 .card.live{border-color:#00ff8840}
 input{width:100%;padding:12px 14px;margin:6px 0;background:#0e0e12;border:1px solid #2a2a32;border-radius:10px;color:#fff;outline:none}
 .btn{padding:10px 16px;border-radius:20px;border:none;font-weight:800;cursor:pointer}
-.btn-w{background:#fff;color:#000}
-.btn-f{background:#ff0055;color:#fff}
+.btn-w{background:#fff;color:#000}.btn-f{background:#ff0055;color:#fff}
 .badge{padding:4px 10px;border-radius:20px;font-size:10px;font-weight:900}
 .badge-admin{background:linear-gradient(135deg,#ff00ff,#7a00ff);color:#fff}
-.badge-ok{background:#00ff88;color:#000}
-table{width:100%;border-collapse:collapse;margin-top:10px}td,th{padding:10px;border-bottom:1px solid #222;text-align:left;font-size:12px}th{color:#666;font-size:10px}
+.badge-ok{background:#00ff88;color:#000}.badge-live{background:#00ff88;color:#000}.badge-my{background:#ff00ff;color:#fff}
+.stat{display:inline-block;background:#1a1a1e;border:1px solid #222;border-radius:12px;padding:8px 14px;margin:4px;font-size:12px;text-align:center}
 .novel{display:flex;gap:10px;align-items:center;background:#0e0e12;border:1px solid #222;padding:10px;border-radius:12px;margin:6px 0}
 .novel img{width:44px;height:60px;object-fit:cover;border-radius:8px}
-.stat{display:inline-block;background:#1a1a1e;border:1px solid #222;border-radius:12px;padding:8px 14px;margin:4px;font-size:12px;text-align:center}
 </style>
 </head><body>
 <header>
-<div class="logo">Gen-Z <span>Admin</span> <span style="font-size:9px;background:#00ff88;color:#000;padding:3px 8px;border-radius:20px">v703.2 PUBLIC</span></div>
+<div class="logo">Gen-Z <span>Admin</span> <span style="font-size:9px;background:#00ff88;color:#000;padding:3px 8px;border-radius:20px">v704.5 LIVE</span></div>
 <div style="display:flex;gap:8px;align-items:center">
 <span id="adminEmail" style="font-size:11px;color:#888"></span>
-<a href="index.html" style="background:#222;color:#aaa;padding:8px 12px;border-radius:20px;text-decoration:none;font-size:12px">Home</a>
+<a href="index.html?v=704.5" style="background:#222;color:#aaa;padding:8px 12px;border-radius:20px;text-decoration:none;font-size:12px">Home</a>
 <button onclick="logout()" style="background:#ef4444;color:#fff;border:none;padding:8px 12px;border-radius:20px;font-size:12px">Logout</button>
 </div>
 </header>
 
 <div class="wrap">
-
 <div class="card live">
-<b>👑 Admin Control v703.2 - NO DOMAIN LOCK</b><br>
-<small style="color:#888">Login: xhettriakash1@gmail.com | Password changeable in dashboard</small><br>
+<b>👑 Admin v704.5 - LIVE DELETE FIX</b><br>
+<small style="color:#888">This admin deletes LIVE MongoDB + DEVICE both. Old v703.2 only deleted local.</small><br>
 <div style="margin-top:10px">
-<span class="stat">Novels: <b id="cNov">0</b></span>
-<span class="stat">Comics: <b id="cCom">0</b></span>
+<span class="stat">LIVE Novels: <b id="cLiveNov">0</b></span>
+<span class="stat">LIVE Comics: <b id="cLiveCom">0</b></span>
 <span class="stat">Users: <b id="cUsr">0</b></span>
-<span class="stat">Storage: <b id="cSto">0KB</b></span>
+<span class="stat">MY Local: <b id="cMy">0</b></span>
 </div>
-<div style="margin-top:10px">
-<input id="newPass" placeholder="Change Admin Password (min 4 chars)">
-<button class="btn btn-w" onclick="changePass()">Update Password</button>
-<span id="curPass" style="font-size:10px;color:#666;margin-left:8px"></span>
+<div style="margin-top:10px;display:flex;gap:8px">
+<button class="btn btn-w" onclick="loadLive()">🔄 Refresh LIVE</button>
+<button class="btn btn-w" onclick="loadUsers()">👥 Users</button>
 </div>
+<div id="apiStatus" style="margin-top:8px;font-size:10px;color:#666">API: https://gen-z-visual-2.onrender.com - checking...</div>
 </div>
 
 <div class="grid2">
 <div class="card">
-<h3 style="margin:0 0 8px">📚 All Novels + Comics (DELETE)</h3>
-<div id="allList"></div>
-<button class="btn btn-f" style="width:100%;margin-top:10px" onclick="clearAll()">🗑️ CLEAR ALL LOCAL DATA</button>
+<h3 style="margin:0 0 8px">📚 LIVE Novels + Comics (Delete from MongoDB)</h3>
+<div id="liveList">Loading LIVE...</div>
 </div>
 <div class="card">
-<h3 style="margin:0 0 8px">👥 Backend Users (LIVE)</h3>
-<div id="users" style="max-height:400px;overflow:auto"></div>
-<button class="btn btn-w" onclick="loadUsers()">Refresh Users</button>
-<div style="margin-top:10px;font-size:10px;color:#666" id="apiStatus">API: https://gen-z-visual-2.onrender.com</div>
+<h3 style="margin:0 0 8px">📱 MY Device + Users</h3>
+<div id="myList"></div>
+<hr style="border-color:#222;margin:12px 0">
+<div id="users" style="max-height:300px;overflow:auto">Loading users...</div>
 </div>
 </div>
-
-<div class="card">
-<h3>Quick Publish (Test Admin)</h3>
-<input id="tTitle" placeholder="Title">
-<input id="tCover" placeholder="Cover URL">
-<button class="btn btn-w" onclick="quickPub()">Publish Test Novel</button>
-</div>
-
 </div>
 
 <script>
 const API="https://gen-z-visual-2.onrender.com";
-function getPass(){return localStorage.getItem("adminPass")||"admin123";}
-function logout(){ localStorage.removeItem("token"); localStorage.removeItem("genz_token"); localStorage.removeItem("isAdmin"); location.href="login.html"; }
-function changePass(){ let v=document.getElementById("newPass").value; if(v.length<4){alert("min 4");return;} localStorage.setItem("adminPass",v); alert("New pass: "+v); show(); }
-function show(){
- document.getElementById("curPass").innerText="Current: "+getPass();
- document.getElementById("adminEmail").innerText=JSON.parse(localStorage.getItem("user")||"{}").email||localStorage.getItem("email")||"Guest";
+function getToken(){return localStorage.getItem("token")||localStorage.getItem("genz_token")||"";}
+function logout(){localStorage.clear();location.href="login.html?v=704.5";}
+async function loadLive(){
+ document.getElementById("apiStatus").innerText="API: Checking...";
+ document.getElementById("liveList").innerText="Loading LIVE...";
+ try{
+  let [rN,rC]=await Promise.all([fetch(API+"/api/novels"),fetch(API+"/api/comics")]);
+  let novels=await rN.json(); let comics=await rC.json();
+  document.getElementById("cLiveNov").innerText=novels.length;
+  document.getElementById("cLiveCom").innerText=comics.length;
+  document.getElementById("apiStatus").innerText=`API: LIVE ✅ - ${novels.length} novels, ${comics.length} comics`;
+  let html="";
+  novels.forEach(n=>{
+    html+=`<div class="novel"><img src="${n.cover||n.coverImage||'https://picsum.photos/100/140'}"><div style="flex:1"><span class="badge badge-live">LIVE</span> <b style="font-size:12px">${n.title}</b><br><small style="color:#666">${n.author||n.creatorEmail}</small></div><button class="btn btn-f" style="padding:6px 10px;font-size:11px" onclick="delLive('novels','${n._id}')">DEL LIVE</button></div>`;
+  });
+  comics.forEach(c=>{
+    html+=`<div class="novel"><img src="${c.cover||c.coverImage||c.pages?.[0]||'https://picsum.photos/100/140'}"><div style="flex:1"><span class="badge badge-live">LIVE COMIC</span> <b style="font-size:12px">${c.title}</b><br><small style="color:#666">${c.author||c.creatorEmail}</small></div><button class="btn btn-f" style="padding:6px 10px;font-size:11px" onclick="delLive('comics','${c._id}')">DEL LIVE</button></div>`;
+  });
+  document.getElementById("liveList").innerHTML=html||"No LIVE data - Publish from Dashboard";
+ }catch(e){
+  document.getElementById("apiStatus").innerText="API: Waking 30s... "+e.message;
+  document.getElementById("liveList").innerText="Backend waking... try Refresh in 30s";
+ }
+ showMy();
+}
+async function delLive(type,id){
+ if(!confirm("Delete LIVE "+type+" "+id+"? This removes for ALL readers!"))return;
+ try{
+  let r=await fetch(`${API}/api/${type}/${id}`,{method:"DELETE",headers:{Authorization:`Bearer ${getToken()}`}});
+  let d=await r.json();
+  if(d.ok||r.ok){alert("Deleted LIVE ✅"); loadLive();} else alert("Fail: "+JSON.stringify(d));
+ }catch(e){alert("Error: "+e.message+" - Are you logged in as admin?");}
+}
+function showMy(){
  try{
    let n=JSON.parse(localStorage.getItem("myNovels")||"[]");
    let b=JSON.parse(localStorage.getItem("myBooks")||"[]");
-   document.getElementById("cNov").innerText=n.length;
-   document.getElementById("cCom").innerText=b.length;
-   document.getElementById("cSto").innerText=Math.round(((localStorage.getItem("myNovels")||"").length+(localStorage.getItem("myBooks")||"").length)/1024)+"KB";
+   document.getElementById("cMy").innerText=n.length+b.length;
    let html="";
    [...n.map(x=>({...x,_k:"myNovels"})),...b.map(x=>({...x,_k:"myBooks"}))].forEach(it=>{
-     html+=`<div class="novel"><img src="${it.cover||it.coverImage||'https://picsum.photos/100/140'}" onerror="this.src='https://picsum.photos/100/140'"><div style="flex:1"><b style="font-size:12px">${it.title}</b><br><small style="color:#666">${it.author||'Me'}</small></div><button class="btn btn-f" style="padding:6px 10px;font-size:11px" onclick="del('${it._k}','${it.id||it._id}')">DEL</button></div>`;
+     html+=`<div class="novel"><img src="${it.cover||it.coverImage||'https://picsum.photos/100/140'}"><div style="flex:1"><span class="badge badge-my">MY</span> <b style="font-size:12px">${it.title}</b></div><button class="btn btn-f" style="padding:6px 10px;font-size:11px" onclick="delMy('${it._k}','${it.id||it._id}')">DEL MY</button></div>`;
    });
-   document.getElementById("allList").innerHTML=html||"Empty - Publish in Studio";
- }catch(e){ document.getElementById("allList").innerHTML=`Error: ${e.message} <button class="btn btn-f" onclick="localStorage.clear();location.reload()">CLEAR</button>`; }
+   document.getElementById("myList").innerHTML=html||"No MY data";
+   document.getElementById("adminEmail").innerText=JSON.parse(localStorage.getItem("user")||"{}").email||localStorage.getItem("email")||"Guest";
+ }catch(e){document.getElementById("myList").innerText=e.message;}
 }
-function del(k,id){ if(!confirm("Delete "+id+"?"))return; let a=JSON.parse(localStorage.getItem(k)||"[]"); a=a.filter(x=>String(x.id||x._id)!==String(id)); localStorage.setItem(k,JSON.stringify(a)); show(); }
-function clearAll(){ if(!confirm("Clear all local novels/comics?"))return; localStorage.removeItem("myNovels"); localStorage.removeItem("myBooks"); show(); }
-function quickPub(){ let t=document.getElementById("tTitle").value||"Test "+Date.now(); let c=document.getElementById("tCover").value||"https://picsum.photos/400/600"; let a=JSON.parse(localStorage.getItem("myNovels")||"[]"); a.unshift({id:Date.now(),title:t,author:"Admin",cover:c}); localStorage.setItem("myNovels",JSON.stringify(a)); show(); alert("Published!"); }
+function delMy(k,id){let a=JSON.parse(localStorage.getItem(k)||"[]");a=a.filter(x=>String(x.id||x._id)!==String(id));localStorage.setItem(k,JSON.stringify(a));showMy();}
 async function loadUsers(){
  document.getElementById("users").innerText="Loading...";
- try{ let r=await fetch(`${API}/api/users`,{headers:{Authorization:`Bearer ${localStorage.getItem("token")||""}`}}); let d=await r.json(); if(Array.isArray(d)){ document.getElementById("cUsr").innerText=d.length; document.getElementById("users").innerHTML=d.map(u=>`<div style="padding:8px;border-bottom:1px solid #222;font-size:12px"><span class="badge ${u.role==='admin'?'badge-admin':'badge-ok'}">${u.role}</span> ${u.name||''} - ${u.email}</div>`).join(""); } else { document.getElementById("users").innerText=JSON.stringify(d).slice(0,200); } }catch(e){ document.getElementById("users").innerText="Backend waking 30s... "+e.message; }
+ try{let r=await fetch(`${API}/api/users`,{headers:{Authorization:`Bearer ${getToken()}`}});let d=await r.json();if(Array.isArray(d)){document.getElementById("cUsr").innerText=d.length;document.getElementById("users").innerHTML=d.map(u=>`<div style="padding:8px;border-bottom:1px solid #222;font-size:12px"><span class="badge ${u.role==='admin'?'badge-admin':'badge-ok'}">${u.role}</span> ${u.email}</div>`).join("");}else document.getElementById("users").innerText=JSON.stringify(d).slice(0,300);}catch(e){document.getElementById("users").innerText="Need admin login - "+e.message;}
 }
-show(); loadUsers();
+loadLive(); loadUsers();
 </script>
 </body></html>
