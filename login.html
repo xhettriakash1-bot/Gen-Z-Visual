@@ -1,6 +1,6 @@
 <!DOCTYPE html><html><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Login - Gen-Z Visual v704.5 FIXED</title>
+<title>Login - Gen-Z Visual v705 PRO FINAL</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#07070a;color:#fff;font-family:system-ui}
 header{position:sticky;top:0;display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#111;border-bottom:1px solid #222}
@@ -18,22 +18,22 @@ input,textarea{width:100%;padding:12px 14px;margin:6px 0;background:#0e0e12;bord
 input:focus{border-color:#ff00ff}
 .btn{width:100%;padding:13px;background:#fff;color:#000;border:none;border-radius:99px;font-weight:900;cursor:pointer;margin-top:10px}
 .btn.primary{background:linear-gradient(135deg,#ff00ff,#7a00ff);color:#fff}
-.msg{font-size:11px;margin-top:8px;text-align:center;min-height:14px;color:#ff8800}
+.msg{font-size:11px;margin-top:8px;text-align:center;min-height:14px;color:#ff8800;white-space:pre-wrap}
 .nav{position:fixed;bottom:0;left:0;right:0;background:#111;border-top:1px solid #222;display:flex;justify-content:space-around;padding:8px 0}
 .nav a{color:#666;text-decoration:none;font-size:11px;text-align:center}.nav a.active{color:#ff00ff}
 </style>
 </head><body>
-<header><div class="logo">Gen-Z <span>Visual</span> <span style="font-size:10px;background:#00ff88;color:#000;padding:3px 8px;border-radius:99px">v704.5 FIXED</span></div><a href="index.html?v=704.5" class="top-btn">Home</a></header>
+<header><div class="logo">Gen-Z <span>Visual</span> <span style="font-size:10px;background:#00ff88;color:#000;padding:3px 8px;border-radius:99px">v705 PRO FINAL CLOSED</span></div><a href="index.html?v=705" class="top-btn">Home</a></header>
 <div class="box">
 <div class="card">
-<div style="text-align:center;margin-bottom:14px"><div style="width:56px;height:56px;background:linear-gradient(135deg,#ff00ff,#7a00ff);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto">🔐</div><h2 style="margin:10px 0 4px;font-weight:900">Welcome Back</h2><p style="font-size:11px;color:#666;margin:0">v704.5 PUBLIC | gen-z-visual-2 LIVE FIXED</p></div>
+<div style="text-align:center;margin-bottom:14px"><div style="width:56px;height:56px;background:linear-gradient(135deg,#ff00ff,#7a00ff);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto">🔐</div><h2 style="margin:10px 0 4px;font-weight:900">Welcome Back v705</h2><p style="font-size:11px;color:#666;margin:0">LIVE + PAID ₹ + 👁️ VIEWS • gen-z-visual-2</p></div>
 <div class="tabs"><div id="tLogin" class="on" onclick="showLogin()">Login</div><div id="tSignup" onclick="showSignup()">Sign Up</div></div>
 <div id="loginBox">
 <input id="lEmail" placeholder="Email" value="xhettriakash1@gmail.com">
 <input id="lPass" type="password" placeholder="Password" value="Akash123">
-<button class="btn primary" onclick="doLogin()">Login →</button>
+<button class="btn primary" onclick="doLogin()" id="loginBtn">Login → v705</button>
 <p id="lMsg" class="msg"></p>
-<div style="text-align:center;font-size:11px;color:#00ff88" id="healthCheck">Checking backend...</div>
+<div style="text-align:center;font-size:11px;color:#00ff88" id="healthCheck">Waking backend v705...</div>
 </div>
 <div id="signupBox" style="display:none">
 <div class="role"><div id="rReader" class="on" onclick="setRole('reader')">📚 Reader</div><div id="rCreator" onclick="setRole('creator')">🎨 Creator</div></div>
@@ -42,47 +42,76 @@ input:focus{border-color:#ff00ff}
 <input id="sCode" placeholder="Creator Code* CREATOR2026"><input id="sPortfolio" placeholder="Portfolio / Insta*"><textarea id="sBio" placeholder="Why creator? min 20 chars*" rows="3"></textarea>
 </div>
 <label style="display:flex;gap:8px;margin-top:10px;align-items:center"><input type="checkbox" id="agree" style="width:16px"><span style="font-size:11px;color:#888">I agree to Terms*</span></label>
-<button class="btn primary" onclick="doSignup()">Create Account ✨</button>
+<button class="btn primary" onclick="doSignup()">Create Account ✨ v705</button>
 <p id="sMsg" class="msg"></p>
 </div>
 </div>
 </div>
-<div class="nav"><a href="index.html?v=704.5">🏠<br>Home</a><a href="dashboard.html?v=704.5">📝<br>Studio</a><a href="login.html?v=704.5" class="active">🔐<br>Login</a><a href="admin.html?v=704.5">👑<br>Admin</a></div>
+<div class="nav"><a href="index.html?v=705">🏠<br>Home</a><a href="dashboard.html?v=705">📝<br>Studio</a><a href="login.html?v=705" class="active">🔐<br>Login</a><a href="admin.html?v=705">👑<br>Admin</a></div>
 <script>
 const API_BASE="https://gen-z-visual-2.onrender.com";
+const API=API_BASE+"/api";
 let curRole="reader";
 function showLogin(){document.getElementById('loginBox').style.display="block";document.getElementById('signupBox').style.display="none";document.getElementById('tLogin').className="on";document.getElementById('tSignup').className="";}
 function showSignup(){document.getElementById('loginBox').style.display="none";document.getElementById('signupBox').style.display="block";document.getElementById('tSignup').className="on";document.getElementById('tLogin').className="";}
 function setRole(r){curRole=r; document.getElementById('rReader').className=r==='reader'?'on':''; document.getElementById('rCreator').className=r==='creator'?'on':''; document.getElementById('creatorExtra').style.display=r==='creator'?'block':'none';}
-fetch(API_BASE+"/api/novels").then(()=>document.getElementById('healthCheck').innerText="● Backend LIVE ✅").catch(()=>document.getElementById('healthCheck').innerText="⏳ Waking 30s...");
+async function wake(){
+ try{
+  document.getElementById('healthCheck').innerText="● Waking backend 15s ⏳";
+  await fetch(API_BASE+"/",{cache:"no-store"});
+  let r=await fetch(API+"/novels",{cache:"no-store"});
+  if(r.ok) document.getElementById('healthCheck').innerText="● Backend LIVE v705 ✅ "+new Date().toLocaleTimeString();
+  else throw new Error();
+ }catch{ document.getElementById('healthCheck').innerHTML='⏳ Waking... retry <button onclick="wake()" style="background:#fff;color:#000;border:none;padding:4px 10px;border-radius:20px;font-weight:800;margin-left:6px">Retry</button>'; }
+}
+wake();
+
 async function smartFetch(path,body){
- for(let url of [`${API_BASE}/api/auth${path}`,`${API_BASE}/api${path}`]){
-  try{ let res=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)}); let data=await res.json(); if(res.status!==404) return {res,data}; }catch(e){continue;}
- } throw new Error("Backend waking 30s");
+ let urls=[`${API_BASE}/api/auth${path}`,`${API}/auth${path}`,`${API}${path}`];
+ for(let url of urls){
+  try{ 
+   let res=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)}); 
+   let text=await res.text(); let data={}; try{data=JSON.parse(text)}catch{data={raw:text}}
+   if(res.status!==404) return {res,data,url}; 
+  }catch(e){continue;}
+ } throw new Error("Backend waking 30s - try again");
 }
 async function doLogin(){
  let email=document.getElementById('lEmail').value.trim(), password=document.getElementById('lPass').value;
  if(!email||!password){document.getElementById('lMsg').innerText="❌ Fill all";return;}
- document.getElementById('lMsg').innerText="Logging...";
+ document.getElementById('lMsg').innerText="Logging + waking backend..."; document.getElementById('loginBtn').disabled=true;
  try{
+  await fetch(API_BASE+"/",{cache:"no-store"});
   let {res,data}=await smartFetch("/login",{email,password});
-  if(res.ok&&data.token){
-   localStorage.setItem("token",data.token); localStorage.setItem("genz_token",data.token);
-   localStorage.setItem("user",JSON.stringify(data.user)); localStorage.setItem("genz_user",JSON.stringify(data.user));
-   localStorage.setItem("email",data.user.email); localStorage.setItem("isAdmin","true");
-   document.getElementById('lMsg').innerText="✅ OK "+data.user.email;
-   setTimeout(()=>location.href="dashboard.html?v=704.5",700);
-  } else document.getElementById('lMsg').innerText="❌ "+(data.error||JSON.stringify(data));
- }catch(e){document.getElementById('lMsg').innerText="❌ "+e.message;}
+  if(res.ok&&(data.token||data.accessToken)){
+   let token=data.token||data.accessToken;
+   localStorage.setItem("token",token); localStorage.setItem("genz_token",token);
+   localStorage.setItem("user",JSON.stringify(data.user||{email})); localStorage.setItem("genz_user",JSON.stringify(data.user||{email}));
+   localStorage.setItem("email",data.user?.email||email); localStorage.setItem("isAdmin","true");
+   document.getElementById('lMsg').innerText="✅ OK "+(data.user?.email||email)+" → Dashboard v705";
+   setTimeout(()=>location.href="dashboard.html?v=705",700);
+  } else document.getElementById('lMsg').innerText="❌ "+(data.error||data.message||JSON.stringify(data).slice(0,200));
+ }catch(e){document.getElementById('lMsg').innerText="❌ "+e.message+" - backend sleep, retry in 20s";}
+ document.getElementById('loginBtn').disabled=false;
 }
 async function doSignup(){
  if(!document.getElementById('agree').checked){document.getElementById('sMsg').innerText="❌ Agree terms";return;}
  if(document.getElementById('sPass').value!==document.getElementById('sPass2').value){document.getElementById('sMsg').innerText="❌ Pass mismatch";return;}
  if(document.getElementById('sPass').value.length<6){document.getElementById('sMsg').innerText="❌ Min 6";return;}
- let payload={name:document.getElementById('sName').value,email:document.getElementById('sEmail').value,password:document.getElementById('sPass').value,role:curRole};
- if(curRole==="creator"){if(document.getElementById('sCode').value!=="CREATOR2026"){document.getElementById('sMsg').innerText="❌ Wrong code";return;} payload.code=document.getElementById('sCode').value; payload.portfolio=document.getElementById('sPortfolio').value; payload.bio=document.getElementById('sBio').value;}
- document.getElementById('sMsg').innerText="Creating...";
- try{ let {res,data}=await smartFetch(curRole==="creator"?"/register-creator":"/register",payload); if(res.ok){document.getElementById('sMsg').innerText="✅ Created! Login now"; showLogin(); document.getElementById('lEmail').value=document.getElementById('sEmail').value;} else document.getElementById('sMsg').innerText="❌ "+(data.error||JSON.stringify(data)); }catch(e){document.getElementById('sMsg').innerText="❌ "+e.message;}
+ let payload={name:document.getElementById('sName').value.trim(),email:document.getElementById('sEmail').value.trim(),password:document.getElementById('sPass').value,role:curRole};
+ if(!payload.name||!payload.email){document.getElementById('sMsg').innerText="❌ Fill name+email";return;}
+ if(curRole==="creator"){
+   if(document.getElementById('sCode').value!=="CREATOR2026"){document.getElementById('sMsg').innerText="❌ Wrong creator code - use CREATOR2026";return;}
+   if((document.getElementById('sBio').value||'').length<20){document.getElementById('sMsg').innerText="❌ Bio min 20 chars";return;}
+   payload.code=document.getElementById('sCode').value; payload.portfolio=document.getElementById('sPortfolio').value; payload.bio=document.getElementById('sBio').value;
+ }
+ document.getElementById('sMsg').innerText="Creating v705... waking backend...";
+ try{ 
+  await fetch(API_BASE+"/",{cache:"no-store"});
+  let {res,data}=await smartFetch(curRole==="creator"?"/register-creator":"/register",payload); 
+  if(res.ok){document.getElementById('sMsg').innerText="✅ Created! Login now v705"; showLogin(); document.getElementById('lEmail').value=payload.email;} 
+  else document.getElementById('sMsg').innerText="❌ "+(data.error||JSON.stringify(data).slice(0,200)); 
+ }catch(e){document.getElementById('sMsg').innerText="❌ "+e.message;}
 }
 </script>
 </body></html>
