@@ -1,156 +1,79 @@
-<!DOCTYPE html>
-<html><head>
+<!DOCTYPE html><html><head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Studio v703.1 ADMIN FIX</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui, -apple-system, sans-serif}
-body{background:#07070a;color:white;min-height:100vh}
-.top{position:sticky;top:0;z-index:99;display:flex;justify-content:space-between;align-items:center;padding:14px 16px;background:#111;border-bottom:1px solid #222}
-.logo{font-weight:900;font-size:20px}
-.logo span{color:#ff00ff}
-.btn-top{background:#222;color:#aaa;border:none;padding:8px 14px;border-radius:20px;font-size:12px;font-weight:700;margin-left:6px}
-.btn-top.logout{background:#ff0044;color:white}
-.wrap{max-width:700px;margin:0 auto;padding:16px;padding-bottom:120px}
-.card{background:#15151a;border:1px solid #25252c;border-radius:20px;padding:16px;margin:12px 0}
-.card h3{font-size:14px;margin-bottom:10px}
-.input{width:100%;background:#0e0e12;border:1px solid #2a2a32;border-radius:12px;padding:14px;color:white;margin:6px 0;outline:none}
-.input:focus{border-color:#ff00ff}
-.filebox{border:1px dashed #ff00ff55;background:#ff00ff08;border-radius:14px;padding:12px;margin:8px 0}
-.tab{display:flex;background:#111;border:1px solid #222;border-radius:99px;padding:4px;margin:14px 0}
-.tab div{flex:1;text-align:center;padding:10px;border-radius:99px;font-weight:800;color:#666;cursor:pointer;font-size:13px}
-.tab div.on{background:white;color:black}
-.btn{width:100%;padding:14px;border-radius:12px;border:none;font-weight:900;background:white;color:black;margin-top:10px;cursor:pointer}
-.statgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:10px 0}
-.stat{background:#1a1a22;border:1px solid #2a2a33;border-radius:12px;padding:10px;text-align:center}
-.badge{font-size:10px;background:#00ff88;color:black;padding:3px 8px;border-radius:20px;font-weight:900}
-.adminItem{display:flex;gap:10px;background:#1e1e28;border:1px solid #2d2d3a;border-radius:10px;padding:8px;margin:6px 0;align-items:center}
-</style>
-</head>
-<body>
+<title>Admin v703.2 FIX</title>
+<style>body{background:#000;color:#fff;font-family:sans-serif;padding:0;margin:0}.top{background:#111;padding:14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #222}.card{background:#151515;border:1px solid #222;border-radius:16px;padding:14px;margin:12px}.input{width:100%;padding:12px;background:#0a0a0a;border:1px solid #333;border-radius:10px;color:#fff;margin:6px 0;box-sizing:border-box}.btn{width:100%;padding:12px;background:#fff;color:#000;border:none;border-radius:10px;font-weight:900;margin-top:8px}.stat{display:inline-block;background:#1a1a1a;border:1px solid #222;border-radius:10px;padding:10px 16px;margin:4px;text-align:center}</style>
+</head><body>
 <div class="top">
-  <div class="logo" id="logoBtn">Gen-Z <span>Visual</span> <span id="adminBadge" style="display:none" class="badge">ADMIN</span></div>
-  <div>
-    <button class="btn-top" onclick="location.href='index.html'">Home</button>
-    <button class="btn-top logout" onclick="location.href='login.html'">Logout</button>
-  </div>
+<div style="font-weight:900">Gen-Z <span style="color:#f0f">Studio v703.2</span></div>
+<div><a href="index.html" style="color:#888;text-decoration:none;font-size:12px">Home</a></div>
 </div>
 
-<div class="wrap">
-  <div class="card" style="background:linear-gradient(135deg,#ff00ff22,#7a00ff22)">
-    <div style="font-weight:900;font-size:20px">Studio v703.1 <span style="color:#ff00ff">FIXED</span></div>
-    <div style="font-size:11px;color:#888;margin-top:4px">Tap logo 5 times for Admin • Public - No Domain Lock</div>
-    <div style="margin-top:10px;display:flex;gap:8px">
-      <button onclick="adminLogin()" style="background:#ff00ff;color:white;border:none;padding:8px 12px;border-radius:20px;font-size:11px;font-weight:800">🔐 Admin Login</button>
-      <button onclick="logoutAdmin()" id="logoutBtn" style="display:none;background:#333;color:white;border:none;padding:8px 12px;border-radius:20px;font-size:11px">Logout Admin</button>
-    </div>
-  </div>
+<div style="max-width:600px;margin:0 auto;padding:12px">
 
-  <div id="adminPanel" style="display:none">
-    <div class="card" style="background:linear-gradient(90deg,#ff00ff,#7a00ff);border:none">
-      <b>👑 ADMIN PANEL ACTIVE</b> <span id="countSmall" style="font-size:11px;margin-left:8px"></span>
-    </div>
-    <div class="statgrid">
-      <div class="stat"><div id="totalNovels" style="font-weight:900;font-size:18px">0</div><div style="font-size:10px;color:#888">NOVELS</div></div>
-      <div class="stat"><div id="totalComics" style="font-weight:900;font-size:18px">0</div><div style="font-size:10px;color:#888">COMICS</div></div>
-      <div class="stat"><div id="storeSize" style="font-weight:900;font-size:18px">0KB</div><div style="font-size:10px;color:#888">STORAGE</div></div>
-    </div>
-    <div class="card">
-      <h3>🔑 Change Admin Password (current: <span id="curPassShow"></span>)</h3>
-      <input id="newPass" class="input" type="password" placeholder="New password min 4 chars">
-      <button class="btn" style="background:#00ff88" onclick="changePass()">Update Password</button>
-    </div>
-    <div class="card">
-      <h3>📚 Control Content - DELETE</h3>
-      <div id="adminList"></div>
-    </div>
-  </div>
-
-  <div class="tab">
-    <div id="swNovel" class="on" onclick="setType('novel')">📚 Novel</div>
-    <div id="swComic" onclick="setType('comic')">🎨 Comic</div>
-  </div>
-
-  <div class="card">
-    <input id="titleInput" class="input" placeholder="Title *">
-    <input id="authorInput" class="input" placeholder="Author" value="GenZ Studio">
-    <textarea id="descInput" class="input" rows="3" placeholder="Description..."></textarea>
-
-    <div class="filebox">
-      <div style="font-size:11px;font-weight:800;color:#ff00ff">📁 COVER FROM DEVICE</div>
-      <input type="file" id="coverFile" accept="image/*" style="margin-top:8px;width:100%">
-      <img id="coverPreview" style="width:100%;height:160px;object-fit:cover;border-radius:10px;margin-top:8px;display:none">
-      <input id="coverInput" class="input" placeholder="Or paste cover URL">
-    </div>
-
-    <div class="filebox" id="novelBox">
-      <div style="font-size:11px;font-weight:800;color:#00ff88">📄 PDF FROM DEVICE</div>
-      <input type="file" id="novelFile" accept=".pdf,.txt" style="margin-top:8px;width:100%">
-      <div id="novelFileName" style="font-size:11px;color:#00ff88;margin-top:4px"></div>
-      <input id="pdfInput" class="input" placeholder="Or PDF URL">
-    </div>
-
-    <div class="filebox" id="comicBox" style="display:none">
-      <div style="font-size:11px;font-weight:800;color:#ff8800">🖼️ COMIC PAGES (multiple)</div>
-      <input type="file" id="comicFiles" accept="image/*" multiple style="margin-top:8px;width:100%">
-      <div id="comicPreview" style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px"></div>
-      <textarea id="pagesInput" class="input" rows="2" placeholder="Or page URLs comma separated"></textarea>
-    </div>
-
-    <button class="btn" id="btnPublish">🚀 PUBLISH v703.1</button>
-    <div id="status" style="text-align:center;font-size:11px;color:#666;margin-top:8px"></div>
-  </div>
+<div class="card" style="background:#1a001a">
+<b id="adminStatus">👤 User Mode</b><br>
+<small style="color:#888">Default pass: admin123 | Tap button to become admin</small><br><br>
+<button class="btn" style="background:#ff00ff;color:#fff" onclick="login()">🔐 ADMIN LOGIN</button>
+<button class="btn" style="background:#333;color:#fff;display:none" id="logoutBtn" onclick="logout()">Logout Admin</button>
 </div>
 
+<div id="adminBox" style="display:none">
+<div class="card">
+<div><span class="stat">Novels: <b id="c1">0</b></span> <span class="stat">Comics: <b id="c2">0</b></span> <span class="stat">Storage: <b id="c3">0</b></span></div>
+</div>
+<div class="card">
+<b>Change Password</b>
+<input id="newPass" class="input" placeholder="new password">
+<button class="btn" style="background:#0f8" onclick="changeP()">Update Password</button>
+<div style="font-size:11px;color:#666;margin-top:6px">Current: <span id="curP"></span></div>
+</div>
+<div class="card">
+<b>All Books (DELETE Control)</b>
+<div id="list"></div>
+</div>
+</div>
+
+<div class="card">
+<b>Quick Publish Test</b>
+<input id="t" class="input" placeholder="Title">
+<input id="cover" class="input" placeholder="Cover URL (optional)">
+<button class="btn" onclick="publishTest()">Publish Test Novel</button>
+<div id="msg" style="font-size:11px;color:#666;margin-top:6px"></div>
+</div>
+
+</div>
 <script>
-let curType='novel', coverB64=null, pagesB64=[], novelB64=null;
-let isAdmin = localStorage.getItem('isAdmin')==='true';
-const DEF='admin123';
-const getPass=()=>localStorage.getItem('adminPass')||DEF;
-function setType(t){curType=t; document.getElementById('swNovel').classList.toggle('on',t==='novel'); document.getElementById('swComic').classList.toggle('on',t==='comic'); document.getElementById('novelBox').style.display=t==='novel'?'block':'none'; document.getElementById('comicBox').style.display=t==='comic'?'block':'none';}
-function adminLogin(){ const p=prompt('Admin password (default admin123):'); if(p===getPass()){ localStorage.setItem('isAdmin','true'); isAdmin=true; updateUI(); alert('Admin unlocked 👑'); } else alert('Wrong! Try admin123'); }
-function logoutAdmin(){ localStorage.removeItem('isAdmin'); isAdmin=false; updateUI(); }
-function changePass(){ const v=document.getElementById('newPass').value.trim(); if(v.length<4){alert('min 4'); return;} localStorage.setItem('adminPass',v); document.getElementById('curPassShow').innerText=v; alert('Changed to '+v); }
-let clicks=0; document.getElementById('logoBtn').onclick=()=>{ clicks++; if(clicks>=5){clicks=0;adminLogin();} setTimeout(()=>clicks=0,2000); };
-function updateUI(){
-  document.getElementById('adminBadge').style.display=isAdmin?'inline-block':'none';
-  document.getElementById('logoutBtn').style.display=isAdmin?'inline-block':'none';
-  document.getElementById('adminPanel').style.display=isAdmin?'block':'none';
-  document.getElementById('curPassShow').innerText=getPass();
-  if(isAdmin) loadAdmin();
+// SUPER SAFE - NO CRASH
+let isAdmin = localStorage.getItem("isAdmin")==="true";
+function getPass(){ return localStorage.getItem("adminPass")||"admin123"; }
+function login(){
+  let p=prompt("Password? default admin123");
+  if(p===getPass()){ localStorage.setItem("isAdmin","true"); isAdmin=true; show(); alert("Admin OK"); }
+  else alert("Wrong - try admin123");
 }
-function loadAdmin(){
-  const novels=JSON.parse(localStorage.getItem('myNovels')||'[]');
-  const comics=JSON.parse(localStorage.getItem('myBooks')||'[]');
-  document.getElementById('totalNovels').innerText=novels.length;
-  document.getElementById('totalComics').innerText=comics.length;
-  const size=((localStorage.getItem('myNovels')||'').length+(localStorage.getItem('myBooks')||'').length)/1024;
-  document.getElementById('storeSize').innerText=size.toFixed(1)+'KB';
-  document.getElementById('countSmall').innerText=novels.length+comics.length+' items';
-  const list=document.getElementById('adminList'); let h='';
-  [...novels.map(x=>({...x,t:'novel'})),...comics.map(x=>({...x,t:'comic'}))].forEach(it=>{
-    h+=`<div class="adminItem"><img src="${it.cover}" style="width:40px;height:56px;object-fit:cover;border-radius:6px"><div style="flex:1"><b style="font-size:12px">${it.title}</b><br><small style="color:#666">${it.t}</small></div><button onclick="delItem('${it.id}','${it.t}')" style="background:#ff0044;color:white;border:none;padding:6px 10px;border-radius:8px;font-size:11px;font-weight:800">DELETE</button></div>`;
-  });
-  list.innerHTML=h||'<small style="color:#666">Empty</small>';
-}
-function delItem(id,t){ if(!confirm('Delete?')) return; if(t==='novel'){ let a=JSON.parse(localStorage.getItem('myNovels')||'[]'); a=a.filter(x=>String(x.id)!==String(id)); localStorage.setItem('myNovels',JSON.stringify(a)); } else { let a=JSON.parse(localStorage.getItem('myBooks')||'[]'); a=a.filter(x=>String(x.id)!==String(id)); localStorage.setItem('myBooks',JSON.stringify(a)); } loadAdmin(); }
-document.getElementById('coverFile').addEventListener('change',e=>{ const f=e.target.files[0]; if(!f) return; const r=new FileReader(); r.onload=ev=>{coverB64=ev.target.result; const img=document.getElementById('coverPreview'); img.src=coverB64; img.style.display='block';}; r.readAsDataURL(f); });
-document.getElementById('comicFiles').addEventListener('change',e=>{ pagesB64=[]; const prev=document.getElementById('comicPreview'); prev.innerHTML=''; [...e.target.files].slice(0,20).forEach(f=>{ const r=new FileReader(); r.onload=ev=>{pagesB64.push(ev.target.result); prev.innerHTML+=`<img src="${ev.target.result}" style="width:100%;height:60px;object-fit:cover;border-radius:6px">`;}; r.readAsDataURL(f); }); });
-document.getElementById('novelFile').addEventListener('change',e=>{ const f=e.target.files[0]; if(!f) return; document.getElementById('novelFileName').innerText=f.name; const r=new FileReader(); r.onload=ev=>novelB64=ev.target.result; r.readAsDataURL(f); });
-document.getElementById('btnPublish').onclick=async()=>{
-  const title=document.getElementById('titleInput').value.trim(); if(!title){alert('Title need'); return;}
-  const author=document.getElementById('authorInput').value.trim()||'GenZ Studio';
-  const desc=document.getElementById('descInput').value.trim();
-  const finalCover=coverB64||document.getElementById('coverInput').value.trim()||`https://picsum.photos/400/600?random=${Date.now()}`;
-  const finalPages=pagesB64.length?pagesB64:document.getElementById('pagesInput').value.trim().split(',').map(s=>s.trim()).filter(Boolean);
-  const finalPdf=novelB64||document.getElementById('pdfInput').value.trim()||'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf';
-  const st=document.getElementById('status'); st.innerText='Publishing...';
+function logout(){ localStorage.removeItem("isAdmin"); isAdmin=false; show(); }
+function changeP(){ let v=document.getElementById("newPass").value; if(v.length<4){alert("min 4");return;} localStorage.setItem("adminPass",v); alert("New pass: "+v); show(); }
+function show(){
+  document.getElementById("adminStatus").innerText=isAdmin?"👑 ADMIN MODE":"👤 User Mode";
+  document.getElementById("adminBox").style.display=isAdmin?"block":"none";
+  document.getElementById("logoutBtn").style.display=isAdmin?"block":"none";
+  document.getElementById("curP").innerText=getPass();
+  if(!isAdmin) return;
   try{
-    if(curType==='novel'){ let arr=JSON.parse(localStorage.getItem('myNovels')||'[]'); arr.unshift({id:Date.now(),title,author,cover:finalCover,description:desc,pdf:finalPdf,created:Date.now()}); localStorage.setItem('myNovels',JSON.stringify(arr)); }
-    else{ let arr=JSON.parse(localStorage.getItem('myBooks')||'[]'); arr.unshift({id:Date.now(),title,author,cover:finalCover,description:desc,pages:finalPages,created:Date.now()}); localStorage.setItem('myBooks',JSON.stringify(arr)); }
-    st.innerText='✅ Published!'; if(isAdmin) loadAdmin();
-    setTimeout(()=>location.href=curType==='novel'?'novels.html':'comic.html',800);
-  }catch(err){ st.innerText='❌ '+err.message; }
-};
-updateUI();
+    let n=JSON.parse(localStorage.getItem("myNovels")||"[]");
+    let c=JSON.parse(localStorage.getItem("myBooks")||"[]");
+    document.getElementById("c1").innerText=n.length;
+    document.getElementById("c2").innerText=c.length;
+    document.getElementById("c3").innerText=Math.round(((localStorage.getItem("myNovels")||"").length+(localStorage.getItem("myBooks")||"").length)/1024)+"KB";
+    let html="";
+    [...n.map(x=>({...x,k:"myNovels"})),...c.map(x=>({...x,k:"myBooks"}))].forEach(it=>{
+      html+=`<div style="display:flex;gap:8px;align-items:center;background:#1e1e1e;padding:8px;border-radius:8px;margin:6px 0"><img src="${it.cover}" style="width:36px;height:50px;object-fit:cover;border-radius:6px"><div style="flex:1;font-size:12px"><b>${it.title}</b></div><button onclick="del('${it.k}','${it.id}')" style="background:#f00;color:#fff;border:none;padding:6px 10px;border-radius:6px;font-size:11px">DEL</button></div>`;
+    });
+    document.getElementById("list").innerHTML=html||"Empty";
+  }catch(e){ document.getElementById("list").innerText="Error: "+e.message+" - Click to clear storage"; document.getElementById("list").innerHTML+='<br><button onclick="localStorage.clear();location.reload()" style="background:red;color:white;padding:8px;border:none;border-radius:6px;margin-top:8px">CLEAR ALL</button>'; }
+}
+function del(k,id){ if(!confirm("Delete?")) return; let a=JSON.parse(localStorage.getItem(k)||"[]"); a=a.filter(x=>String(x.id)!==String(id)); localStorage.setItem(k,JSON.stringify(a)); show(); }
+function publishTest(){ let t=document.getElementById("t").value||"Test "+Date.now(); let cover=document.getElementById("cover").value||"https://picsum.photos/400/600"; let a=JSON.parse(localStorage.getItem("myNovels")||"[]"); a.unshift({id:Date.now(),title:t,author:"Admin",cover:cover,description:"test"}); localStorage.setItem("myNovels",JSON.stringify(a)); document.getElementById("msg").innerText="Published!"; show(); }
+show();
 </script>
 </body></html>
