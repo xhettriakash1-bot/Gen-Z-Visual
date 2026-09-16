@@ -1,63 +1,106 @@
 <!DOCTYPE html>
-<html>
-<head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Admin ULTRA - Gen-Z Visual v700</title>
-<link rel="stylesheet" href="style.css?v=700">
-<script>
-// FIREWALL v700 + DOMAIN LOCK FIXED
-(function(){
-  const ALLOWED_DOMAINS = ["kash1-bot.github.io","xhettriak.github.io","localhost","127.0.0.1","gen-z-visual-2.onrender.com"];
-  const host = location.hostname;
-  const isAllowed = location.protocol==="file:" || host==="" || host.includes("github.io") || host.includes("onrender") || ALLOWED_DOMAINS.some(h=>host.includes(h));
-  if(!isAllowed){
-    document.documentElement.innerHTML=`<h1 style='color:#ff00ff;text-align:center;margin-top:20%;font-family:Space Grotesk'>⛔ Domain Blocked<br><small style='color:#666'>${host} not allowed</small></h1>`;
-    throw new Error("Blocked: "+host);
-  }
-  if(window.top!==window.self) window.top.location=window.self.location;
-  const role = (localStorage.getItem("role")||JSON.parse(localStorage.getItem("user")||"{}").role||"").toLowerCase();
-  const email = (localStorage.getItem("email")||JSON.parse(localStorage.getItem("user")||"{}").email||"").toLowerCase();
-  const ALLOWED_ADMINS = ["xhettriakash1@gmail.com","akashchettri2003@gmail.com"];
-  const token = localStorage.getItem("token")||localStorage.getItem("genz_token");
-  if(!token){location.href="login.html";return;}
-  if(role!=="admin" && !ALLOWED_ADMINS.includes(email)){
-    if(!ALLOWED_ADMINS.includes(email)){
-      document.addEventListener('DOMContentLoaded',()=>{
-        document.body.innerHTML=`<div style="background:#070708;color:white;height:100vh;display:flex;align-items:center;justify-content:center;flex-direction:column;font-family:Space Grotesk;text-align:center;padding:20px"><div style="width:80px;height:80px;background:linear-gradient(135deg,#ff00ff,#7a00ff);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:40px;box-shadow:0 0 30px #ff00ff80">⛔</div><h1 style="color:#ff00ff;margin-top:16px">ADMIN ONLY</h1><p style="color:#666;margin-top:8px">Firewall v700 ACTIVE<br>Logged as: ${email} (${role})<br>Domain: ${host} ✅</p><a href="login.html" style="margin-top:24px;background:white;color:black;padding:14px 28px;border-radius:99px;text-decoration:none;font-weight:900;display:inline-block">Login as Admin</a></div>`;
-      });
-      throw new Error("Not Admin");
-    }
-  }
-})();
-</script>
+<html><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin v703.2 - Gen-Z Visual PUBLIC</title>
 <style>
-.wrap{max-width:1100px;margin:20px auto;padding:0 20px 110px}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}@media(max-width:800px){.grid2{grid-template-columns:1fr}}
-.card-ultra{background:rgba(20,20,23,0.85);backdrop-filter:blur(25px) saturate(180%);border:1px solid rgba(255,255,255,0.08);border-top:1px solid rgba(255,255,255,0.12);border-radius:24px;padding:24px;box-shadow:0 20px 50px rgba(0,0,0,0.5);position:relative;overflow:hidden}
-.card-ultra::before{content:"";position:absolute;inset:0;background:linear-gradient(120deg,transparent 20%,rgba(255,255,255,0.05) 50%,transparent 80%);pointer-events:none}
-.card-ultra.live{border-color:#00ff8840;box-shadow:0 0 0 1px #00ff8820,0 20px 50px rgba(0,0,0,0.5)}
-.card-ultra h3{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:800;position:relative;z-index:1}
-.card-ultra h3::before{content:"";width:5px;height:20px;background:linear-gradient(var(--neon),var(--neon3));border-radius:99px;box-shadow:var(--glow)}
-input{width:100%;padding:14px 16px;margin:8px 0;background:rgba(10,10,12,0.9);border:1px solid rgba(255,255,255,0.08);border-radius:12px;color:white;outline:none;transition:0.3s;position:relative;z-index:1}
-input:focus{border-color:var(--neon);box-shadow:0 0 0 4px #ff00ff15}
-.btn-w{padding:12px 22px;border-radius:99px;border:none;font-weight:800;cursor:pointer;background:white;color:black;transition:0.3s;position:relative;z-index:1}
-.btn-w:hover{transform:translateY(-2px);box-shadow:0 10px 20px rgba(255,255,255,0.2)}
-.btn-d{padding:10px 18px;border-radius:99px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.06);color:white;font-weight:700;cursor:pointer;backdrop-filter:blur(10px)}
-table{width:100%;border-collapse:collapse;margin-top:14px;position:relative;z-index:1}td,th{padding:12px 10px;border-bottom:1px solid rgba(255,255,255,0.06);text-align:left;font-size:13px}th{color:#666;font-size:11px;letter-spacing:1px;text-transform:uppercase}
-.badge{padding:5px 12px;border-radius:99px;background:linear-gradient(135deg,#00ff88,#00cc6a);color:black;font-size:10px;font-weight:900;letter-spacing:0.5px}
-.badge-admin{background:linear-gradient(135deg,#ff00ff,#7a00ff);color:white;box-shadow:0 2px 10px #ff00ff40}
-.status-dot{width:10px;height:10px;border-radius:50%;display:inline-block;animation:livePulse 1.5s infinite}
-@keyframes livePulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.3);opacity:0.6}}
-.small{font-size:11px;color:#777;position:relative;z-index:1}
-.novel-card{background:rgba(10,10,12,0.8);padding:12px;border-radius:14px;margin:8px 0;border:1px solid rgba(255,255,255,0.06);display:flex;gap:12px;transition:0.3s;position:relative;z-index:1}
-.novel-card:hover{border-color:#ff00ff30;transform:translateX(4px)}
-.novel-card img{width:50px;height:70px;object-fit:cover;border-radius:10px}
+*{box-sizing:border-box}body{margin:0;background:#07070a;color:#fff;font-family:system-ui,sans-serif}
+header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#111;border-bottom:1px solid #222;position:sticky;top:0;z-index:99}
+.logo{font-weight:900}.logo span{color:#ff00ff}
+.wrap{max-width:1100px;margin:0 auto;padding:16px 16px 120px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:800px){.grid2{grid-template-columns:1fr}}
+.card{background:#15151a;border:1px solid #222;border-radius:20px;padding:16px;margin-bottom:14px}
+.card.live{border-color:#00ff8840}
+input{width:100%;padding:12px 14px;margin:6px 0;background:#0e0e12;border:1px solid #2a2a32;border-radius:10px;color:#fff;outline:none}
+.btn{padding:10px 16px;border-radius:20px;border:none;font-weight:800;cursor:pointer}
+.btn-w{background:#fff;color:#000}
+.btn-f{background:#ff0055;color:#fff}
+.badge{padding:4px 10px;border-radius:20px;font-size:10px;font-weight:900}
+.badge-admin{background:linear-gradient(135deg,#ff00ff,#7a00ff);color:#fff}
+.badge-ok{background:#00ff88;color:#000}
+table{width:100%;border-collapse:collapse;margin-top:10px}td,th{padding:10px;border-bottom:1px solid #222;text-align:left;font-size:12px}th{color:#666;font-size:10px}
+.novel{display:flex;gap:10px;align-items:center;background:#0e0e12;border:1px solid #222;padding:10px;border-radius:12px;margin:6px 0}
+.novel img{width:44px;height:60px;object-fit:cover;border-radius:8px}
+.stat{display:inline-block;background:#1a1a1e;border:1px solid #222;border-radius:12px;padding:8px 14px;margin:4px;font-size:12px;text-align:center}
 </style>
-</head>
-<body>
-<header><div class="logo">Gen-Z <span>Visual</span> <span style="font-size:10px;background:#00ff88;color:black;padding:3px 9px;border-radius:99px;font-weight:900;margin-left:6px">ADMIN ULTRA</span></div>
-<div style="display:flex;gap:8px;align-items:center"><span id="adminEmail" style="font-size:11px;color:#888"></span><a href="index.html" class="top-btn">Home</a><button onclick="localStorage.clear();location.href='login.html'" style="background:#ef4444;color:white;border:none;padding:8px 14px;border-radius:99px;font-size:12px;cursor:pointer">Logout</button></div>
+</head><body>
+<header>
+<div class="logo">Gen-Z <span>Admin</span> <span style="font-size:9px;background:#00ff88;color:#000;padding:3px 8px;border-radius:20px">v703.2 PUBLIC</span></div>
+<div style="display:flex;gap:8px;align-items:center">
+<span id="adminEmail" style="font-size:11px;color:#888"></span>
+<a href="index.html" style="background:#222;color:#aaa;padding:8px 12px;border-radius:20px;text-decoration:none;font-size:12px">Home</a>
+<button onclick="logout()" style="background:#ef4444;color:#fff;border:none;padding:8px 12px;border-radius:20px;font-size:12px">Logout</button>
+</div>
 </header>
 
 <div class="wrap">
-<!--
+
+<div class="card live">
+<b>👑 Admin Control v703.2 - NO DOMAIN LOCK</b><br>
+<small style="color:#888">Login: xhettriakash1@gmail.com | Password changeable in dashboard</small><br>
+<div style="margin-top:10px">
+<span class="stat">Novels: <b id="cNov">0</b></span>
+<span class="stat">Comics: <b id="cCom">0</b></span>
+<span class="stat">Users: <b id="cUsr">0</b></span>
+<span class="stat">Storage: <b id="cSto">0KB</b></span>
+</div>
+<div style="margin-top:10px">
+<input id="newPass" placeholder="Change Admin Password (min 4 chars)">
+<button class="btn btn-w" onclick="changePass()">Update Password</button>
+<span id="curPass" style="font-size:10px;color:#666;margin-left:8px"></span>
+</div>
+</div>
+
+<div class="grid2">
+<div class="card">
+<h3 style="margin:0 0 8px">📚 All Novels + Comics (DELETE)</h3>
+<div id="allList"></div>
+<button class="btn btn-f" style="width:100%;margin-top:10px" onclick="clearAll()">🗑️ CLEAR ALL LOCAL DATA</button>
+</div>
+<div class="card">
+<h3 style="margin:0 0 8px">👥 Backend Users (LIVE)</h3>
+<div id="users" style="max-height:400px;overflow:auto"></div>
+<button class="btn btn-w" onclick="loadUsers()">Refresh Users</button>
+<div style="margin-top:10px;font-size:10px;color:#666" id="apiStatus">API: https://gen-z-visual-2.onrender.com</div>
+</div>
+</div>
+
+<div class="card">
+<h3>Quick Publish (Test Admin)</h3>
+<input id="tTitle" placeholder="Title">
+<input id="tCover" placeholder="Cover URL">
+<button class="btn btn-w" onclick="quickPub()">Publish Test Novel</button>
+</div>
+
+</div>
+
+<script>
+const API="https://gen-z-visual-2.onrender.com";
+function getPass(){return localStorage.getItem("adminPass")||"admin123";}
+function logout(){ localStorage.removeItem("token"); localStorage.removeItem("genz_token"); localStorage.removeItem("isAdmin"); location.href="login.html"; }
+function changePass(){ let v=document.getElementById("newPass").value; if(v.length<4){alert("min 4");return;} localStorage.setItem("adminPass",v); alert("New pass: "+v); show(); }
+function show(){
+ document.getElementById("curPass").innerText="Current: "+getPass();
+ document.getElementById("adminEmail").innerText=JSON.parse(localStorage.getItem("user")||"{}").email||localStorage.getItem("email")||"Guest";
+ try{
+   let n=JSON.parse(localStorage.getItem("myNovels")||"[]");
+   let b=JSON.parse(localStorage.getItem("myBooks")||"[]");
+   document.getElementById("cNov").innerText=n.length;
+   document.getElementById("cCom").innerText=b.length;
+   document.getElementById("cSto").innerText=Math.round(((localStorage.getItem("myNovels")||"").length+(localStorage.getItem("myBooks")||"").length)/1024)+"KB";
+   let html="";
+   [...n.map(x=>({...x,_k:"myNovels"})),...b.map(x=>({...x,_k:"myBooks"}))].forEach(it=>{
+     html+=`<div class="novel"><img src="${it.cover||it.coverImage||'https://picsum.photos/100/140'}" onerror="this.src='https://picsum.photos/100/140'"><div style="flex:1"><b style="font-size:12px">${it.title}</b><br><small style="color:#666">${it.author||'Me'}</small></div><button class="btn btn-f" style="padding:6px 10px;font-size:11px" onclick="del('${it._k}','${it.id||it._id}')">DEL</button></div>`;
+   });
+   document.getElementById("allList").innerHTML=html||"Empty - Publish in Studio";
+ }catch(e){ document.getElementById("allList").innerHTML=`Error: ${e.message} <button class="btn btn-f" onclick="localStorage.clear();location.reload()">CLEAR</button>`; }
+}
+function del(k,id){ if(!confirm("Delete "+id+"?"))return; let a=JSON.parse(localStorage.getItem(k)||"[]"); a=a.filter(x=>String(x.id||x._id)!==String(id)); localStorage.setItem(k,JSON.stringify(a)); show(); }
+function clearAll(){ if(!confirm("Clear all local novels/comics?"))return; localStorage.removeItem("myNovels"); localStorage.removeItem("myBooks"); show(); }
+function quickPub(){ let t=document.getElementById("tTitle").value||"Test "+Date.now(); let c=document.getElementById("tCover").value||"https://picsum.photos/400/600"; let a=JSON.parse(localStorage.getItem("myNovels")||"[]"); a.unshift({id:Date.now(),title:t,author:"Admin",cover:c}); localStorage.setItem("myNovels",JSON.stringify(a)); show(); alert("Published!"); }
+async function loadUsers(){
+ document.getElementById("users").innerText="Loading...";
+ try{ let r=await fetch(`${API}/api/users`,{headers:{Authorization:`Bearer ${localStorage.getItem("token")||""}`}}); let d=await r.json(); if(Array.isArray(d)){ document.getElementById("cUsr").innerText=d.length; document.getElementById("users").innerHTML=d.map(u=>`<div style="padding:8px;border-bottom:1px solid #222;font-size:12px"><span class="badge ${u.role==='admin'?'badge-admin':'badge-ok'}">${u.role}</span> ${u.name||''} - ${u.email}</div>`).join(""); } else { document.getElementById("users").innerText=JSON.stringify(d).slice(0,200); } }catch(e){ document.getElementById("users").innerText="Backend waking 30s... "+e.message; }
+}
+show(); loadUsers();
+</script>
+</body></html>
