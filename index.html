@@ -12,7 +12,7 @@ header{position:sticky;top:0;z-index:99;display:flex;justify-content:space-betwe
 .hero h1{font-size:42px;line-height:0.9;font-weight:900}
 .hero h1 span{background:linear-gradient(90deg,#ff00ff,#7a00ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .grid{max-width:700px;margin:0 auto;padding:0 16px 120px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.card{background:#15151a;border:1px solid #222;border-radius:16px;overflow:hidden;position:relative}
+.card{background:#15151a;border:1px solid #222;border-radius:16px;overflow:hidden;position:relative;cursor:pointer}
 .card img{width:100%;height:180px;object-fit:cover}
 .card-body{padding:10px}.card-body b{font-size:13px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.card-body small{color:#666;font-size:11px}
 .badge{position:absolute;top:8px;left:8px;padding:3px 8px;border-radius:20px;font-size:9px;font-weight:900}.live{background:#00ff88;color:#000}.paid{background:#facc15;color:#000}
@@ -36,6 +36,37 @@ header{position:sticky;top:0;z-index:99;display:flex;justify-content:space-betwe
 <script>
 const API_BASE="https://gen-z-visual-2.onrender.com"; const API=API_BASE+"/api"; let allItems=[];
 async function getLive(){ try{ let [r1,r2]=await Promise.all([fetch(API+'/novels'),fetch(API+'/comics')]); let n=await r1.json(); let c=await r2.json(); n=Array.isArray(n)?n:(n.novels||[]); c=Array.isArray(c)?c:(c.comics||[]); return [...n.map(x=>({...x,type:'novel'})), ...c.map(x=>({...x,type:'comic'}))]; }catch{ return []; } }
-async function loadAll(){ let live=await getLive(); let g=document.getElementById('grid'); if(live.length>0){ g.innerHTML=live.map(i=>`<div class="card"><span class="badge ${i.access==='paid'?'paid':'live'}">${i.access==='paid'?'₹'+(i.price||10):'LIVE'}</span><img src="${i.cover||i.coverImage}"><div class="card-body"><b>${i.title}</b><small>${i.author}</small></div></div>`).join(''); } }
+async function loadAll(){ 
+  try{
+    await fetch(API_BASE+"/api/health");
+    document.getElementById('status').innerText="● LIVE - Connected";
+  }catch{}
+  let live=await getLive(); allItems=live;
+  let g=document.getElementById('grid'); 
+  if(live.length>0){ 
+    g.innerHTML=live.map(i=>{
+      const pid=i._id||i.id;
+      const link=i.type==='novel'?`read-novel.html?id=${pid}`:`read-comic.html?id=${pid}`;
+      return `<div class="card" onclick="location.href='${link}'"><span class="badge ${i.access==='paid'?'paid':'live'}">${i.access==='paid'?'₹'+(i.price||10):'LIVE'}</span><img src="${i.cover||i.coverImage||''}" onerror="this.src='https://via.placeholder.com/300x400/15151a/ff00ff?text=GenZ'"><div class="card-body"><b>${i.title}</b><small>${i.author||'Creator'}</small></div></div>`
+    }).join(''); 
+    document.getElementById('status').innerText=`● LIVE - ${live.length} Stories Active`;
+  } else {
+    document.getElementById('status').innerText="● LIVE - Ready";
+    g.innerHTML='<div style="grid-column:1/3;text-align:center;color:#555;padding:30px">Publish first story in Studio</div>';
+  }
+}
+function filterCards(){
+  let q=document.getElementById('searchBox').value.toLowerCase();
+  let f=allItems.filter(i=>i.title.toLowerCase().includes(q));
+  let g=document.getElementById('grid');
+  if(f.length===0){ g.innerHTML='<div style="grid-column:1/3;text-align:center;color:#666">No match</div>'; return; }
+  g.innerHTML=f.map(i=>{
+    const pid=i._id||i.id;
+    const link=i.type==='novel'?`read-novel.html?id=${pid}`:`read-comic.html?id=${pid}`;
+    return `<div class="card" onclick="location.href='${link}'"><span class="badge ${i.access==='paid'?'paid':'live'}">${i.access==='paid'?'₹'+(i.price||10):'LIVE'}</span><img src="${i.cover||i.coverImage}"><div class="card-body"><b>${i.title}</b><small>${i.author}</small></div></div>`
+  }).join('');
+}
 loadAll();
+setInterval(()=>{ fetch(API_BASE+"/api/health").catch(()=>{}); }, 240000);
+setTimeout(()=>{ fetch(API_BASE+"/api/health").then(()=>{ document.getElementById('status').innerText="● LIVE - All OK"; }).catch(()=>{}); }, 3000);
 </script></body></html>
