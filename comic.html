@@ -1,104 +1,51 @@
 <!DOCTYPE html>
-<html>
-<head>
+<html><head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Comics ULTRA v701 - Gen-Z Visual</title>
-<link rel="stylesheet" href="style.css?v=701">
+<title>Comics - Gen-Z Visual v703.2</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Space Grotesk, sans-serif}
-body{background:#07070a;color:white;min-height:100vh}
-.top-ultra{position:sticky;top:0;z-index:99;display:flex;justify-content:space-between;align-items:center;padding:14px 20px;background:rgba(10,10,12,0.7);backdrop-filter:blur(25px);border-bottom:1px solid rgba(255,255,255,0.06)}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:16px;max-width:800px;margin:0 auto}
+*{box-sizing:border-box}body{margin:0;background:#07070a;color:#fff;font-family:system-ui,sans-serif}
+.top{position:sticky;top:0;z-index:99;display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#111;border-bottom:1px solid #222}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:16px;max-width:800px;margin:0 auto 100px}
 @media(min-width:600px){.grid{grid-template-columns:repeat(3,1fr)}}
-.card{background:rgba(20,20,23,0.85);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.07);border-radius:20px;overflow:hidden;transition:0.3s;position:relative}
-.card:hover{transform:translateY(-4px);border-color:rgba(255,136,0,0.3);box-shadow:0 12px 30px rgba(0,0,0,0.4)}
-.card img{width:100%;height:220px;object-fit:cover}
-.info{padding:12px}
-.badge{position:absolute;top:10px;left:10px;background:#ff8800;color:black;font-size:10px;font-weight:900;padding:4px 8px;border-radius:20px}
-.btn{width:100%;background:white;color:black;border:none;padding:10px;border-radius:99px;font-weight:800;margin-top:8px;cursor:pointer}
-.btn:hover{background:#ff8800}
+.card{background:#15151a;border:1px solid #222;border-radius:18px;overflow:hidden;position:relative;transition:.3s}
+.card:hover{transform:translateY(-4px);border-color:#ff880060}
+.card img{width:100%;height:200px;object-fit:cover}
+.info{padding:10px}
+.badge{position:absolute;top:8px;left:8px;background:#ff8800;color:#000;font-size:9px;font-weight:900;padding:3px 8px;border-radius:20px}
+.btn{width:100%;background:#fff;color:#000;border:none;padding:8px;border-radius:20px;font-weight:800;margin-top:6px;cursor:pointer;font-size:12px}
+.nav{position:fixed;bottom:0;left:0;right:0;background:#111;border-top:1px solid #222;display:flex;justify-content:space-around;padding:8px 0}
+.nav a{color:#666;text-decoration:none;font-size:11px;text-align:center}
+.nav a.active{color:#ff8800}
 </style>
-</head>
-<body>
-<div class="top-ultra">
-  <div style="font-weight:900">🎨 Comics <span style="color:#ff8800">v701</span></div>
-  <div style="display:flex;gap:12px">
-    <a href="index.html" style="color:#888;text-decoration:none;font-size:13px;font-weight:700">Home</a>
-    <a href="dashboard.html" style="color:#ff8800;text-decoration:none;font-size:13px;font-weight:800">+ Studio</a>
+</head><body>
+<div class="top">
+  <div style="font-weight:900">🎨 Comics <span style="color:#ff8800">v703.2</span></div>
+  <div style="display:flex;gap:10px">
+    <a href="index.html" style="color:#888;text-decoration:none;font-size:12px;font-weight:700">Home</a>
+    <a href="dashboard.html" style="color:#ff8800;text-decoration:none;font-size:12px;font-weight:800">+ Studio</a>
   </div>
 </div>
 
-<div style="max-width:800px;margin:0 auto;padding:20px 16px 0">
-  <h2 style="font-size:26px;font-weight:900;letter-spacing:-1px">All Comics <span style="color:#ff8800">ULTRA</span></h2>
-  <p style="color:#666;font-size:12px;margin-top:4px">v701 FILE UPLOAD • No Domain Lock • Open for all</p>
+<div style="max-width:800px;margin:0 auto;padding:16px">
+  <h2 style="margin:0;font-size:22px;font-weight:900">All Comics <span style="color:#ff8800">PUBLIC</span></h2>
+  <p style="color:#666;font-size:11px;margin-top:4px">v703.2 • No Domain Lock • Device + LIVE</p>
 </div>
 
-<div class="grid" id="comicList"></div>
+<div class="grid" id="list"></div>
+
+<div class="nav">
+<a href="index.html">🏠<br>Home</a>
+<a href="novels.html">📚<br>Novels</a>
+<a href="comic.html" class="active">💥<br>Comics</a>
+<a href="dashboard.html">📝<br>Studio</a>
+</div>
 
 <script>
-const API = "https://gen-z-visual-2.onrender.com";
-
-async function loadComics(){
-  let all = [];
-
-  // 1. FILE UPLOAD from dashboard v701
-  try{
-    let local = JSON.parse(localStorage.getItem("myBooks")||"[]");
-    all = all.concat(local.map(c=>({...c, source:"DEVICE 📁"})));
-  }catch(e){}
-
-  // 2. LIVE backend
-  try{
-    let res = await fetch(`${API}/api/comics`);
-    if(res.ok){
-      let backend = await res.json();
-      all = all.concat(backend.map(c=>({...c, source:"LIVE 🔥"})));
-    }
-  }catch(e){}
-
-  // 3. XML fallback
-  try{
-    let r = await fetch('data/comics.xml?v=701');
-    let s = await r.text();
-    let x = new DOMParser().parseFromString(s,"text/xml");
-    x.querySelectorAll("comic").forEach(c=>{
-      try{
-        all.push({
-          id: c.querySelector('id')?.textContent || Date.now(),
-          title: c.querySelector('title')?.textContent || "Untitled",
-          author: c.querySelector('author')?.textContent || "GenZ",
-          cover: c.querySelector('cover')?.textContent,
-          description: c.querySelector('description')?.textContent || c.querySelector('desc')?.textContent || "",
-          pages: (c.querySelector('pages')?.textContent||"").split(",").map(s=>s.trim()).filter(Boolean),
-          source: "XML"
-        });
-      }catch(e){}
-    });
-  }catch(e){}
-
-  let seen = new Set();
-  all = all.filter(c=>{ if(seen.has(String(c.id))) return false; seen.add(String(c.id)); return true; });
-
-  if(!all.length){
-    document.getElementById("comicList").innerHTML = `<div style="grid-column:1/-1;text-align:center;color:#666;padding:40px">No comics yet. Go to Studio to upload from device!</div>`;
-    return;
-  }
-
-  document.getElementById("comicList").innerHTML = all.map(c=>`
-    <div class="card">
-      <span class="badge">${c.source}</span>
-      <img src="${c.cover}" onerror="this.src='https://picsum.photos/400/600?random=${c.id}'">
-      <div class="info">
-        <b style="font-size:13px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${c.title}</b>
-        <small style="color:#888">${c.author}</small>
-        <p style="font-size:11px;color:#666;margin:6px 0;height:28px;overflow:hidden">${(c.description||"").slice(0,60)}</p>
-        <button class="btn" onclick="location.href='read-comic.html?id=${c.id}'">Read • ${c.pages?c.pages.length:3} pages</button>
-      </div>
-    </div>
-  `).join("");
-}
-
-loadComics();
-</script>
-</body>
-</html>
+const API="https://gen-z-visual-2.onrender.com/api";
+async function load(){
+ let all=[];
+ try{ all=all.concat(JSON.parse(localStorage.getItem("myBooks")||"[]").map(c=>({...c,source:"DEVICE"}))); }catch(e){ localStorage.removeItem("myBooks"); }
+ try{ let r=await fetch(`${API}/comics`); if(r.ok){ let b=await r.json(); b=Array.isArray(b)?b:b.comics||[]; all=all.concat(b.map(c=>({...c,source:"LIVE"}))); } }catch(e){}
+ let seen=new Set(); all=all.filter(c=>{let k=String(c.id||c._id); if(seen.has(k))return false; seen.add(k); return true; });
+ if(!all.length){ document.getElementById("list").innerHTML=`<div style="grid-column:1/-1;text-align:center;color:#666;padding:40px">No comics yet<br><a href="dashboard.html" style="background:#fff;color:#000;padding:8px 16px;border-radius:20px;text-decoration:none;font-weight:800;display:inline-block;margin-top:10px">Upload Now</a></div>`; return; }
+ document.getElementById("list
