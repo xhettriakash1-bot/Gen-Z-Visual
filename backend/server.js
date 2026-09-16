@@ -64,8 +64,8 @@ function slugify(t){return (t||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').slic
 function isValidUrl(u){try{let x=new URL(u);return x.protocol==='http:'||x.protocol==='https:';}catch{return false;}}
 function cleanPages(p){if(!Array.isArray(p)) return []; return [...new Set(p.map(s=>String(s||'').trim()).filter(s=>s.length>10 && isValidUrl(s)))].slice(0,100);}
 
-app.get('/',(req,res)=>res.json({ok:true,msg:"Gen-Z Visual v705 PRO Firewall 100% Confidential", time:new Date().toISOString()}));
-app.get('/api/health',(req,res)=>res.json({ok:true,mongo:mongoose.connection.readyState, v:"705 PRO FIREWALL CONFIDENTIAL", razorpay:!!process.env.RAZORPAY_KEY_ID}));
+app.get('/',(req,res)=>res.json({ok:true,msg:"Gen-Z Visual v705 PRO Firewall 100% Confidential + PASS CHANGE", time:new Date().toISOString()}));
+app.get('/api/health',(req,res)=>res.json({ok:true,mongo:mongoose.connection.readyState, v:"705 PRO FIREWALL CONFIDENTIAL PASS FIX", razorpay:!!process.env.RAZORPAY_KEY_ID}));
 
 app.post('/api/create-order',async(req,res)=>{
  try{
@@ -104,6 +104,40 @@ app.post('/api/auth/login',async(req,res)=>{
   let token=jwt.sign({id:u._id,email:u.email,role:u.role},JWT,{expiresIn:"30d"}); res.json({token,user:{email:u.email,role:u.role,name:u.name,upiId:u.upiId}});
  }catch(err){res.status(500).json({error:err.message})}
 });
+
+// ===== NEW: PASSWORD CHANGE v705 - USER + ADMIN RESET =====
+app.post('/api/auth/change-password', async(req,res)=>{
+ try{
+  let {email, oldPassword, newPassword} = req.body;
+  if(!email||!oldPassword||!newPassword) return res.status(400).json({error:"Email + old + new required"});
+  if(newPassword.length<6) return res.status(400).json({error:"New password min 6"});
+  let user = await User.findOne({email: email.toLowerCase()});
+  if(!user) return res.status(404).json({error:"User not found"});
+
+  // ADMIN RESET PATH - CREATOR2026
+  if(oldPassword === "CREATOR2026"){
+    let hashed = await bcrypt.hash(newPassword,10);
+    user.password = hashed;
+    await user.save();
+    console.log(`🔑 Admin reset password for ${email}`);
+    return res.json({ok:true, msg:"Admin reset OK", email:user.email});
+  }
+
+  // NORMAL USER PATH - need old password correct
+  let match = await bcrypt.compare(oldPassword, user.password);
+  if(!match) return res.status(400).json({error:"Old password wrong"});
+
+  let hashed = await bcrypt.hash(newPassword,10);
+  user.password = hashed;
+  await user.save();
+  console.log(`🔑 User changed password ${email}`);
+  res.json({ok:true, msg:"Password changed", email:user.email});
+ }catch(e){
+  console.log("Change pass error", e.message);
+  res.status(500).json({error:e.message});
+ }
+});
+
 app.get('/api/me',protect,async(req,res)=>{ try{let u=await User.findById(req.user.id).select("email role name upiId"); res.json(u);}catch(e){res.status(500).json({error:e.message})} });
 app.post('/api/save-upi',protect,async(req,res)=>{
  try{ let {upiId}=req.body; if(!upiId||!upiId.includes("@")) return res.status(400).json({error:"Valid UPI like name@upi required"}); upiId=upiId.trim(); let u=await User.findByIdAndUpdate(req.user.id,{upiId},{new:true}); await Novel.updateMany({creatorEmail:u.email},{authorUpi:upiId,upiId,upi:upiId}); await Comic.updateMany({creatorEmail:u.email},{authorUpi:upiId,upiId,upi:upiId}); res.json({ok:true,upiId}); }catch(e){res.status(500).json({error:e.message})} });
@@ -121,4 +155,4 @@ app.delete('/api/comics/:id',protect,async(req,res)=>{ try{let b=await Comic.fin
 app.get('/api/users',protect,isAdmin,async(req,res)=>{ try{let list=await User.find().select("email role name upiId createdAt").sort({createdAt:-1}); res.json(list);}catch(e){res.status(500).json({error:e.message})} });
 
 const PORT=process.env.PORT||10000;
-app.listen(PORT,()=>console.log(`✅ Gen-Z v705 FIREWALL 100% CONFIDENTIAL LIVE ${PORT}`));
+app.listen(PORT,()=>console.log(`✅ Gen-Z v705 FIREWALL 100% CONFIDENTIAL + PASS CHANGE LIVE ${PORT}`));
