@@ -32,10 +32,10 @@ header{position:sticky;top:0;z-index:99;display:flex;justify-content:space-betwe
 </style>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Gen-Z Visual","url":"https://xhettriakash1-bot.github.io/Gen-Z-Visual/","description":"Read, create, and share visual stories for Gen-Z"}</script>
 </head><body>
-<header><div class="logo">Gen-Z <span>Visual</span> <span style="font-size:10px;background:#00ff88;color:#000;padding:2px 6px;border-radius:20px">v704.6 FINAL</span></div>
-<div style="display:flex;gap:6px"><a href="login.html?v=704.6" class="top-btn primary">Login</a><a href="dashboard.html?v=704.6" class="top-btn">Studio</a></div></header>
+<header><div class="logo">Gen-Z <span>Visual</span> <span style="font-size:10px;background:#00ff88;color:#000;padding:2px 6px;border-radius:20px">v704.7 FIXED</span></div>
+<div style="display:flex;gap:6px"><a href="login.html?v=704.7" class="top-btn primary">Login</a><a href="dashboard.html?v=704.7" class="top-btn">Studio</a></div></header>
 <div class="search-wrap"><input id="searchBox" placeholder="Search novels, comics..." oninput="filterCards()"></div>
-<div class="hero"><h1>Stories for<br><span>Gen-Z</span><br>by Gen-Z</h1><p>Read, create, and share visual stories. LIVE + LOCAL merged</p><div style="display:flex;gap:10px"><a href="novels.html?v=704.6" style="padding:12px 20px;background:#fff;color:#000;border-radius:99px;text-decoration:none;font-weight:900;font-size:13px">📚 Novels →</a><a href="comic.html?v=704.6" style="padding:12px 20px;background:#ffffff15;color:#fff;border-radius:99px;text-decoration:none;font-weight:800;font-size:13px;border:1px solid #333">🎨 Comics</a></div><div id="status" style="margin-top:16px;font-size:11px;color:#00ff88">● Waking up server...</div></div>
+<div class="hero"><h1>Stories for<br><span>Gen-Z</span><br>by Gen-Z</h1><p>Read, create, and share visual stories. LIVE + LOCAL merged</p><div style="display:flex;gap:10px"><a href="novels.html?v=704.7" style="padding:12px 20px;background:#fff;color:#000;border-radius:99px;text-decoration:none;font-weight:900;font-size:13px">📚 Novels →</a><a href="comic.html?v=704.7" style="padding:12px 20px;background:#ffffff15;color:#fff;border-radius:99px;text-decoration:none;font-weight:800;font-size:13px;border:1px solid #333">🎨 Comics</a></div><div id="status" style="margin-top:16px;font-size:11px;color:#00ff88">● Waking up server...</div></div>
 <div id="grid" class="grid"><div style="grid-column:1/-1;text-align:center;color:#555;padding:20px">⏳ Waking up LIVE server...<br><small>First load takes 30-50s (free hosting sleeps). Please wait...</small></div></div>
 <div class="nav"><a href="index.html" class="active">🏠<br>Home</a><a href="novels.html">📚<br>Novels</a><a href="comic.html">💥<br>Comics</a><a href="dashboard.html">📝<br>Studio</a></div>
 <script>
@@ -47,7 +47,6 @@ async function loadAll(){
  status.innerText='● Waking up server... '+countdown+'s';
  let timer=setInterval(()=>{countdown--; if(countdown>0) status.innerText='● Waking up server... '+countdown+'s ⏳';},1000);
  try{
-  // Ping backend first to wake it up
   await fetch("https://gen-z-visual-2.onrender.com/", {cache:"no-store"});
   let [r1,r2] = await Promise.all([
     fetch(API+'/novels',{cache:"no-store"}).then(r=>r.json()),
@@ -72,6 +71,9 @@ function render(items){
  g.innerHTML=items.map(i=>`<div class="card" onclick="openItem('${i._id||i.id}','${i.type||'novel'}')"><img src="${i.cover||i.coverImage||'https://picsum.photos/seed/'+(i._id||i.id)+'/400/600'}" loading="lazy"><div class="card-body"><b>${(i.title||'Untitled').replace(/"/g,'')}</b><small>${i.author||'Akash'} • ${i.type||'novel'}</small></div></div>`).join('');
 }
 function filterCards(){ let q=document.getElementById('searchBox').value.toLowerCase(); render(allItems.filter(i=>(i.title||'').toLowerCase().includes(q))); }
-function openItem(id,type){ if(type=='comic') location.href='read-comic.html?id='+id; else location.href='read.html?id='+id; }
+function openItem(id,type){ 
+  if(type=='comic') location.href='read-comic.html?id='+id+'&v=704.7'; 
+  else location.href='read-novel.html?id='+id+'&v=704.7'; 
+}
 loadAll();
 </script></body></html>
