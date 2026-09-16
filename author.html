@@ -1,80 +1,53 @@
 <!DOCTYPE html>
 <html><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Dashboard v704.7 - LIVE PUBLISH + UPI</title>
+<title>Author v705 PRO - Gen-Z Visual</title>
 <style>
 *{box-sizing:border-box;font-family:system-ui}body{margin:0;background:#080808;color:#fff}
 header{padding:14px 18px;border-bottom:1px solid #222;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:#080808;z-index:10}
-.wrap{max-width:1100px;margin:0 auto;padding:18px;display:grid;grid-template-columns:380px 1fr;gap:18px}
-@media(max-width:900px){.wrap{grid-template-columns:1fr}}
-.card{background:#121212;border:1px solid #222;border-radius:16px;padding:18px}
-input,textarea,select{width:100%;padding:12px;margin:6px 0;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:10px;color:#fff;outline:none}
-button{padding:12px;border-radius:10px;border:none;font-weight:800;cursor:pointer;margin-top:8px}
-.btn-w{background:#fff;color:#000;width:100%}.btn-d{background:#1f1f1f;color:#fff;border:1px solid #2a2a2a;width:100%}
-.badge{padding:4px 10px;border-radius:20px;font-size:10px;font-weight:900}.ok{background:#00ff88;color:#000}.live{background:#00ff88;color:#000}
-.item{display:flex;gap:10px;background:#181818;border:1px solid #252525;padding:10px;border-radius:12px;margin:6px 0}
-.item img{width:50px;height:70px;object-fit:cover;border-radius:8px}
+.wrap{max-width:1100px;margin:0 auto;padding:18px}
+.card{background:#121212;border:1px solid #222;border-radius:20px;padding:20px;margin-bottom:16px}
+.avatar{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#ff00ff,#7a00ff);display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:900}
+.badge{padding:4px 10px;border-radius:20px;font-size:10px;font-weight:900}
+.badge-free{background:#00ff88;color:#000}.badge-paid{background:#facc15;color:#000}.badge-view{background:#222;color:#fff}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
+.item{background:#181818;border:1px solid #252525;border-radius:14px;overflow:hidden;cursor:pointer}
+.item img{width:100%;height:210px;object-fit:cover}
+.item-body{padding:10px}
+.btn{padding:10px 16px;border-radius:20px;border:none;font-weight:800;cursor:pointer}
+.btn-w{background:#fff;color:#000}.btn-p{background:#7a00ff;color:#fff}
 </style>
 </head><body>
 <header>
-<b>GEN-Z VISUAL // DASHBOARD <span style="background:#00ff88;color:#000;padding:3px 8px;border-radius:20px;font-size:10px">v704.7 FIXED + UPI</span></b>
-<div style="display:flex;gap:8px"><a href="index.html?v=704.7" style="background:#222;color:#fff;padding:8px 12px;border-radius:20px;text-decoration:none;font-size:12px">Home</a><a href="admin.html?v=704.7" style="background:#7a00ff;color:#fff;padding:8px 12px;border-radius:20px;text-decoration:none;font-size:12px">Admin</a><button onclick="logout()" style="background:#ef4444;color:#fff;padding:8px 12px;border-radius:20px;border:none">Logout</button></div>
+<b>GEN-Z // AUTHOR <span style="background:#00ff88;color:#000;padding:3px 8px;border-radius:20px;font-size:10px">v705 PRO</span></b>
+<div style="display:flex;gap:8px"><a href="index.html?v=705" style="background:#222;color:#fff;padding:8px 12px;border-radius:20px;text-decoration:none;font-size:12px">Home</a><a href="dashboard.html?v=705" style="background:#fff;color:#000;padding:8px 12px;border-radius:20px;text-decoration:none;font-size:12px">Dashboard</a></div>
 </header>
 
 <div class="wrap">
-<div class="card" id="loginCard">
-<h3>Creator Login</h3>
-<input id="email" placeholder="Email" value="xhettriakash1@gmail.com">
-<input id="pass" type="password" placeholder="Password" value="Akash123">
-<button class="btn-w" onclick="login()">Login to Publish LIVE</button>
-<p id="loginMsg" style="font-size:12px;color:#888;margin-top:8px"></p>
-<div style="margin-top:16px">
-<button class="btn-d" onclick="check()">Check Backend LIVE</button>
-<p id="health" style="font-size:11px;color:#666"></p>
-<div style="margin-top:12px;border-top:1px solid #222;padding-top:12px">
-<b style="font-size:12px">💰 UPI for Paid Stories</b>
-<input id="upiInput" placeholder="yourupi@okaxis">
-<button class="btn-d" onclick="saveUpi()">Save UPI</button>
-<p id="upiMsg" style="font-size:11px;color:#888"></p>
+<div class="card" style="display:flex;gap:16px;align-items:center">
+<div class="avatar" id="avatar">A</div>
+<div style="flex:1">
+<h2 style="margin:0" id="authorName">Loading...</h2>
+<p style="margin:4px 0;color:#888;font-size:13px" id="authorEmail">-</p>
+<p style="margin:4px 0;color:#aaa;font-size:12px" id="authorBio">Gen-Z Visual Creator • v705 PRO DYNAMIC</p>
+<div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">
+<span class="badge badge-view" id="totalStories">0 stories</span>
+<span class="badge badge-view" id="totalViews">👁️ 0 views</span>
+<span class="badge badge-free" id="upiStatus">UPI: -</span>
 </div>
 </div>
+<button class="btn btn-p" id="payBtn" style="display:none" onclick="pay()">💰 Pay Creator</button>
 </div>
 
-<div class="card" id="pubCard" style="display:none">
-<h3>Publish Novel / Comic - LIVE 🚀</h3>
-<div style="display:flex;gap:8px">
-<select id="type" style="flex:1"><option value="novels">Novel</option><option value="comics">Comic</option></select>
-<select id="genre" style="flex:1"><option>Fantasy</option><option>Action</option><option>Romance</option><option>Comics</option><option>Manga</option><option>Drama</option></select>
-</div>
-<input id="title" placeholder="Title *">
-<input id="cover" placeholder="Cover URL * https://...">
-<textarea id="desc" rows="3" placeholder="Description *"></textarea>
-<textarea id="content" rows="8" placeholder="Novel: Full story | Comic: Pages URLs comma separated"></textarea>
-<div style="display:flex;gap:8px">
-<select id="access" style="flex:1"><option value="free">Free</option><option value="paid">Paid</option></select>
-<input id="price" type="number" placeholder="Price ₹ if Paid" style="flex:1">
-</div>
-<button class="btn-w" onclick="publish()">🚀 PUBLISH LIVE (MongoDB)</button>
-<p id="msg" style="font-size:12px;white-space:pre-wrap;margin-top:8px"></p>
-<hr style="border-color:#222;margin:14px 0">
-<h3>My LIVE Published</h3>
-<button class="btn-d" onclick="loadMine()">Reload</button>
-<div id="myList" style="margin-top:10px"></div>
+<div class="card">
+<h3 style="margin:0 0 12px">📚 Stories by this Creator — LIVE v705</h3>
+<div id="stories" class="grid">Loading LIVE stories...</div>
 </div>
 </div>
 
 <script>
 const API="https://gen-z-visual-2.onrender.com";
-let TOKEN=localStorage.getItem("token")||localStorage.getItem("genz_token")||"";
-let USER=null;
-try{USER=JSON.parse(localStorage.getItem("user")||localStorage.getItem("genz_user")||"null");}catch{}
-window.onload=()=>{ if(TOKEN&&USER){showPub();} check(); loadUpi(); }
-
-function logout(){localStorage.clear();location.href='login.html?v=704.7';}
-async function check(){
- document.getElementById("health").innerText="Waking...";
- try{
-  await fetch(API+"/",{cache:"no-store"});
-  let r=await fetch(API+"/api/health",{cache:"no-store"}).then(r=>r.json());
-  document.getElementById("health").innerText="✅ "+(r.v||"LIVE")+" uptime "+Math.floor(r.uptime||0)+"s";
- }
+function qs(k){return new URLSearchParams(location.search).get(k);}
+async function load(){
+ let email=qs('email')||qs('author')||"";
+ if(!email){
