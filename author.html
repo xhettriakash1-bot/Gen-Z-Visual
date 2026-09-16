@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Dashboard v704.5 - LIVE PUBLISH</title>
+<title>Dashboard v704.7 - LIVE PUBLISH + UPI</title>
 <style>
 *{box-sizing:border-box;font-family:system-ui}body{margin:0;background:#080808;color:#fff}
 header{padding:14px 18px;border-bottom:1px solid #222;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:#080808;z-index:10}
@@ -17,8 +17,8 @@ button{padding:12px;border-radius:10px;border:none;font-weight:800;cursor:pointe
 </style>
 </head><body>
 <header>
-<b>GEN-Z VISUAL // DASHBOARD <span style="background:#00ff88;color:#000;padding:3px 8px;border-radius:20px;font-size:10px">v704.5 LIVE</span></b>
-<div style="display:flex;gap:8px"><a href="index.html?v=704.5" style="background:#222;color:#fff;padding:8px 12px;border-radius:20px;text-decoration:none;font-size:12px">Home</a><button onclick="localStorage.clear();location.href='login.html?v=704.5'" style="background:#ef4444;color:#fff;padding:8px 12px;border-radius:20px;border:none">Logout</button></div>
+<b>GEN-Z VISUAL // DASHBOARD <span style="background:#00ff88;color:#000;padding:3px 8px;border-radius:20px;font-size:10px">v704.7 FIXED + UPI</span></b>
+<div style="display:flex;gap:8px"><a href="index.html?v=704.7" style="background:#222;color:#fff;padding:8px 12px;border-radius:20px;text-decoration:none;font-size:12px">Home</a><a href="admin.html?v=704.7" style="background:#7a00ff;color:#fff;padding:8px 12px;border-radius:20px;text-decoration:none;font-size:12px">Admin</a><button onclick="logout()" style="background:#ef4444;color:#fff;padding:8px 12px;border-radius:20px;border:none">Logout</button></div>
 </header>
 
 <div class="wrap">
@@ -31,11 +31,17 @@ button{padding:12px;border-radius:10px;border:none;font-weight:800;cursor:pointe
 <div style="margin-top:16px">
 <button class="btn-d" onclick="check()">Check Backend LIVE</button>
 <p id="health" style="font-size:11px;color:#666"></p>
+<div style="margin-top:12px;border-top:1px solid #222;padding-top:12px">
+<b style="font-size:12px">💰 UPI for Paid Stories</b>
+<input id="upiInput" placeholder="yourupi@okaxis">
+<button class="btn-d" onclick="saveUpi()">Save UPI</button>
+<p id="upiMsg" style="font-size:11px;color:#888"></p>
+</div>
 </div>
 </div>
 
 <div class="card" id="pubCard" style="display:none">
-<h3>Publish Novel / Comic - LIVE for ALL readers 🚀</h3>
+<h3>Publish Novel / Comic - LIVE 🚀</h3>
 <div style="display:flex;gap:8px">
 <select id="type" style="flex:1"><option value="novels">Novel</option><option value="comics">Comic</option></select>
 <select id="genre" style="flex:1"><option>Fantasy</option><option>Action</option><option>Romance</option><option>Comics</option><option>Manga</option><option>Drama</option></select>
@@ -43,7 +49,11 @@ button{padding:12px;border-radius:10px;border:none;font-weight:800;cursor:pointe
 <input id="title" placeholder="Title *">
 <input id="cover" placeholder="Cover URL * https://...">
 <textarea id="desc" rows="3" placeholder="Description *"></textarea>
-<textarea id="content" rows="8" placeholder="For Novel: Full content / Chapter text * | For Comic: Pages URLs comma separated https://img1,https://img2 *"></textarea>
+<textarea id="content" rows="8" placeholder="Novel: Full story | Comic: Pages URLs comma separated"></textarea>
+<div style="display:flex;gap:8px">
+<select id="access" style="flex:1"><option value="free">Free</option><option value="paid">Paid</option></select>
+<input id="price" type="number" placeholder="Price ₹ if Paid" style="flex:1">
+</div>
 <button class="btn-w" onclick="publish()">🚀 PUBLISH LIVE (MongoDB)</button>
 <p id="msg" style="font-size:12px;white-space:pre-wrap;margin-top:8px"></p>
 <hr style="border-color:#222;margin:14px 0">
@@ -58,5 +68,13 @@ const API="https://gen-z-visual-2.onrender.com";
 let TOKEN=localStorage.getItem("token")||localStorage.getItem("genz_token")||"";
 let USER=null;
 try{USER=JSON.parse(localStorage.getItem("user")||localStorage.getItem("genz_user")||"null");}catch{}
-window.onload=()=>{ if(TOKEN&&USER){showPub();} check(); }
-function showPub(){
+window.onload=()=>{ if(TOKEN&&USER){showPub();} check(); loadUpi(); }
+
+function logout(){localStorage.clear();location.href='login.html?v=704.7';}
+async function check(){
+ document.getElementById("health").innerText="Waking...";
+ try{
+  await fetch(API+"/",{cache:"no-store"});
+  let r=await fetch(API+"/api/health",{cache:"no-store"}).then(r=>r.json());
+  document.getElementById("health").innerText="✅ "+(r.v||"LIVE")+" uptime "+Math.floor(r.uptime||0)+"s";
+ }
