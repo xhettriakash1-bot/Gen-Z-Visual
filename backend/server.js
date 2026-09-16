@@ -37,7 +37,7 @@ const userSchema = new mongoose.Schema({
   password: String,
   role: { type: String, enum: ['reader','creator','admin'], default: 'reader' },
   name: String, portfolio: String, bio: String,
-  upiId: { type: String, default: '' }, // UPI DIRECT
+  upiId: { type: String, default: '' },
   createdAt: { type: Date, default: Date.now }
 });
 const User = mongoose.models.User || mongoose.model('User', userSchema);
@@ -48,7 +48,7 @@ const novelSchema = new mongoose.Schema({
   creatorEmail: String, creatorName: String, chapters: Array,
   access: { type: String, enum: ['free','paid'], default: 'free' },
   price: { type: Number, default: 0 },
-  authorUpi: { type: String, default: '' }, // UPI DIRECT
+  authorUpi: { type: String, default: '' },
 }, { strict: false, timestamps: true });
 const Novel = mongoose.models.Novel || mongoose.model('Novel', novelSchema);
 
@@ -58,7 +58,7 @@ const comicSchema = new mongoose.Schema({
   creatorEmail: String, creatorName: String,
   access: { type: String, enum: ['free','paid'], default: 'free' },
   price: { type: Number, default: 0 },
-  authorUpi: { type: String, default: '' }, // UPI DIRECT
+  authorUpi: { type: String, default: '' },
 }, { strict: false, timestamps: true });
 const Comic = mongoose.models.Comic || mongoose.model('Comic', comicSchema);
 
@@ -130,49 +130,4 @@ app.get('/api/users',protect,isAdmin,async(req,res)=>res.json(await User.find().
 app.get('/api/novels',async(req,res)=>res.json(await Novel.find().sort({createdAt:-1}).limit(200)));
 app.post('/api/novels',protect,async(req,res)=>{
   let me = await User.findOne({email:req.user.email});
-  let novel=await Novel.create({...req.body,type:'novel',creatorEmail:req.user.email,creatorName:req.user.email, access: req.body.access||'free', price: req.body.price||0, authorUpi: me?.upiId||req.body.authorUpi||''});
-  res.json({ok:true,novel});
-});
-app.get('/api/comics',async(req,res)=>res.json(await Comic.find().sort({createdAt:-1}).limit(200)));
-app.post('/api/comics',protect,async(req,res)=>{
-  if(JSON.stringify(req.body).length>4*1024*1024) return res.status(413).json({error:"Too large, use 8 pages max compressed"});
-  let me = await User.findOne({email:req.user.email});
-  let comic=await Comic.create({...req.body,type:'comic',creatorEmail:req.user.email,creatorName:req.user.email,cover:req.body.cover||req.body.coverImage||(req.body.pages&&req.body.pages[0]), access: req.body.access||'free', price: req.body.price||0, authorUpi: me?.upiId||req.body.authorUpi||''});
-  res.json({ok:true,comic});
-});
-app.get('/api/books',async(req,res)=>{
-  let n=await Novel.find().sort({createdAt:-1}).limit(100);
-  let c=await Comic.find().sort({createdAt:-1}).limit(100);
-  res.json([...n,...c]);
-});
-
-app.get('/api/can-read/:id',protect,async(req,res)=>{
-  try{
-    let book = await Novel.findById(req.params.id) || await Comic.findById(req.params.id);
-    if(!book) return res.status(404).json({error:"Not found"});
-    if(book.access==='free' ||!book.access) return res.json({canRead:true});
-    if(req.user.role==='admin') return res.json({canRead:true});
-    if(book.creatorEmail===req.user.email) return res.json({canRead:true});
-    res.json({canRead:false, needSubscription:true, price: book.price||0, authorUpi: book.authorUpi||''});
-  }catch(e){ res.status(500).json({error:e.message}); }
-});
-
-// NEW UPI APIS
-app.post('/api/save-upi',protect,async(req,res)=>{
-  try{
-    let upi = (req.body.upiId||'').trim();
-    if(!upi.includes('@')) return res.status(400).json({error:"Invalid UPI, must contain @"});
-    await User.updateOne({email:req.user.email},{upiId: upi});
-    res.json({ok:true, upiId: upi});
-  }catch(e){ res.status(500).json({error:e.message}); }
-});
-app.get('/api/me',protect,async(req,res)=>{
-  let user = await User.findOne({email:req.user.email}).select('-password');
-  res.json(user);
-});
-
-app.delete('/api/novels/:id',protect,isAdmin,async(req,res)=>{await Novel.findByIdAndDelete(req.params.id); res.json({ok:true});});
-app.delete('/api/comics/:id',protect,isAdmin,async(req,res)=>{await Comic.findByIdAndDelete(req.params.id); res.json({ok:true});});
-
-const PORT=process.env.PORT||10000;
-app.listen(PORT,()=>console.log(`✅ v704.5 FINAL LIVE + FIREWALL + FREE/PAID + UPI ${PORT}`));
+  let novel=await Novel.create({...req.body,type:'novel',creatorEmail:req.user.email,creatorName:req.user.email, access: req.body.access||'free', price: req.body.price||0, authorUpi: me
