@@ -35,7 +35,7 @@ app.use((req,res,next)=>{
 });
 
 const MONGO_URI=process.env.MONGO_URI||process.env.MONGODB_URI||"";
-mongoose.connect(MONGO_URI,{dbName:"genzvisual"}).then(()=>{console.log("✅ Mongo v707 PRO OK");ensureAdmins();}).catch(e=>console.log("Mongo Error",e.message));
+mongoose.connect(MONGO_URI,{dbName:"genzvisual"}).then(()=>{console.log("✅ Mongo v705 PRO FINAL OK");ensureAdmins();}).catch(e=>console.log("Mongo Error",e.message));
 
 const userSchema=new mongoose.Schema({email:{type:String,unique:true,lowercase:true},password:String,role:{type:String,enum:['reader','creator','admin'],default:'reader'},name:String,portfolio:String,bio:String,upiId:{type:String,default:''},createdAt:{type:Date,default:Date.now}});
 const User=mongoose.models.User||mongoose.model('User',userSchema);
@@ -46,7 +46,6 @@ const Comic=mongoose.models.Comic||mongoose.model('Comic',comicSchema);
 
 app.use(cors({origin:true,credentials:true}));app.use(express.json({limit:"50mb"}));
 
-// FIX v707 - Lazy Razorpay init to prevent waking crash
 function getRazorpay(){
   return new Razorpay({ key_id: process.env.RAZORPAY_KEY_ID, key_secret: process.env.RAZORPAY_KEY_SECRET });
 }
@@ -60,15 +59,13 @@ async function ensureAdmins(){try{for(let a of ADMINS){if(!await User.findOne({e
 const JWT=process.env.JWT_SECRET||"GENZ_SECRET_2026_SECURE";
 const protect=(req,res,next)=>{try{let t=req.headers.authorization?.split(" ")[1];if(!t)return res.status(401).json({error:"Login required"});req.user=jwt.verify(t,JWT);next();}catch{res.status(401).json({error:"Invalid token"});}};
 const isAdmin=(req,res,next)=>{if(req.user.role!=='admin')return res.status(403).json({error:"Admin only"});next();};
-
 function slugify(t){return (t||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').slice(0,60).replace(/-$/,'');}
 function isValidUrl(u){try{let x=new URL(u);return x.protocol==='http:'||x.protocol==='https:';}catch{return false;}}
 function cleanPages(p){if(!Array.isArray(p)) return []; return [...new Set(p.map(s=>String(s||'').trim()).filter(s=>s.length>10 && isValidUrl(s)))].slice(0,100);}
 
-app.get('/',(req,res)=>res.json({ok:true,msg:"Gen-Z Visual v707 FINAL - PASS + PAY FIX", time:new Date().toISOString()}));
-app.get('/api/health',(req,res)=>res.json({ok:true,mongo:mongoose.connection.readyState, v:"707 PASS + ORDER FIX", razorpay:!!process.env.RAZORPAY_KEY_ID}));
+app.get('/',(req,res)=>res.json({ok:true,msg:"Gen-Z Visual v705 PRO FINAL FIXED CLOSED", time:new Date().toISOString()}));
+app.get('/api/health',(req,res)=>res.json({ok:true,mongo:mongoose.connection.readyState, v:"705 PRO FINAL FIXED CLOSED", razorpay:!!process.env.RAZORPAY_KEY_ID}));
 
-// FIXED v707 - NO MORE "Server waking" ERROR
 app.post('/api/create-order',async(req,res)=>{
  try{
   let {amount, type, title} = req.body;
@@ -147,4 +144,4 @@ app.delete('/api/comics/:id',protect,async(req,res)=>{ try{let b=await Comic.fin
 app.get('/api/users',protect,isAdmin,async(req,res)=>{ try{let list=await User.find().select("email role name upiId createdAt").sort({createdAt:-1}); res.json(list);}catch(e){res.status(500).json({error:e.message})} });
 
 const PORT=process.env.PORT||10000;
-app.listen(PORT,()=>console.log(`✅ Gen-Z v707 FINAL LIVE ${PORT}`));
+app.listen(PORT,()=>console.log(`✅ Gen-Z v705 PRO FINAL FIXED CLOSED LIVE ${PORT}`));
