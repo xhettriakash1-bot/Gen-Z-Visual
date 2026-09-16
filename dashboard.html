@@ -1,7 +1,7 @@
 <!DOCTYPE html><html><head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dashboard v704.5 FINAL FIXED</title>
-<style>body{background:#000;color:#fff;font-family:sans-serif;padding:0;margin:0}.top{background:#111;padding:14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #222;position:sticky;top:0;z-index:99}.card{background:#151515;border:1px solid #222;border-radius:16px;padding:14px;margin:12px}.input,textarea{width:100%;padding:12px;background:#0a0a0a;border:1px solid #333;border-radius:10px;color:#fff;margin:6px 0;box-sizing:border-box}.btn{width:100%;padding:12px;background:#fff;color:#000;border:none;border-radius:10px;font-weight:900;margin-top:8px;cursor:pointer}.btn-c{background:linear-gradient(135deg,#ff8800,#ff5500);color:#fff}.tab{display:inline-block;padding:10px 18px;border-radius:99px;border:1px solid #333;margin:4px;font-weight:800;cursor:pointer;font-size:13px}.tab.active{background:#fff;color:#000}.prev img{width:56px;height:76px;object-fit:cover;border-radius:8px;border:1px solid #333;margin:4px}
+<style>body{background:#000;color:#fff;font-family:sans-serif;padding:0;margin:0}.top{background:#111;padding:14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #222;position:sticky;top:0;z-index:99}.card{background:#151515;border:1px solid #222;border-radius:16px;padding:14px;margin:12px}.input,textarea,select{width:100%;padding:12px;background:#0a0a0a;border:1px solid #333;border-radius:10px;color:#fff;margin:6px 0;box-sizing:border-box}.btn{width:100%;padding:12px;background:#fff;color:#000;border:none;border-radius:10px;font-weight:900;margin-top:8px;cursor:pointer}.btn-c{background:linear-gradient(135deg,#ff8800,#ff5500);color:#fff}.tab{display:inline-block;padding:10px 18px;border-radius:99px;border:1px solid #333;margin:4px;font-weight:800;cursor:pointer;font-size:13px}.tab.active{background:#fff;color:#000}.prev img{width:56px;height:76px;object-fit:cover;border-radius:8px;border:1px solid #333;margin:4px}
 </style>
 </head><body>
 <div class="top">
@@ -15,6 +15,18 @@
 <div style="display:flex;gap:8px"><button class="btn" style="background:#ff00ff;color:#fff;margin:0" id="loginBtn" onclick="realLogin()">🔐 ADMIN LOGIN</button><button class="btn" style="background:#333;color:#fff;margin:0;display:none" id="logoutBtn" onclick="logout()">Logout</button></div>
 <div id="authStatus" style="font-size:11px;margin-top:8px;color:#ff8800"></div>
 </div>
+
+<div class="card" style="background:#001a00;border:1px solid #00ff88">
+<b>💰 Your UPI for Paid Books</b><br>
+<small style="color:#888">Money goes direct to you</small>
+<input id="upiId" class="input" placeholder="yourname@okhdfcbank">
+<div style="display:flex;gap:8px">
+<button class="btn" style="background:#00ff88;color:#000" onclick="saveUpi()">Save UPI</button>
+<button class="btn" style="background:#333;color:#fff" onclick="fixUpi()">Fix Old Books</button>
+</div>
+<div id="upiStat" style="font-size:11px;color:#00ff88;margin-top:6px"></div>
+</div>
+
 <div class="card" style="text-align:center">
 <div class="tab active" id="tN" onclick="switchTab('novel')">📚 Novel</div>
 <div class="tab" id="tC" onclick="switchTab('comic')">💥 Comic</div>
@@ -26,6 +38,8 @@
 <input id="nCover" class="input" placeholder="Cover URL https://...">
 <textarea id="nDesc" rows="3" placeholder="Description..."></textarea>
 <textarea id="nContent" rows="6" placeholder="Chapter 1 content..."></textarea>
+<select id="nAccess" class="input"><option value="free">FREE - All can read</option><option value="paid">PAID - UPI Payment</option></select>
+<input id="nPrice" class="input" placeholder="Price ₹ e.g. 20" style="display:none" type="number">
 <button class="btn" onclick="publishNovel()">📚 Publish Novel</button>
 <div id="nStat" style="font-size:11px;color:#888;margin-top:6px"></div>
 </div>
@@ -37,26 +51,4 @@
 <textarea id="cDesc" rows="2" placeholder="Description..."></textarea>
 <input type="file" id="cPages" multiple accept="image/*" onchange="prev(event)" style="color:#fff;width:100%">
 <div class="prev" id="preview"></div>
-<div id="sizeInfo" style="font-size:11px;color:#ff8800;margin:6px 0"></div>
-<button class="btn btn-c" onclick="publishComic()">💥 Publish Comic (Compressed)</button>
-<div id="cStat" style="font-size:11px;color:#888;margin-top:6px"></div>
-<small style="color:#666">Auto 600px | Max 8 pages | 0.6 quality | Max 3.5MB</small>
-</div>
-<div class="card"><b>📖 Your Local Books</b><div id="list"></div></div>
-</div>
-<script>
-const API="https://gen-z-visual-2.onrender.com/api";
-let comicPages=[], token=localStorage.getItem('token')||localStorage.getItem('genz_token')||'';
-let user=JSON.parse(localStorage.getItem('user')||localStorage.getItem('genz_user')||'null');
-function switchTab(t){ document.getElementById('novelBox').style.display=t==='novel'?'block':'none'; document.getElementById('comicBox').style.display=t==='comic'?'block':'none'; document.getElementById('tN').className=t==='novel'?'tab active':'tab'; document.getElementById('tC').className=t==='comic'?'tab active':'tab'; localStorage.setItem('lastTab',t); }
-(function(){ switchTab(new URLSearchParams(location.search).get('type')||localStorage.getItem('lastTab')||'novel'); updateLoginUI(); loadList(); })();
-function updateLoginUI(){ token=localStorage.getItem('token')||localStorage.getItem('genz_token')||''; user=JSON.parse(localStorage.getItem('user')||localStorage.getItem('genz_user')||'null'); if(token&&user){ document.getElementById('adminStatus').innerText='✅ '+user.email+' ('+user.role+')'; document.getElementById('loginInfo').innerText='LIVE Enabled ✅'; document.getElementById('loginBtn').style.display='none'; document.getElementById('logoutBtn').style.display='block'; document.getElementById('authStatus').innerText='Token OK | Can publish LIVE'; } else { document.getElementById('adminStatus').innerText='👤 Guest Mode'; document.getElementById('loginInfo').innerText='Login for LIVE publish'; document.getElementById('loginBtn').style.display='block'; document.getElementById('logoutBtn').style.display='none'; } }
-async function realLogin(){ const email=prompt('Email:','xhettriakash1@gmail.com'); const pass=prompt('Password:','Akash123'); if(!email||!pass) return; document.getElementById('authStatus').innerText='Logging...'; for(let url of [API+'/auth/login',API+'/login']){ try{ const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:pass})}); const d=await r.json(); if(r.ok&&d.token){ localStorage.setItem('token',d.token); localStorage.setItem('genz_token',d.token); localStorage.setItem('user',JSON.stringify(d.user)); localStorage.setItem('genz_user',JSON.stringify(d.user)); localStorage.setItem('email',d.user.email); updateLoginUI(); alert('✅ Login OK as '+d.user.role); return; } else { document.getElementById('authStatus').innerText='❌ '+(d.error||'Fail'); } }catch(e){ document.getElementById('authStatus').innerText='❌ '+e.message+' - wait 30s Render waking'; } } }
-function logout(){ localStorage.clear(); comicPages=[]; updateLoginUI(); loadList(); }
-function prev(e){ comicPages=[]; document.getElementById('preview').innerHTML=''; document.getElementById('sizeInfo').innerText='Compressing...'; let files=[...e.target.files].slice(0,8); if(files.length>8){ alert('Max 8 pages'); } let done=0; files.forEach(f=>{ let r=new FileReader(); r.onload=ev=>{ let img=new Image(); img.onload=()=>{ let c=document.createElement('canvas'); let max=600; let ratio=Math.min(max/img.width,max/img.height,1); c.width=img.width*ratio; c.height=img.height*ratio; c.getContext('2d').drawImage(img,0,0,c.width,c.height); let comp=c.toDataURL('image/jpeg',0.6); comicPages.push(comp); let im=document.createElement('img'); im.src=comp; document.getElementById('preview').appendChild(im); done++; if(done===files.length) document.getElementById('sizeInfo').innerText=done+' pages | '+Math.round(JSON.stringify(comicPages).length/1024)+'KB (max 3500KB)'; }; img.src=ev.target.result; }; r.readAsDataURL(f); }); }
-function loadList(){ let a=JSON.parse(localStorage.getItem('myNovels')||'[]'); let b=JSON.parse(localStorage.getItem('myComics')||'[]'); let all=[...a.map(x=>({...x,t:'novel'})),...b.map(x=>({...x,t:'comic'}))].slice(0,20); document.getElementById('list').innerHTML=all.map(x=>`<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #222;font-size:12px"><span>${x.t==='novel'?'📚':'💥'} ${x.title}</span><span onclick="delItem('${x.id}','${x.t}')" style="color:#f55;cursor:pointer">Del</span></div>`).join('')||'<small style="color:#666">No local books yet</small>'; }
-function delItem(id,t){ if(t==='novel'){ let a=JSON.parse(localStorage.getItem('myNovels')||'[]').filter(x=>String(x.id)!=String(id)); localStorage.setItem('myNovels',JSON.stringify(a)); } else { let b=JSON.parse(localStorage.getItem('myComics')||'[]').filter(x=>String(x.id)!=String(id)); localStorage.setItem('myComics',JSON.stringify(b)); } loadList(); }
-async function publishNovel(){ let t=document.getElementById('nTitle').value.trim(); if(!t){alert('Title required');return;} if(!token){ alert('Login first for LIVE'); return; } document.getElementById('nStat').innerText='Publishing LIVE...'; let item={title:t,author:document.getElementById('nAuthor').value||'You',cover:document.getElementById('nCover').value||`https://picsum.photos/seed/${Date.now()}/400/600`,coverImage:document.getElementById('nCover').value||`https://picsum.photos/seed/${Date.now()}/400/600`,description:document.getElementById('nDesc').value,content:document.getElementById('nContent').value,genre:'Novel',type:'novel'}; try{ const r=await fetch(API+'/novels',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify(item)}); const d=await r.json(); if(r.ok){ document.getElementById('nStat').innerText='✅ LIVE Published ID='+d.novel._id+' | Check Home'; let my=JSON.parse(localStorage.getItem('myNovels')||'[]'); my.unshift({id:d.novel._id||Date.now(),title:t,author:item.author,cover:item.cover}); localStorage.setItem('myNovels',JSON.stringify(my)); loadList(); } else document.getElementById('nStat').innerText='❌ '+(d.error||JSON.stringify(d)); }catch(e){ document.getElementById('nStat').innerText='❌ '+e.message; } }
-async function publishComic(){ let t=document.getElementById('cTitle').value.trim(); if(!t){alert('Title?');return;} if(!comicPages.length){alert('Select pages');return;} if(!token){ alert('Login first'); return; } let kb=Math.round(JSON.stringify(comicPages).length/1024); if(kb>3500){ document.getElementById('cStat').innerText='Too big '+kb+'KB, use 4-5 pages'; return; } document.getElementById('cStat').innerText='Publishing '+kb+'KB...'; let item={title:t,author:document.getElementById('cAuthor').value||'You',cover:document.getElementById('cCover').value||comicPages[0],coverImage:document.getElementById('cCover').value||comicPages[0],description:document.getElementById('cDesc').value,pages:comicPages,type:'comic'}; try{ const r=await fetch(API+'/comics',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify(item)}); const d=await r.json(); if(r.ok){ document.getElementById('cStat').innerText='✅ Comic LIVE ID='+d.comic._id; let my=JSON.parse(localStorage.getItem('myComics')||'[]'); my.unshift({id:d.comic._id,title:t,cover:item.cover,pages:comicPages}); localStorage.setItem('myComics',JSON.stringify(my)); loadList(); } else document.getElementById('cStat').innerText='❌ '+(d.error||'Fail'); }catch(e){ document.getElementById('cStat').innerText='❌ '+e.message; } }
-</script>
-</body></html>
+<div id="sizeInfo" style="font-size:11px;color:#ff
