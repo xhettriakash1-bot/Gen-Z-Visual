@@ -1,15 +1,16 @@
 <!DOCTYPE html><html><body style="background:#000;color:#fff;font-family:sans-serif;padding:20px">
-<h2>🔧 EMERGENCY ADMIN LOGIN v705 PRO FINAL CLOSED</h2>
-<input id="e" value="xhettriakash1@gmail.com" style="width:100%;padding:12px;margin:5px 0;background:#111;color:#fff;border:1px solid #333;border-radius:8px"><br>
-<input id="p" value="Akash123" type="password" style="width:100%;padding:12px;margin:5px 0;background:#111;color:#fff;border:1px solid #333;border-radius:8px"><br>
+<h2>🔧 ADMIN LOGIN v705 PRO SAFE</h2>
+<input id="e" placeholder="Admin Email" style="width:100%;padding:12px;margin:5px 0;background:#111;color:#fff;border:1px solid #333;border-radius:8px"><br>
+<input id="p" placeholder="Password" type="password" style="width:100%;padding:12px;margin:5px 0;background:#111;color:#fff;border:1px solid #333;border-radius:8px"><br>
 <button onclick="doLogin()" style="padding:12px 20px;border-radius:99px;background:#00ff88;color:#000;font-weight:900;border:none;width:100%">LOGIN AS ADMIN v705 LIVE</button>
-<pre id="out" style="background:#111;padding:15px;border-radius:12px;margin-top:15px;white-space:pre-wrap">Ready - Backend: gen-z-visual-2 LIVE ✅ v705 PRO</pre>
+<pre id="out" style="background:#111;padding:15px;border-radius:12px;margin-top:15px;white-space:pre-wrap">Ready - Backend: gen-z-visual-2 LIVE ✅ v705 SAFE</pre>
 <script>
 const API="https://gen-z-visual-2.onrender.com/api/auth/login";
 async function doLogin(){
  let email=document.getElementById('e').value.trim().toLowerCase();
  let pass=document.getElementById('p').value.trim();
  let out=document.getElementById('out');
+ if(!email||!pass) return out.innerText="Enter email + password";
  out.innerText="Connecting to "+API+"...";
  try{
   let r=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email,password:pass})});
