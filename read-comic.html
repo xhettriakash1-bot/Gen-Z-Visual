@@ -30,4 +30,126 @@ header{display:flex;justify-content:space-between;align-items:center;padding:12p
 <div style="font-size:40px">💎</div>
 <h2 style="margin:10px 0">Premium Comic LOCKED</h2>
 <p id="payTitle" style="color:#888;font-size:13px"></p>
-<h1 id="pay
+<h1 id="payPrice" style="color:#facc15;margin:10px 0">₹20</h1>
+<p id="payUpi" style="font-size:11px;color:#00ff88;background:#00ff8815;padding:6px;border-radius:8px"></p>
+<p style="font-size:11px;color:#666;margin-top:8px">Secure payment via Razorpay • Comic ₹20</p>
+<button onclick="payNowRazorpay()" style="width:100%;padding:14px;background:#facc15;color:#000;border:none;border-radius:12px;font-weight:900;margin-top:12px;cursor:pointer">🔓 Pay ₹20 & Unlock Now</button>
+<p style="font-size:10px;color:#555;margin-top:10px">Instant unlock after payment ✅</p>
+<button onclick="location.href='comics.html?v=705'" style="width:100%;padding:10px;background:#222;color:#888;border:1px solid #333;border-radius:12px;margin-top:8px">← Back to Comics</button>
+</div></div>
+
+<script>
+const API_BASE="https://gen-z-visual-2.onrender.com";
+const API=API_BASE+"/api";
+let currentBook=null,currentId=null, currentRealId=null;
+
+async function loadStory(){
+let params=new URLSearchParams(location.search);
+let id=params.get("id"), xml=params.get("xml");
+currentId=id||xml;
+if(!id &&!xml){document.getElementById("t").innerText="No ID";return;}
+let realId=(id||xml||"").replace("my_",""); currentRealId=realId;
+let book=null,source="";
+
+document.getElementById("badge").innerText="🔍 Waking LIVE v705...";
+try{ await fetch(API_BASE+"/",{cache:"no-store"}); }catch{}
+
+if(xml){
+ try{
+  let txt=await fetch("data/comics.xml?v=705",{cache:"no-store"}).then(r=>r.text());
+  let doc=new DOMParser().parseFromString(txt,"text/xml");
+  let c=[...doc.querySelectorAll("comic")].find(x=> (x.querySelector("id")?.textContent)===realId);
+  if(c){
+   book={ _id: c.querySelector("id")?.textContent, title:c.querySelector("title")?.textContent, author:c.querySelector("author")?.textContent, cover:c.querySelector("cover")?.textContent, pages:(c.querySelector("pages")?.textContent||"").split(",").map(s=>s.trim()).filter(Boolean), description:c.querySelector("desc")?.textContent||"", access:"free", price:20, views:0, isXML:true };
+   source="XML ✅";
+  }
+ }catch{}
+}
+
+if(!book && id){
+ try{let r=await fetch(API+"/comics/"+realId,{cache:"no-store"});if(r.ok){book=await r.json();source="DIRECT LIVE ✅";}}catch{}
+ if(!book){try{let r=await fetch(API+"/comics",{cache:"no-store"});if(r.ok){let list=await r.json();list=Array.isArray(list)?list:list.comics||[];book=list.find(x=>String(x._id)===String(realId)||String(x._id)===String(id));if(book)source="LIVE LIST ✅";}}catch{}}
+}
+
+if(!book){document.getElementById("t").innerText="Comic not found";document.getElementById("pages").innerHTML=`ID ${currentId} not found.<br>Backend waking: <a href="${API}/comics" style="color:#ff8800" target="_blank">Open API</a> then retry`;document.getElementById("badge").innerText="❌ Not Found";return;}
+
+currentBook=book;
+book.price=20;
+
+if(!book.isXML){
+ try{ fetch(API+"/comics/"+(book._id||realId)+"/view",{method:"POST",cache:"no-store"}).catch(()=>{}); }catch{}
+}
+
+let access=(book.access||book.accessType||'free').toLowerCase();let price=20;
+if(access==='paid'){
+ let user=null;try{user=JSON.parse(localStorage.getItem('user')||localStorage.getItem('genz_user')||'null')}catch{}
+ let bought=localStorage.getItem('bought_'+currentId)||localStorage.getItem('bought_'+realId)||localStorage.getItem('bought_my_'+realId);
+ let isOwner=false;if(user){let u=(user.email||'').toLowerCase();let c=(book.creatorEmail||'').toLowerCase();if(c&&u&&c===u)isOwner=true;if(u==='xhettriakash1@gmail.com')isOwner=true;}
+ if(book.isXML) isOwner=true;
+ if(!bought&&!isOwner){
+  document.getElementById("t").innerText=book.title;document.getElementById("author").innerText="by "+(book.author||'GenZ')+" • 👁️ "+(book.views||0);
+  document.getElementById("cover").src=book.cover||book.coverImage||(book.pages&&book.pages[0])||'https://picsum.photos/300/400';
+  document.getElementById("badge").innerText='💎 PAID • ₹20 • LOCKED';document.getElementById("payTitle").innerText=book.title;document.getElementById("payPrice").innerText='₹20';
+  document.getElementById("payUpi").innerText="Secure Razorpay • Comic ₹20 • Instant Unlock";
+  document.getElementById("paywall").classList.add('on');document.getElementById("pages").innerHTML='🔒 Paid comic locked - pay ₹20 to unlock';return;
+ }
+}
+
+document.getElementById("t").innerText=book.title||"Untitled";
+document.getElementById("author").innerText="by "+(book.author||book.creatorName||"GenZ")+" • "+source+" • 👁️ "+((book.views||0)+1)+" views • "+(access==='paid'?'PAID ₹20':'FREE');
+document.getElementById("desc").innerText=book.description||"";
+document.getElementById("cover").src=book.cover||book.coverImage||(book.pages&&book.pages[0])||'https://picsum.photos/300/400';
+document.getElementById("badge").innerText=source+" • "+(access==='paid'?'PAID ₹20 UNLOCKED':'FREE')+" • 👁️ "+((book.views||0)+1);
+let pages=book.pages||[];let html="";pages.forEach((p,i)=>{html+=`<div><img src="${p}" loading="lazy" onerror="this.src='https://picsum.photos/400/600'"><div class="page-num">Page ${i+1} / ${pages.length}</div></div>`;});
+document.getElementById("pages").innerHTML=html||"No pages found";
+window.addEventListener('scroll',()=>{let s=(window.scrollY/(document.body.scrollHeight-window.innerHeight))*100;document.getElementById('bar').style.width=s+'%';});
+}
+
+// --- RAZORPAY PAYMENT FINAL - ₹20 LOCKED ---
+async function payNowRazorpay(){
+  try{
+    let title = currentBook.title || "Comic";
+    const res = await fetch(`${API_BASE}/api/create-order`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({type:"comic", amount:20, title: title})
+    });
+    const data = await res.json();
+    if(!data.orderId &&!data.id){ alert("Order failed: "+(data.error||"Server waking, wait 30s")); return; }
+    let oid = data.orderId || data.id;
+    var options = {
+      key: data.key_id,
+      amount: data.amount,
+      currency: "INR",
+      name: "Gen-Z Visual",
+      description: title+" - Comic ₹20",
+      order_id: oid,
+      handler: async function(response){
+        const verify = await fetch(`${API_BASE}/api/verify-payment`,{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body: JSON.stringify(response)
+        });
+        const result = await verify.json();
+        if(result.ok){
+          localStorage.setItem('bought_'+currentId,'yes');
+          localStorage.setItem('bought_'+currentRealId,'yes');
+          localStorage.setItem('bought_my_'+currentRealId,'yes');
+          localStorage.setItem('paid_'+currentId,'yes');
+          alert("✅ Payment Success! Paid ₹20 - Unlocked!");
+          location.reload();
+        }else{
+          alert("❌ Verification Failed!");
+        }
+      },
+      theme:{color:"#facc15"}
+    };
+    var rzp = new Razorpay(options);
+    rzp.open();
+  }catch(e){
+    alert("Payment Error: "+e.message);
+  }
+}
+
+loadStory();
+</script></body></html>
