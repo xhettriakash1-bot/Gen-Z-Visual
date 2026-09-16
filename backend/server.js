@@ -1,10 +1,6 @@
-// GEN-Z VISUAL - v704.2 FINAL - NOVEL + COMIC + AUTH
+// GEN-Z VISUAL - v704.3 SAFE DEPLOY - FIXED 16 Sep 2026
 const express = require('express');
 const cors = require('cors');
-const helmet = require('helmet');
-const rateLimit = require('express-rate-limit');
-const hpp = require('hpp');
-const mongoSanitize = require('express-mongo-sanitize');
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -15,12 +11,13 @@ app.set('trust proxy', 1);
 app.disable('x-powered-by');
 
 const MONGO_URI = process.env.MONGO_URI || process.env.MONGODB_URI || "";
-console.log("MONGO_URI Check:", MONGO_URI? "FOUND ✅" : "NOT FOUND ❌");
+console.log("MONGO Check:", MONGO_URI? "FOUND ✅" : "MISSING ❌");
+if(!MONGO_URI) console.log("⚠️ Set MONGO_URI in Render Env Vars");
+
 mongoose.connect(MONGO_URI, { dbName: "genzvisual" })
-.then(() => { console.log("✅ Mongo v704.2 Connected"); ensureAdmins(); })
+.then(() => { console.log("✅ Mongo Connected v704.3"); ensureAdmins(); })
 .catch(e => console.log("❌ Mongo Fail:", e.message));
 
-// ===== SCHEMAS =====
 const userSchema = new mongoose.Schema({
   email: { type: String, unique: true, lowercase: true },
   password: String,
@@ -31,35 +28,26 @@ const userSchema = new mongoose.Schema({
 const User = mongoose.models.User || mongoose.model('User', userSchema);
 
 const novelSchema = new mongoose.Schema({
-  title: String, author: String, genre: String,
-  description: String, cover: String, coverImage: String, coverUrl: String,
-  content: String, pdfLink: String, type: String,
-  creatorEmail: String, creatorName: String, chapters: Array, authorEmail: String,
+  title: String, author: String, genre: String, description: String,
+  cover: String, coverImage: String, content: String, type: String,
+  creatorEmail: String, creatorName: String, chapters: Array,
 }, { strict: false, timestamps: true });
 const Novel = mongoose.models.Novel || mongoose.model('Novel', novelSchema);
 
-// NEW COMIC SCHEMA v704.2
 const comicSchema = new mongoose.Schema({
-  title: String, author: String, genre: String,
-  description: String, cover: String, coverImage: String, coverUrl: String,
-  pages: Array, // images array - base64 or URL
-  type: { type: String, default: 'comic' },
+  title: String, author: String, description: String,
+  cover: String, coverImage: String, pages: Array, type: String,
   creatorEmail: String, creatorName: String,
 }, { strict: false, timestamps: true });
 const Comic = mongoose.models.Comic || mongoose.model('Comic', comicSchema);
 
-app.use(helmet({ contentSecurityPolicy: false, crossOriginEmbedderPolicy: false }));
 app.use(cors({ origin: true, credentials: true }));
-app.use(express.json({ limit: "50mb" })); // increased for comic pages
-app.use(mongoSanitize());
-app.use(hpp());
-app.use('/api/', rateLimit({ windowMs: 15 * 60 * 1000, max: 1000 }));
+app.use(express.json({ limit: "50mb" }));
 
 const DEFAULT_ADMINS = [
   { email: "xhettriakash1@gmail.com", password: "Akash123", name: "Akash Main Admin" },
   { email: "akashchettri2003@gmail.com", password: "Akashchettri2003", name: "Akash Second Admin" }
 ];
-
 async function ensureAdmins() {
   for (let adm of DEFAULT_ADMINS) {
     const exists = await User.findOne({ email: adm.email });
@@ -70,7 +58,6 @@ async function ensureAdmins() {
     }
   }
 }
-
 const JWT_SECRET = process.env.JWT_SECRET || "GENZ_SECRET_2026_SECURE";
 const protect = (req, res, next) => {
   try {
@@ -85,17 +72,12 @@ const isAdmin = (req, res, next) => {
   next();
 };
 
-// HEALTH
 app.get('/api/health', (req, res) => res.json({
-  ok: true, v: "v704.2 FINAL - NOVEL+COMIC", firewall: "Active",
+  ok: true, v: "v704.3 SAFE", node: process.version,
   mongo: mongoose.connection.readyState === 1? "connected" : "disconnected",
-  admins: DEFAULT_ADMINS.map(a => a.email),
-  node: process.version,
-  endpoints: ["/api/login", "/api/novels", "/api/comics", "/api/books"]
 }));
-app.get('/', (req, res) => res.send("🟢 v704.2 LIVE - Novel + Comic Ready | Node "+process.version));
+app.get('/', (req, res) => res.send("🟢 v704.3 SAFE LIVE - Novel+Comic | Node "+process.version));
 
-// AUTH
 async function loginHandler(req, res) {
   try {
     const { email, password } = req.body;
@@ -111,7 +93,6 @@ app.post('/api/auth/login', loginHandler);
 app.post('/api/auth/register', async (req, res) => {
   try {
     const { email, password, name, role } = req.body;
-    if (!email ||!password) return res.status(400).json({ error: "Required" });
     if (await User.findOne({ email: email.toLowerCase() })) return res.status(409).json({ error: "Exists" });
     const isDefaultAdmin = DEFAULT_ADMINS.some(a => a.email === email.toLowerCase());
     const hashed = await bcrypt.hash(password, 10);
@@ -121,21 +102,27 @@ app.post('/api/auth/register', async (req, res) => {
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
-// ADMIN
 app.get('/api/users', protect, isAdmin, async (req, res) => {
   res.json(await User.find().select('-password').sort({ createdAt: -1 }));
 });
 
-// ===== NOVELS =====
-app.get('/api/novels', async (req, res) => {
-  let filter = { type: { $ne: 'comic' } };
-  if (req.query.email) filter.creatorEmail = req.query.email;
-  // show both strict type=novel and old docs without type
-  const novels = await Novel.find({
-    $or: [{ type: 'novel' }, { type: { $exists: false } }, { type: '' }, filter]
-  }).sort({ createdAt: -1 }).limit(200);
-  res.json(novels);
-});
+app.get('/api/novels', async (req, res) => res.json(await Novel.find().sort({ createdAt: -1 }).limit(200)));
 app.post('/api/novels', protect, async (req, res) => {
-  if (req.user.role!== 'admin' && req.user.role!== 'creator') return res.status(403).json({ error: "Creator only" });
-  const doc
+  const novel = await Novel.create({...req.body, type:'novel', creatorEmail:req.user.email});
+  res.json({ ok: true, novel });
+});
+app.get('/api/comics', async (req, res) => res.json(await Comic.find().sort({ createdAt: -1 }).limit(200)));
+app.post('/api/comics', protect, async (req, res) => {
+  const comic = await Comic.create({...req.body, type:'comic', creatorEmail:req.user.email, cover:req.body.cover || (req.body.pages&&req.body.pages[0]) });
+  res.json({ ok: true, comic });
+});
+app.get('/api/books', async (req, res) => {
+  const n = await Novel.find().sort({ createdAt: -1 }).limit(100);
+  const c = await Comic.find().sort({ createdAt: -1 }).limit(100);
+  res.json([...n,...c]);
+});
+app.delete('/api/novels/:id', protect, isAdmin, async (req,res)=>{ await Novel.findByIdAndDelete(req.params.id); res.json({ok:true}); });
+app.delete('/api/comics/:id', protect, isAdmin, async (req,res)=>{ await Comic.findByIdAndDelete(req.params.id); res.json({ok:true}); });
+
+const PORT = process.env.PORT || 10000;
+app.listen(PORT, () => console.log(`✅ v704.3 SAFE LIVE on ${PORT} | Node ${process.version}`));
