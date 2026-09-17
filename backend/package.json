@@ -1,7 +1,7 @@
 {
   "name": "gen-z-visual-backend",
-  "version": "705.0",
-  "description": "Gen-Z Visual v705 PRO DYNAMIC + ADVANCE + USERFRIENDLY + UPI + VIEWS + SLUG + RAZORPAY",
+  "version": "708.0",
+  "description": "Gen-Z Visual v708 FB OPEN - RAZORPAY + FB LIKE COMMENT TRENDING",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
