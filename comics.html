@@ -4,10 +4,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Comics v705 PRO - Gen-Z Visual FIXED CLOSED</title>
 <script>
-// v705 PRO FINAL - WAKE FIX - prevents "Server waking"
-fetch("https://gen-z-visual-2.onrender.com/",{cache:"no-store"});
-fetch("https://gen-z-visual-2.onrender.com/api/health",{cache:"no-store"});
-setInterval(()=>fetch("https://gen-z-visual-2.onrender.com/",{cache:"no-store"}), 240000);
+// v705 PRO FINAL - WAKE FIX
+fetch("https://gen-z-visual-2.onrender.com/",{cache:"no-store"}).catch(()=>{});
+fetch("https://gen-z-visual-2.onrender.com/api/health",{cache:"no-store"}).catch(()=>{});
+setInterval(()=>fetch("https://gen-z-visual-2.onrender.com/api/health",{cache:"no-store"}).catch(()=>{}), 120000);
 </script>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#07070a;color:#fff;font-family:system-ui}
