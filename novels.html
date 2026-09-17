@@ -1,15 +1,15 @@
 <!DOCTYPE html><html><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Novels v707 FB FILTER</title>
+<title>Novels v708 FB FILTER + LIKE</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#07070a;color:#fff;font-family:system-ui}
 header{position:sticky;top:0;z-index:99;display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:rgba(17,17,18,0.94);backdrop-filter:blur(12px);border-bottom:1px solid #222}
-.logo{font-weight:900}.logo span{color:#00ff88}
+.logo{font-weight:900}.logo span{color:#ff00ff}
 .search-wrap{max-width:600px;margin:0 auto;padding:10px 14px;position:sticky;top:49px;z-index:98;background:#07070a}
 .search{width:100%;padding:12px 16px;border-radius:99px;background:#1a1a1e;border:1px solid #2a2a30;color:#fff;outline:none}
 .filters{display:flex;gap:8px;overflow:auto;padding:10px 14px;max-width:600px;margin:0 auto}
 .chip{padding:7px 14px;border-radius:99px;background:#1a1a1e;border:1px solid #2a2a30;color:#888;font-size:12px;white-space:nowrap;cursor:pointer}
-.chip.on{background:#00ff88;color:#000;border-color:#00ff88;font-weight:800}
+.chip.on{background:#ff00ff;color:#fff;border-color:#ff00ff;font-weight:800}
 .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:10px 14px 120px;max-width:600px;margin:0 auto}
 .grid.list{grid-template-columns:1fr}
 .card{background:#15151a;border:1px solid #222;border-radius:16px;overflow:hidden;cursor:pointer;position:relative}
@@ -20,12 +20,11 @@ header{position:sticky;top:0;z-index:99;display:flex;justify-content:space-betwe
 .badge-live{background:#00ff88;color:#000}.badge-paid{background:#facc15;color:#000}
 .info{padding:10px}
 .nav{position:fixed;bottom:0;left:0;right:0;background:#111;border-top:1px solid #222;display:flex;justify-content:space-around;padding:8px 0;z-index:99}
-.nav a{color:#666;text-decoration:none;font-size:11px;text-align:center}.nav a.active{color:#00ff88}
+.nav a{color:#666;text-decoration:none;font-size:11px;text-align:center}.nav a.active{color:#ff00ff}
 </style>
 </head><body>
-<header><div class="logo">Gen-Z <span>Novels</span> <small style="font-size:9px;background:#00ff88;color:#000;padding:2px 5px;border-radius:5px">v707 FILTER</small></div><div style="display:flex;gap:8px"><button onclick="toggleView()" style="padding:6px 10px;border-radius:8px;background:#222;border:1px solid #333;color:#fff">⊞</button><a href="dashboard.html?v=707" style="padding:7px 12px;border-radius:20px;background:#fff;color:#000;text-decoration:none;font-size:11px;font-weight:800">✍️ Studio</a></div></header>
-
-<div class="search-wrap"><input id="q" class="search" placeholder="🔍 Search novels, author..." oninput="filter()"></div>
+<header><div class="logo">Gen-Z <span>Novels</span> <small style="font-size:9px;background:#ff00ff;color:#fff;padding:2px 5px;border-radius:5px">v708 FB LIKE</small></div><div style="display:flex;gap:8px"><button onclick="toggleView()" style="padding:6px 10px;border-radius:8px;background:#222;border:1px solid #333;color:#fff">⊞</button><a href="dashboard.html?v=708" style="padding:7px 12px;border-radius:20px;background:#fff;color:#000;text-decoration:none;font-size:11px;font-weight:800">✍️ Studio</a></div></header>
+<div class="search-wrap"><input id="q" class="search" placeholder="🔍 Search novels v708..." oninput="filter()"></div>
 <div class="filters" id="filters">
 <div class="chip on" onclick="setGenre('all',this)">All</div>
 <div class="chip" onclick="setGenre('romance',this)">Romance</div>
@@ -33,26 +32,22 @@ header{position:sticky;top:0;z-index:99;display:flex;justify-content:space-betwe
 <div class="chip" onclick="setGenre('horror',this)">Horror</div>
 <div class="chip" onclick="setGenre('sci-fi',this)">Sci-Fi</div>
 <div class="chip" onclick="setGenre('free',this)">FREE</div>
-<div class="chip" onclick="setGenre('paid',this)">PAID ₹10</div>
+<div class="chip" onclick="setGenre('paid',this)">PAID ₹</div>
 </div>
-
 <div id="grid" class="grid"></div>
-
 <div class="nav">
-<a href="index.html?v=707">🏠<br>Home</a>
-<a href="novels.html?v=707" class="active">📚<br>Novels</a>
-<a href="comics.html?v=707">🎨<br>Comics</a>
-<a href="dashboard.html?v=707">📝<br>Studio</a>
+<a href="index.html?v=708">🏠<br>Home</a>
+<a href="novels.html?v=708" class="active">📚<br>Novels</a>
+<a href="comics.html?v=708">🎨<br>Comics</a>
+<a href="dashboard.html?v=708">📝<br>Studio</a>
 </div>
-
 <script>
 const API="https://gen-z-visual-2.onrender.com";let all=[],genre='all',isList=false;
 fetch(API+"/",{cache:"no-store"}).catch(()=>{});
 async function load(){
- let g=document.getElementById('grid'); g.innerHTML="<p style='color:#555;padding:20px'>⏳ Waking LIVE...</p>";
+ let g=document.getElementById('grid'); g.innerHTML="<p style='color:#555;padding:20px'>⏳ Waking LIVE v708 FB...</p>";
  try{await fetch(API+"/",{cache:"no-store"})}catch{}
  try{let r=await fetch(API+"/api/novels",{cache:"no-store"});let d=await r.json(); all=Array.isArray(d)?d:d.novels||[];}catch{all=[];}
- if(all.length===0){try{let txt=await fetch("data/novels.xml?v=707",{cache:"no-store"}).then(r=>r.text());let doc=new DOMParser().parseFromString(txt,"text/xml");all=[...doc.querySelectorAll("novel")].map(n=>({_id:n.querySelector("id")?.textContent,title:n.querySelector("title")?.textContent,author:n.querySelector("author")?.textContent,cover:n.querySelector("cover")?.textContent,access:"free",views:0,genre:n.querySelector("genre")?.textContent||"all",isXML:true}));}catch{}}
  render();
 }
 function render(){
@@ -63,11 +58,11 @@ function render(){
   return okG&&okQ;
  });
  document.getElementById('grid').innerHTML=f.map(n=>`
- <div class="card ${isList?'list':''}" onclick="location.href='read-novel.html?${n.isXML?'xml':'id'}=${n._id}&v=707'">
+ <div class="card ${isList?'list':''}" onclick="location.href='read-novel.html?id=${n._id}&v=708'">
   <span class="badge ${n.access==='paid'?'badge-paid':'badge-live'}">${n.access==='paid'?'₹'+(n.price||10):'FREE'}</span>
   <img src="${n.cover||n.coverImage||'https://picsum.photos/300/400'}" loading="lazy">
-  <div class="info"><h3 style="font-size:13px;margin:0">${n.title}</h3><p style="font-size:11px;color:#888;margin:4px 0">${n.author||'Anon'} • 👁️ ${n.views||0}</p><p style="font-size:10px;color:#555">${(n.description||'').slice(0,60)}</p></div>
- </div>`).join('')||"<p style='color:#666;padding:20px'>No novels found</p>";
+  <div class="info"><h3 style="font-size:13px;margin:0">${n.title.slice(0,30)}</h3><p style="font-size:11px;color:#888;margin:4px 0">${n.author||'Anon'} • 👁️ ${n.views||0} ❤️ ${n.likes||0} 💬 ${n.comments||0}</p><p style="font-size:10px;color:#555">${(n.description||'').slice(0,60)}</p></div>
+ </div>`).join('')||"<p style='color:#666;padding:20px'>No novels v708</p>";
 }
 function filter(){render();}
 function setGenre(g,el){genre=g;document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));el.classList.add('on');render();}
