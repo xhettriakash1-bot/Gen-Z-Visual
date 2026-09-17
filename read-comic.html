@@ -1,10 +1,10 @@
-<!DOCTYPE html><html><head>
+ <!DOCTYPE html><html><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
-<title>Read Comic v707 FB SWIPE</title>
+<title>Read Comic v708 FB SWIPE + FB LIKE</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#000;color:#fff;font-family:system-ui;overscroll-behavior:none}
 header{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:rgba(15,15,18,0.92);backdrop-filter:blur(12px);border-bottom:1px solid #222;position:sticky;top:0;z-index:99}
-.logo{font-weight:900;font-size:18px}.logo span{color:#ff8800}
+.logo{font-weight:900;font-size:18px}.logo span{color:#ff00ff}
 .top-btn{padding:7px 14px;border-radius:99px;background:#fff;color:#000;text-decoration:none;font-weight:800;font-size:12px}
 .progress{height:3px;background:#222;position:sticky;top:49px;z-index:98}
 .progress-bar{height:100%;background:linear-gradient(90deg,#ff00ff,#ff8800);width:0%;transition:width 0.2s}
@@ -25,122 +25,50 @@ header{display:flex;justify-content:space-between;align-items:center;padding:10p
 </style>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head><body>
-<header><div class="logo">Gen-Z <span>Comics</span> <small style="font-size:9px;background:#ff00ff;color:#fff;padding:2px 6px;border-radius:6px">v707 SWIPE</small></div><a href="index.html?v=707" class="top-btn">✕ Close</a></header>
+<header><div class="logo">Gen-Z <span>Comics</span> <small style="font-size:9px;background:#ff00ff;color:#fff;padding:2px 6px;border-radius:6px">v708 FB SWIPE ❤️</small></div><a href="index.html?v=708" class="top-btn">✕ Close</a></header>
 <div class="progress"><div class="progress-bar" id="bar"></div></div>
 <div class="counter" id="counter">1 / 1</div>
-
 <div class="reader" id="reader">
-<div style="padding:14px"><div style="display:flex;gap:12px;align-items:center"><img id="cover" src="" style="width:60px;height:85px;border-radius:10px;object-fit:cover;background:#111"><div><h2 id="t" style="margin:0;font-size:16px">Loading...</h2><p id="author" style="margin:4px 0 0;font-size:11px;color:#888"></p><p id="badge" style="margin:6px 0 0;font-size:10px;color:#ff8800"></p></div></div></div>
-
-<div class="page-wrap" id="pageWrap">
-<div class="tap-left" onclick="prevPage()"></div>
-<div class="tap-right" onclick="nextPage()"></div>
-<img id="pageImg" src="" style="display:none">
-<div id="loader" style="color:#555;padding:40px">⏳ Loading pages...</div>
+<div style="padding:14px"><div style="display:flex;gap:12px;align-items:center"><img id="cover" src="" style="width:60px;height:85px;border-radius:10px;object-fit:cover;background:#111"><div><h2 id="t" style="margin:0;font-size:16px">Loading v708...</h2><p id="author" style="margin:4px 0 0;font-size:11px;color:#888"></p><p id="badge" style="margin:6px 0 0;font-size:10px;color:#ff00ff"></p></div></div></div>
+<div class="page-wrap" id="pageWrap"><div class="tap-left" onclick="prevPage()"></div><div class="tap-right" onclick="nextPage()"></div><img id="pageImg" src="" style="display:none"><div id="loader" style="color:#555;padding:40px">⏳ Loading v708 FB...</div></div>
+<div style="text-align:center;padding:10px"><button class="ctrl" onclick="prevPage()">← Prev</button><button class="ctrl" onclick="nextPage()">Next →</button></div>
 </div>
-
-<div style="text-align:center;padding:10px">
-<button class="ctrl" onclick="prevPage()">← Prev</button>
-<button class="ctrl" onclick="nextPage()">Next →</button>
-</div>
-</div>
-
-<div class="actions">
-<div class="act" id="likeBtn" onclick="toggleLike()">🤍 Like</div>
-<div class="act" onclick="shareComic()">↗️ Share</div>
-<div class="act" id="saveBtn" onclick="toggleSave()">🔖 Save</div>
-</div>
-
-<div id="paywall" class="paywall"><div class="pay-box">
-<div style="font-size:36px">💎</div>
-<h2 id="payTitle" style="margin:10px 0">Premium Locked</h2>
-<h1 id="payPrice" style="color:#facc15">₹20</h1>
-<p id="payUpi" style="font-size:11px;color:#00ff88;background:#00ff8815;padding:6px;border-radius:8px">Secure Razorpay</p>
-<button id="payBtn" onclick="payNowRazorpay()" style="width:100%;padding:14px;background:#facc15;color:#000;border:none;border-radius:12px;font-weight:900;margin-top:10px">🔓 Pay ₹20 & Unlock</button>
-<p id="payStatus" style="font-size:10px;color:#666;margin-top:8px">Auto retry enabled</p>
-<button onclick="location.href='index.html'" style="width:100%;padding:10px;background:#222;color:#888;border:1px solid #333;border-radius:12px;margin-top:8px">← Back</button>
-</div></div>
-
+<div class="actions"><div class="act" id="likeBtn" onclick="toggleLike()">🤍 Like</div><div class="act" onclick="shareComic()">↗️ Share</div><div class="act" id="saveBtn" onclick="toggleSave()">🔖 Save</div></div>
+<div id="paywall" class="paywall"><div class="pay-box"><div style="font-size:36px">💎</div><h2 id="payTitle" style="margin:10px 0">Premium Locked v708</h2><h1 id="payPrice" style="color:#facc15">₹20</h1><p id="payUpi" style="font-size:11px;color:#00ff88;background:#00ff8815;padding:6px;border-radius:8px">Secure Razorpay v708 FB</p><button id="payBtn" onclick="payNowRazorpay()" style="width:100%;padding:14px;background:#facc15;color:#000;border:none;border-radius:12px;font-weight:900;margin-top:10px">🔓 Pay ₹20 & Unlock v708</button><p id="payStatus" style="font-size:10px;color:#666;margin-top:8px">Auto retry v708</p><button onclick="location.href='index.html?v=708'" style="width:100%;padding:10px;background:#222;color:#888;border:1px solid #333;border-radius:12px;margin-top:8px">← Back</button></div></div>
 <script>
-const API_BASE="https://gen-z-visual-2.onrender.com";const API=API_BASE+"/api";
-let book=null, pages=[], cur=0, id=null, realId=null;
-let liked=JSON.parse(localStorage.getItem('genz_liked')||'[]');
-let saved=JSON.parse(localStorage.getItem('genz_saved')||'[]');
-
+const API_BASE="https://gen-z-visual-2.onrender.com";const API=API_BASE+"/api";let book=null,pages=[],cur=0,id=null,realId=null;
+let liked=JSON.parse(localStorage.getItem('genz_liked')||'[]');let saved=JSON.parse(localStorage.getItem('genz_saved')||'[]');
 fetch(API_BASE+"/",{cache:"no-store"}).catch(()=>{});
-
 async function loadStory(){
- let p=new URLSearchParams(location.search); id=p.get('id'); realId=(id||'').replace('my_','');
- if(!id){document.getElementById('t').innerText='No ID';return;}
- document.getElementById('badge').innerText='Waking LIVE...';
+ let p=new URLSearchParams(location.search);id=p.get('id');realId=(id||'').replace('my_','');
+ if(!id){document.getElementById('t').innerText='No ID v708';return;}
+ document.getElementById('badge').innerText='Waking LIVE v708 FB...';
  try{await fetch(API_BASE+"/",{cache:"no-store"})}catch{}
- try{
-  let r=await fetch(API+"/comics/"+realId,{cache:"no-store"});
-  if(r.ok) book=await r.json();
-  else{ let rl=await fetch(API+"/comics",{cache:"no-store"}); let list=await rl.json(); list=Array.isArray(list)?list:list.comics||[]; book=list.find(x=>String(x._id)===String(realId)); }
- }catch{}
- if(!book){document.getElementById('t').innerText='Not found';return;}
-
- // paid check
- let access=(book.access||'free').toLowerCase();
- let user=null;try{user=JSON.parse(localStorage.getItem('user')||localStorage.getItem('genz_user')||'null')}catch{}
- let bought=localStorage.getItem('bought_'+id)||localStorage.getItem('bought_'+realId);
+ try{let r=await fetch(API+"/comics/"+realId,{cache:"no-store"});if(r.ok)book=await r.json();else{let rl=await fetch(API+"/comics",{cache:"no-store"});let list=await rl.json();list=Array.isArray(list)?list:list.comics||[];book=list.find(x=>String(x._id)===String(realId));}}catch{}
+ if(!book){document.getElementById('t').innerText='Not found v708';return;}
+ let access=(book.access||'free').toLowerCase();let user=null;try{user=JSON.parse(localStorage.getItem('user')||localStorage.getItem('genz_user')||'null')}catch{}let bought=localStorage.getItem('bought_'+id)||localStorage.getItem('bought_'+realId);
  let isOwner=user && ((user.email||'').toLowerCase()===(book.creatorEmail||'').toLowerCase() || (user.email||'').toLowerCase()==='xhettriakash1@gmail.com');
- if(access==='paid' &&!bought &&!isOwner){
-  document.getElementById('t').innerText=book.title;document.getElementById('cover').src=book.cover||book.coverImage||'';document.getElementById('payTitle').innerText=book.title;
-  document.getElementById('paywall').classList.add('on');return;
- }
- // show
- document.getElementById('t').innerText=book.title;
- document.getElementById('author').innerText=`by ${book.author||'GenZ'} • 👁️ ${(book.views||0)+1}`;
- document.getElementById('cover').src=book.cover||book.coverImage||(book.pages&&book.pages[0]?.image||book.pages&&book.pages[0])||'';
- document.getElementById('badge').innerText=access==='paid'?'💎 PAID UNLOCKED':'🆓 FREE • Tap sides to swipe';
+ if(access==='paid' &&!bought &&!isOwner){document.getElementById('t').innerText=book.title;document.getElementById('cover').src=book.cover||book.coverImage||'';document.getElementById('payTitle').innerText=book.title;document.getElementById('paywall').classList.add('on');return;}
+ document.getElementById('t').innerText=book.title;document.getElementById('author').innerText=`by ${book.author||'GenZ'} • 👁️ ${(book.views||0)+1} ❤️ ${book.likes||0} v708`;
+ document.getElementById('cover').src=book.cover||book.coverImage||(book.pages&&book.pages[0]?.image||book.pages&&book.pages[0])||'';document.getElementById('badge').innerText=access==='paid'?'💎 PAID UNLOCKED v708':'🆓 FREE v708 • Tap sides to swipe FB';
  pages=(book.pages||[]).map(p=>typeof p==='string'?p:(p.image||p.url||'')).filter(Boolean);
- if(pages.length===0){document.getElementById('loader').innerText='No pages';return;}
+ if(pages.length===0){document.getElementById('loader').innerText='No pages v708';return;}
  document.getElementById('loader').style.display='none';document.getElementById('pageImg').style.display='block';
- try{fetch(API+"/comics/"+realId+"/view",{method:'POST'}).catch(()=>{})}catch{}
- updatePage(); updateBtns();
-
- // swipe
- let sx=0; let el=document.getElementById('pageWrap');
- el.addEventListener('touchstart',e=>sx=e.touches[0].clientX,{passive:true});
- el.addEventListener('touchend',e=>{
-  let dx=e.changedTouches[0].clientX-sx;
-  if(dx<-50) nextPage(); if(dx>50) prevPage();
- },{passive:true});
+ try{fetch(API+"/comics/"+realId+"/view",{method:'POST'}).catch(()=>{});fetch(API+"/comics/"+realId+"/like",{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({count:0})}).catch(()=>{})}catch{}
+ updatePage();updateBtns();
+ let sx=0;let el=document.getElementById('pageWrap');el.addEventListener('touchstart',e=>sx=e.touches[0].clientX,{passive:true});el.addEventListener('touchend',e=>{let dx=e.changedTouches[0].clientX-sx;if(dx<-50)nextPage();if(dx>50)prevPage();},{passive:true});
 }
-function updatePage(){
- document.getElementById('pageImg').src=pages[cur];
- document.getElementById('counter').innerText=`${cur+1} / ${pages.length}`;
- document.getElementById('bar').style.width=`${((cur+1)/pages.length)*100}%`;
-}
-function nextPage(){ if(cur<pages.length-1){cur++;updatePage();} }
-function prevPage(){ if(cur>0){cur--;updatePage();} }
-function updateBtns(){
- let pid=id; document.getElementById('likeBtn').innerText=liked.includes(pid)?'❤️ Liked':'🤍 Like';
- document.getElementById('likeBtn').className='act'+(liked.includes(pid)?' liked':'');
- document.getElementById('saveBtn').innerText=saved.includes(pid)?'📚 Saved':'🔖 Save';
- document.getElementById('saveBtn').className='act'+(saved.includes(pid)?' liked':'');
-}
-function toggleLike(){ let pid=id; let i=liked.indexOf(pid); if(i>-1) liked.splice(i,1); else liked.push(pid); localStorage.setItem('genz_liked',JSON.stringify(liked)); updateBtns(); }
-function toggleSave(){ let pid=id; let i=saved.indexOf(pid); if(i>-1) saved.splice(i,1); else saved.push(pid); localStorage.setItem('genz_saved',JSON.stringify(saved)); updateBtns(); }
-function shareComic(){ if(navigator.share){navigator.share({title:book.title,url:location.href})} else{ navigator.clipboard.writeText(location.href); alert('Link copied!'); } }
-
+function updatePage(){document.getElementById('pageImg').src=pages[cur];document.getElementById('counter').innerText=`${cur+1} / ${pages.length} v708`;document.getElementById('bar').style.width=`${((cur+1)/pages.length)*100}%`;}
+function nextPage(){if(cur<pages.length-1){cur++;updatePage();}}function prevPage(){if(cur>0){cur--;updatePage();}}
+function updateBtns(){let pid=id;document.getElementById('likeBtn').innerText=liked.includes(pid)?'❤️ Liked v708':'🤍 Like';document.getElementById('likeBtn').className='act'+(liked.includes(pid)?' liked':'');document.getElementById('saveBtn').innerText=saved.includes(pid)?'📚 Saved':'🔖 Save';document.getElementById('saveBtn').className='act'+(saved.includes(pid)?' liked':'');}
+function toggleLike(){let pid=id;let i=liked.indexOf(pid);if(i>-1)liked.splice(i,1);else{liked.push(pid);try{fetch(API+"/comics/"+realId+"/like",{method:'POST'}).catch(()=>{})}catch{}}localStorage.setItem('genz_liked',JSON.stringify(liked));updateBtns();}
+function toggleSave(){let pid=id;let i=saved.indexOf(pid);if(i>-1)saved.splice(i,1);else saved.push(pid);localStorage.setItem('genz_saved',JSON.stringify(saved));updateBtns();}
+function shareComic(){if(navigator.share){navigator.share({title:book.title,url:location.href})}else{navigator.clipboard.writeText(location.href);alert('Link copied v708!');}}
 async function payNowRazorpay(){
- const btn=document.getElementById('payBtn');
- btn.disabled=true; btn.innerText='⏳ Waking...';
- try{
-  await fetch(API_BASE+"/",{cache:"no-store"});
-  const res=await fetch(`${API_BASE}/api/create-order`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type:"comic",amount:20,title:book.title||"Comic",comicId:realId})});
-  const data=await res.json();
-  if(!data.orderId &&!data.id) throw new Error(data.error||'Failed');
-  var options={key:data.key_id,amount:data.amount,currency:"INR",name:"Gen-Z Visual",description:book.title+" - ₹20",order_id:data.orderId||data.id,
-   handler: async function(r){
-    const v=await fetch(`${API_BASE}/api/verify-payment`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(r)});
-    const j=await v.json(); if(j.ok){ localStorage.setItem('bought_'+id,'yes'); localStorage.setItem('bought_'+realId,'yes'); alert('✅ Unlocked!'); location.reload(); }
-   }, theme:{color:"#facc15"}};
-  new Razorpay(options).open();
- }catch(e){ btn.disabled=false; btn.innerText='❌ Retry Pay'; alert(e.message); }
+ const btn=document.getElementById('payBtn');btn.disabled=true;btn.innerText='⏳ Waking v708...';
+ try{await fetch(API_BASE+"/",{cache:"no-store"});const res=await fetch(`${API_BASE}/api/create-order`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type:"comic",amount:20,title:book.title||"Comic",comicId:realId})});const data=await res.json();if(!data.orderId &&!data.id)throw new Error(data.error||'Failed');
+ var options={key:data.key_id,amount:data.amount,currency:"INR",name:"Gen-Z Visual v708",description:book.title+" - ₹20",order_id:data.orderId||data.id,handler: async function(r){const v=await fetch(`${API_BASE}/api/verify-payment`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(r)});const j=await v.json();if(j.ok){localStorage.setItem('bought_'+id,'yes');localStorage.setItem('bought_'+realId,'yes');alert('✅ Unlocked v708 FB!');location.reload();}},theme:{color:"#ff00ff"}};new Razorpay(options).open();
+ }catch(e){btn.disabled=false;btn.innerText='❌ Retry Pay v708';alert(e.message);}
 }
 loadStory();
 </script></body></html>
