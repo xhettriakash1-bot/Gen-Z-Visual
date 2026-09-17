@@ -1,82 +1,76 @@
-<!DOCTYPE html>
-<html><head>
+<!DOCTYPE html><html><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Novels v705 PRO - Gen-Z Visual FIXED CLOSED</title>
-<script>
-// v705 PRO FINAL - WAKE FIX
-fetch("https://gen-z-visual-2.onrender.com/",{cache:"no-store"});
-fetch("https://gen-z-visual-2.onrender.com/api/health",{cache:"no-store"});
-setInterval(()=>fetch("https://gen-z-visual-2.onrender.com/",{cache:"no-store"}), 240000);
-</script>
+<title>Novels v707 FB FILTER</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#07070a;color:#fff;font-family:system-ui}
-header{position:sticky;top:0;z-index:9;display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#111;border-bottom:1px solid #222}
-.logo{font-weight:900}.logo span{color:#ff00ff}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;padding:14px 16px 120px}
-.card{background:#15151a;border:1px solid #222;border-radius:18px;overflow:hidden;cursor:pointer;position:relative;transition:.3s}
-.card:hover{transform:translateY(-4px);border-color:#ff00ff60}
-.card img{width:100%;height:200px;object-fit:cover}
-.info{padding:10px 12px}
+header{position:sticky;top:0;z-index:99;display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:rgba(17,17,18,0.94);backdrop-filter:blur(12px);border-bottom:1px solid #222}
+.logo{font-weight:900}.logo span{color:#00ff88}
+.search-wrap{max-width:600px;margin:0 auto;padding:10px 14px;position:sticky;top:49px;z-index:98;background:#07070a}
+.search{width:100%;padding:12px 16px;border-radius:99px;background:#1a1a1e;border:1px solid #2a2a30;color:#fff;outline:none}
+.filters{display:flex;gap:8px;overflow:auto;padding:10px 14px;max-width:600px;margin:0 auto}
+.chip{padding:7px 14px;border-radius:99px;background:#1a1a1e;border:1px solid #2a2a30;color:#888;font-size:12px;white-space:nowrap;cursor:pointer}
+.chip.on{background:#00ff88;color:#000;border-color:#00ff88;font-weight:800}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:10px 14px 120px;max-width:600px;margin:0 auto}
+.grid.list{grid-template-columns:1fr}
+.card{background:#15151a;border:1px solid #222;border-radius:16px;overflow:hidden;cursor:pointer;position:relative}
+.card.list{display:flex;gap:10px;padding:10px}
+.card img{width:100%;height:190px;object-fit:cover}
+.card.list img{width:80px;height:110px;border-radius:10px}
 .badge{position:absolute;top:8px;left:8px;padding:3px 8px;border-radius:20px;font-size:8px;font-weight:900}
-.badge-live{background:#00ff88;color:#000}.badge-paid{background:#facc15;color:#000}.badge-xml{background:#333;color:#aaa}
-.head{display:flex;justify-content:space-between;align-items:center;padding:16px 16px 0}
-.nav{position:fixed;bottom:0;left:0;right:0;background:#111;border-top:1px solid #222;display:flex;justify-content:space-around;padding:8px 0}
-.nav a{color:#666;text-decoration:none;font-size:11px;text-align:center}.nav a.active{color:#ff00ff}
+.badge-live{background:#00ff88;color:#000}.badge-paid{background:#facc15;color:#000}
+.info{padding:10px}
+.nav{position:fixed;bottom:0;left:0;right:0;background:#111;border-top:1px solid #222;display:flex;justify-content:space-around;padding:8px 0;z-index:99}
+.nav a{color:#666;text-decoration:none;font-size:11px;text-align:center}.nav a.active{color:#00ff88}
 </style>
 </head><body>
-<header><div class="logo">Gen-Z <span>Novels</span> <span style="font-size:9px;background:#00ff88;padding:2px 6px;border-radius:10px;color:#000">v705 PRO FINAL</span></div><a href="dashboard.html?v=705" style="padding:8px 14px;border-radius:20px;background:#fff;color:#000;text-decoration:none;font-size:12px;font-weight:800">✍️ Studio</a></header>
+<header><div class="logo">Gen-Z <span>Novels</span> <small style="font-size:9px;background:#00ff88;color:#000;padding:2px 5px;border-radius:5px">v707 FILTER</small></div><div style="display:flex;gap:8px"><button onclick="toggleView()" style="padding:6px 10px;border-radius:8px;background:#222;border:1px solid #333;color:#fff">⊞</button><a href="dashboard.html?v=707" style="padding:7px 12px;border-radius:20px;background:#fff;color:#000;text-decoration:none;font-size:11px;font-weight:800">✍️ Studio</a></div></header>
 
-<div class="head">
-<h2 style="margin:0;font-size:20px;font-weight:900">Novels <span style="color:#00ff88">LIVE</span></h2>
-<span style="font-size:11px;color:#888;background:#1a1a1e;border:1px solid #222;padding:5px 10px;border-radius:20px" id="count">Loading v705 FINAL...</span>
+<div class="search-wrap"><input id="q" class="search" placeholder="🔍 Search novels, author..." oninput="filter()"></div>
+<div class="filters" id="filters">
+<div class="chip on" onclick="setGenre('all',this)">All</div>
+<div class="chip" onclick="setGenre('romance',this)">Romance</div>
+<div class="chip" onclick="setGenre('fantasy',this)">Fantasy</div>
+<div class="chip" onclick="setGenre('horror',this)">Horror</div>
+<div class="chip" onclick="setGenre('sci-fi',this)">Sci-Fi</div>
+<div class="chip" onclick="setGenre('free',this)">FREE</div>
+<div class="chip" onclick="setGenre('paid',this)">PAID ₹10</div>
 </div>
 
 <div id="grid" class="grid"></div>
 
 <div class="nav">
-<a href="index.html?v=705">🏠<br>Home</a>
-<a href="novels.html?v=705" class="active">📚<br>Novels</a>
-<a href="comics.html?v=705">🎨<br>Comics</a>
-<a href="dashboard.html?v=705">📝<br>Studio</a>
+<a href="index.html?v=707">🏠<br>Home</a>
+<a href="novels.html?v=707" class="active">📚<br>Novels</a>
+<a href="comics.html?v=707">🎨<br>Comics</a>
+<a href="dashboard.html?v=707">📝<br>Studio</a>
 </div>
 
 <script>
-const API="https://gen-z-visual-2.onrender.com";
-async function getLive(){
- for(let i=1;i<=3;i++){
-  try{ 
-   await fetch(API+"/",{cache:"no-store"}).catch(()=>{});
-   let r=await fetch(API+"/api/novels",{cache:"no-store"}); 
-   let d=await r.json(); 
-   let arr = Array.isArray(d)?d:[]; 
-   if(arr.length>0 || i===3) return arr;
-  }catch(e){
-   if(i<3) await new Promise(s=>setTimeout(s, 4000));
-  }
- }
- return [];
-}
-async function getXML(){
- try{
-  let txt=await fetch("data/novels.xml?v=705",{cache:"no-store"}).then(r=>r.text());
-  let doc=new DOMParser().parseFromString(txt,"text/xml");
-  return [...doc.querySelectorAll("novel")].map(n=>({
-   _id:n.querySelector("id")?.textContent, title:n.querySelector("title")?.textContent, author:n.querySelector("author")?.textContent,
-   cover:n.querySelector("cover")?.textContent, access:n.querySelector("access")?.textContent||"free", views:0, isXML:true, genre:n.querySelector("genre")?.textContent
-  }));
- }catch{return [];}
-}
+const API="https://gen-z-visual-2.onrender.com";let all=[],genre='all',isList=false;
+fetch(API+"/",{cache:"no-store"}).catch(()=>{});
 async function load(){
- let grid=document.getElementById("grid"); grid.innerHTML="<p style='color:#666;padding:12px'>⏳ Waking LIVE v705 FINAL... 10s</p>";
- let live=await getLive(); let list=live.length?live:await getXML();
- document.getElementById("count").innerText=live.length? `✅ ${live.length} LIVE FINAL • ${live.reduce((s,x)=>s+(x.views||0),0)} views` : `⚠️ ${list.length} XML fallback - refresh in 10s`;
- grid.innerHTML=list.map(n=>`
-  <div class="card" onclick="location.href='read-novel.html?${n.isXML?'xml':'id'}=${n._id}&v=705'">
-   <span class="badge ${n.isXML?'badge-xml':(n.access==='paid'?'badge-paid':'badge-live')}">${n.isXML?'XML':(n.access==='paid'?'₹'+(n.price||10):'LIVE')}</span>
-   <img src="${n.cover||n.coverImage||'https://picsum.photos/400/600'}" loading="lazy">
-   <div class="info"><h3 style="font-size:12px;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${n.title}</h3><p style="font-size:10px;color:#888;margin:3px 0 0">${n.author||'Anon'} • 👁️ ${n.views||0} • ${n.access==='paid'?'PAID':'FREE'}</p></div>
-  </div>`).join('');
+ let g=document.getElementById('grid'); g.innerHTML="<p style='color:#555;padding:20px'>⏳ Waking LIVE...</p>";
+ try{await fetch(API+"/",{cache:"no-store"})}catch{}
+ try{let r=await fetch(API+"/api/novels",{cache:"no-store"});let d=await r.json(); all=Array.isArray(d)?d:d.novels||[];}catch{all=[];}
+ if(all.length===0){try{let txt=await fetch("data/novels.xml?v=707",{cache:"no-store"}).then(r=>r.text());let doc=new DOMParser().parseFromString(txt,"text/xml");all=[...doc.querySelectorAll("novel")].map(n=>({_id:n.querySelector("id")?.textContent,title:n.querySelector("title")?.textContent,author:n.querySelector("author")?.textContent,cover:n.querySelector("cover")?.textContent,access:"free",views:0,genre:n.querySelector("genre")?.textContent||"all",isXML:true}));}catch{}}
+ render();
 }
+function render(){
+ let q=document.getElementById('q').value.toLowerCase();
+ let f=all.filter(n=>{
+  let okG=genre==='all'||(genre==='free'&&(n.access||'free')==='free')||(genre==='paid'&&(n.access||'')==='paid')||(n.genre||'').toLowerCase().includes(genre);
+  let okQ=!q||n.title.toLowerCase().includes(q)||(n.author||'').toLowerCase().includes(q);
+  return okG&&okQ;
+ });
+ document.getElementById('grid').innerHTML=f.map(n=>`
+ <div class="card ${isList?'list':''}" onclick="location.href='read-novel.html?${n.isXML?'xml':'id'}=${n._id}&v=707'">
+  <span class="badge ${n.access==='paid'?'badge-paid':'badge-live'}">${n.access==='paid'?'₹'+(n.price||10):'FREE'}</span>
+  <img src="${n.cover||n.coverImage||'https://picsum.photos/300/400'}" loading="lazy">
+  <div class="info"><h3 style="font-size:13px;margin:0">${n.title}</h3><p style="font-size:11px;color:#888;margin:4px 0">${n.author||'Anon'} • 👁️ ${n.views||0}</p><p style="font-size:10px;color:#555">${(n.description||'').slice(0,60)}</p></div>
+ </div>`).join('')||"<p style='color:#666;padding:20px'>No novels found</p>";
+}
+function filter(){render();}
+function setGenre(g,el){genre=g;document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));el.classList.add('on');render();}
+function toggleView(){isList=!isList;document.getElementById('grid').classList.toggle('list',isList);render();}
 load();
-</script>
-</body></html>
+</script></body></html>
