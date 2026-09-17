@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://xhettriakash1-bot.github.io/Gen-Z-Visual/</loc><lastmod>2026-09-17</lastmod><priority>1.0</priority></url>
-  <url><loc>https://xhettriakash1-bot.github.io/Gen-Z-Visual/index.html</loc><lastmod>2026-09-17</lastmod><priority>1.0</priority></url>
-  <url><loc>https://xhettriakash1-bot.github.io/Gen-Z-Visual/comics.html</loc><lastmod>2026-09-17</lastmod><priority>0.9</priority></url>
-  <url><loc>https://xhettriakash1-bot.github.io/Gen-Z-Visual/novels.html</loc><lastmod>2026-09-17</lastmod><priority>0.9</priority></url>
-  <url><loc>https://xhettriakash1-bot.github.io/Gen-Z-Visual/read-comic.html</loc><lastmod>2026-09-17</lastmod><priority>0.8</priority></url>
-  <url><loc>https://xhettriakash1-bot.github.io/Gen-Z-Visual/read-novel.html</loc><lastmod>2026-09-17</lastmod><priority>0.8</priority></url>
-  <url><loc>https://xhettriakash1-bot.github.io/Gen-Z-Visual/dashboard.html</loc><lastmod>2026-09-17</lastmod><priority>0.6</priority></url>
-  <url><loc>https://xhettriakash1-bot.github.io/Gen-Z-Visual/login.html</loc><lastmod>2026-09-17</lastmod><priority>0.5</priority></url>
+  <url><loc>https://xhettriakash1-bot.github.io/Gen-Z-Visual/</loc><lastmod>2026-05-27</lastmod><changefreq>daily</changefreq><priority>1.0</priority></url>
+  <url><loc>https://xhettriakash1-bot.github.io/Gen-Z-Visual/index.html?v=708</loc><lastmod>2026-05-27</lastmod><changefreq>daily</changefreq><priority>1.0</priority></url>
+  <url><loc>https://xhettriakash1-bot.github.io/Gen-Z-Visual/novels.html?v=708</loc><lastmod>2026-05-27</lastmod><changefreq>daily</changefreq><priority>0.9</priority></url>
+  <url><loc>https://xhettriakash1-bot.github.io/Gen-Z-Visual/comics.html?v=708</loc><lastmod>2026-05-27</lastmod><changefreq>daily</changefreq><priority>0.9</priority></url>
+  <url><loc>https://xhettriakash1-bot.github.io/Gen-Z-Visual/read-novel.html?v=708</loc><lastmod>2026-05-27</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://xhettriakash1-bot.github.io/Gen-Z-Visual/read-comic.html?v=708</loc><lastmod>2026-05-27</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://xhettriakash1-bot.github.io/Gen-Z-Visual/dashboard.html?v=708</loc><lastmod>2026-05-27</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://xhettriakash1-bot.github.io/Gen-Z-Visual/login.html?v=708</loc><lastmod>2026-05-27</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://xhettriakash1-bot.github.io/Gen-Z-Visual/privacy.html?v=708</loc><lastmod>2026-05-27</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://xhettriakash1-bot.github.io/Gen-Z-Visual/refund.html?v=708</loc><lastmod>2026-05-27</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://xhettriakash1-bot.github.io/Gen-Z-Visual/terms.html?v=708</loc><lastmod>2026-05-27</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://xhettriakash1-bot.github.io/Gen-Z-Visual/contact.html?v=708</loc><lastmod>2026-05-27</lastmod><changefreq>monthly</changefreq><priority>0.4</priority></url>
 </urlset>
