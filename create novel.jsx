@@ -33,10 +33,9 @@ export default function CreateNovel() {
     if(!description.trim() || description.trim().length<10) return alert("❌ Description min 10 chars");
     if(!content.trim() || content.trim().length<30) return alert(`❌ Story content min 30 chars, now ${content.trim().length}`);
     if(access==='paid'){
-      if(!upi.includes('@')) return alert("❌ Save UPI first in Dashboard! PAID needs UPI for payment");
+      if(!upi.includes('@')) return alert("❌ Save UPI first in Dashboard! PAID needs UPI");
       if(Number(price)<10) return alert("❌ PAID price min ₹10");
     }
-
     setLoading(true);
     try {
       await fetch(API+"/",{cache:"no-store"});
@@ -60,52 +59,42 @@ export default function CreateNovel() {
       });
       const data = await res.json();
       if (data.ok || data.novel) {
-        alert('✅ Novel Published LIVE v705! ' + (access==='paid' ? 'PAID ₹'+price : 'FREE') + '\nID: '+(data.novel?._id||''));
+        alert('✅ Novel Published LIVE v708 FB! ' + (access==='paid' ? 'PAID ₹'+price : 'FREE'));
         setTitle(''); setDescription(''); setContent(''); setCover(''); setPrice(10); setAccess('free');
       } else {
         alert('Error: ' + (data.error||JSON.stringify(data)));
       }
     } catch (err) {
-      alert('Error: ' + err.message + " - Backend waking, try again in 20s");
+      alert('Error: ' + err.message);
     }
     setLoading(false);
   };
 
   return (
     <div style={{maxWidth:'600px', margin:'20px auto', padding:'20px', background:'#121212', color:'white', borderRadius:'20px', border:'1px solid #222'}}>
-      <h2 style={{fontSize:'22px', fontWeight:'900'}}>📖 Create Novel <span style={{fontSize:'10px', background: apiUp?'#00ff88':'#333', color:'#000', padding:'4px 8px', borderRadius:'20px'}}>v705 PRO {apiUp? 'LIVE':'Waking...'}</span></h2>
-      {upi ? <p style={{fontSize:'11px', color:'#00ff88', background:'#00ff8815', padding:'6px 10px', borderRadius:'8px'}}>💳 UPI: {upi} ✅ PAID enabled</p> : <p style={{fontSize:'11px', color:'#ffaa00'}}>⚠️ No UPI — PAID blocked. Save UPI in Dashboard.</p>}
-      
-      <input value={title} onChange={e=>setTitle(e.target.value)} placeholder="Novel Title * min 2 chars" style={{width:'100%', padding:'12px', margin:'8px 0', borderRadius:'10px', background:'black', color:'white', border:'1px solid #333'}} />
-      
+      <h2 style={{fontSize:'22px', fontWeight:'900'}}>📖 Create Novel <span style={{fontSize:'10px', background: apiUp?'#00ff88':'#333', color:'#000', padding:'4px 8px', borderRadius:'20px'}}>v708 FB {apiUp? 'LIVE':'Waking...'}</span></h2>
+      {upi ? <p style={{fontSize:'11px', color:'#00ff88', background:'#00ff8815', padding:'6px 10px', borderRadius:'8px'}}>💳 UPI: {upi} ✅ PAID enabled</p> : <p style={{fontSize:'11px', color:'#ffaa00'}}>⚠️ No UPI — PAID blocked.</p>}
+      <input value={title} onChange={e=>setTitle(e.target.value)} placeholder="Novel Title *" style={{width:'100%', padding:'12px', margin:'8px 0', borderRadius:'10px', background:'black', color:'white', border:'1px solid #333'}} />
       <input value={author} onChange={e=>setAuthor(e.target.value)} placeholder="Author Name" style={{width:'100%', padding:'12px', margin:'8px 0', borderRadius:'10px', background:'black', color:'white', border:'1px solid #333'}} />
-      
       <select value={genre} onChange={e=>setGenre(e.target.value)} style={{width:'100%', padding:'12px', margin:'8px 0', borderRadius:'10px', background:'black', color:'white', border:'1px solid #333'}}>
         <option>Romance</option><option>Action</option><option>Fantasy</option><option>Horror</option><option>Comedy</option><option>Drama</option><option>NEON</option><option>CITY</option>
       </select>
-
-      <input value={cover} onChange={e=>setCover(e.target.value)} placeholder="Cover Image URL (optional - auto random if empty)" style={{width:'100%', padding:'12px', margin:'8px 0', borderRadius:'10px', background:'black', color:'white', border:'1px solid #333'}} />
-
-      <textarea value={description} onChange={e=>setDescription(e.target.value)} placeholder="Description * min 10 chars" style={{width:'100%', padding:'12px', margin:'8px 0', borderRadius:'10px', background:'black', color:'white', border:'1px solid #333', height:'80px'}} />
-
-      <textarea value={content} onChange={e=>setContent(e.target.value)} placeholder="Write your story here... * min 30 chars" style={{width:'100%', padding:'12px', margin:'8px 0', borderRadius:'10px', background:'black', color:'white', border:'1px solid #333', height:'200px'}} />
-      <p style={{fontSize:'10px', color: content.length<30?'#ff0055':'#00ff88'}}>{content.length} / 30 chars min</p>
-
+      <input value={cover} onChange={e=>setCover(e.target.value)} placeholder="Cover URL (auto if empty)" style={{width:'100%', padding:'12px', margin:'8px 0', borderRadius:'10px', background:'black', color:'white', border:'1px solid #333'}} />
+      <textarea value={description} onChange={e=>setDescription(e.target.value)} placeholder="Description * min 10" style={{width:'100%', padding:'12px', margin:'8px 0', borderRadius:'10px', background:'black', color:'white', border:'1px solid #333', height:'80px'}} />
+      <textarea value={content} onChange={e=>setContent(e.target.value)} placeholder="Story... * min 30" style={{width:'100%', padding:'12px', margin:'8px 0', borderRadius:'10px', background:'black', color:'white', border:'1px solid #333', height:'200px'}} />
+      <p style={{fontSize:'10px', color: content.length<30?'#ff0055':'#00ff88'}}>{content.length} / 30 min</p>
       <div style={{border:'1px solid #333', padding:'15px', borderRadius:'12px', margin:'15px 0', background:'#1a1a1a'}}>
-        <p style={{fontWeight:'800', marginBottom:'10px', fontSize:'13px'}}>📖 Reading Access (Author decides):</p>
+        <p style={{fontWeight:'800', marginBottom:'10px', fontSize:'13px'}}>📖 Access:</p>
         <div style={{display:'flex', gap:'10px'}}>
-          <button type="button" onClick={()=>setAccess('free')} style={{flex:1, padding:'10px', borderRadius:'99px', fontWeight:'900', border:'none', background: access==='free' ? '#22c55e' : '#333', color: access==='free' ? 'black' : 'white', cursor:'pointer'}}>🟢 FREE</button>
-          <button type="button" onClick={()=>setAccess('paid')} style={{flex:1, padding:'10px', borderRadius:'99px', fontWeight:'900', border:'none', background: access==='paid' ? '#facc15' : '#333', color: access==='paid' ? 'black' : 'white', cursor:'pointer'}}>💰 PAID</button>
+          <button type="button" onClick={()=>setAccess('free')} style={{flex:1, padding:'10px', borderRadius:'99px', fontWeight:'900', border:'none', background: access==='free' ? '#22c55e' : '#333', color: access==='free' ? 'black' : 'white'}}>🟢 FREE</button>
+          <button type="button" onClick={()=>setAccess('paid')} style={{flex:1, padding:'10px', borderRadius:'99px', fontWeight:'900', border:'none', background: access==='paid' ? '#facc15' : '#333', color: access==='paid' ? 'black' : 'white'}}>💰 PAID</button>
         </div>
-        {access==='paid' && (
-          <input type="number" min="10" max="999" value={price} onChange={e=>setPrice(e.target.value)} placeholder="Set Price ₹ min 10 Ex: 49" style={{width:'100%', padding:'12px', marginTop:'10px', borderRadius:'10px', background:'black', color:'white', border:'1px solid #facc15'}} />
-        )}
+        {access==='paid' && <input type="number" min="10" value={price} onChange={e=>setPrice(e.target.value)} style={{width:'100%', padding:'12px', marginTop:'10px', borderRadius:'10px', background:'black', color:'white', border:'1px solid #facc15'}} />}
       </div>
-
-      <button onClick={handleSubmit} disabled={loading} style={{width:'100%', padding:'14px', borderRadius:'99px', background: loading?'#333':'#fff', color: loading?'#888':'#000', fontWeight:'900', fontSize:'16px', border:'none', cursor:'pointer'}}>
-        {loading ? 'Publishing LIVE...' : `🚀 Publish ${access==='paid'? 'PAID ₹'+price : 'FREE'} Novel v705`}
+      <button onClick={handleSubmit} disabled={loading} style={{width:'100%', padding:'14px', borderRadius:'99px', background: loading?'#333':'#fff', color: loading?'#888':'#000', fontWeight:'900', border:'none'}}>
+        {loading ? 'Publishing...' : `🚀 Publish ${access==='paid'? 'PAID ₹'+price : 'FREE'} v708`}
       </button>
-      <p style={{fontSize:'10px', color:'#666', marginTop:'8px', textAlign:'center'}}>v705 PRO • Validates content • Auto cover • Blocks PAID if no UPI</p>
+      <p style={{fontSize:'10px', color:'#666', textAlign:'center', marginTop:'8px'}}>v708 FB • FB Like ready</p>
     </div>
   );
-      }
+        }
