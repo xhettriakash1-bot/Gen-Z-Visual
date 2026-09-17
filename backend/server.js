@@ -46,7 +46,12 @@ const Comic=mongoose.models.Comic||mongoose.model('Comic',comicSchema);
 
 app.use(cors({origin:true,credentials:true}));app.use(express.json({limit:"50mb"}));
 
-function getRazorpay(){ return new Razorpay({ key_id: process.env.RAZORPAY_KEY_ID, key_secret: process.env.RAZORPAY_KEY_SECRET }); }
+function getRazorpay(){
+  if(!process.env.RAZORPAY_KEY_ID ||!process.env.RAZORPAY_KEY_SECRET){
+    throw new Error("RAZORPAY_KEY_ID/SECRET missing in env - check Render env vars");
+  }
+  return new Razorpay({ key_id: process.env.RAZORPAY_KEY_ID, key_secret: process.env.RAZORPAY_KEY_SECRET });
+}
 
 const ADMINS=[
   {email: process.env.ADMIN_EMAIL_1, password: process.env.ADMIN_PASSWORD_1, name:"Akash Main"},
@@ -61,20 +66,30 @@ function slugify(t){return (t||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').slic
 function isValidUrl(u){try{let x=new URL(u);return x.protocol==='http:'||x.protocol==='https:';}catch{return false;}}
 function cleanPages(p){if(!Array.isArray(p)) return []; return [...new Set(p.map(s=>String(s||'').trim()).filter(s=>s.length>10 && isValidUrl(s)))].slice(0,100);}
 
-// FULL ADMIN OPEN v706
-app.get('/',(req,res)=>res.json({ok:true,msg:"Gen-Z Visual v706 FULL ADMIN OPEN ✅", mode:"OPEN", admin:"FULL CONTROL", time:new Date().toISOString()}));
-app.get('/api/health',(req,res)=>res.json({ok:true,mongo:mongoose.connection.readyState, v:"706 FULL ADMIN OPEN", mode:"OPEN", razorpay:!!process.env.RAZORPAY_KEY_ID}));
+app.get('/',(req,res)=>res.json({ok:true,msg:"Gen-Z Visual v705 FIXED CLOSED ✅", mode:"OPEN", admin:"FULL CONTROL", time:new Date().toISOString()}));
+app.get('/api/health',(req,res)=>res.json({ok:true,mongo:mongoose.connection.readyState, v:"705 FIXED CLOSED", mode:"OPEN", razorpay:!!process.env.RAZORPAY_KEY_ID}));
 
+// FIXED - NO MORE "Server just woke up" ERROR - AUTO RETRY INSIDE
 app.post('/api/create-order',async(req,res)=>{
  try{
   let {amount, type, title} = req.body;
   if(type==='comic') amount = Number(amount)||20; else if(type==='novel') amount = Number(amount)||10; else amount = Number(amount) || 10;
   if(amount<1) amount=10;
-  let razorpay = getRazorpay();
-  let options = { amount: amount*100, currency:"INR", receipt:"genz_"+Date.now(), notes:{ product:title||type||"Gen-Z Visual", price:"₹"+amount } };
-  let order = await razorpay.orders.create(options);
-  res.json({ok:true, id:order.id, orderId:order.id, amount:order.amount, key_id:process.env.RAZORPAY_KEY_ID, price:amount});
- }catch(e){ console.log("Razorpay Error:", e.message); res.status(200).json({ok:false, error:"Server just woke up - please tap BUY again in 5s", retry:true}) }
+  let lastErr=null;
+  for(let i=0;i<3;i++){
+    try{
+      let razorpay = getRazorpay();
+      let options = { amount: amount*100, currency:"INR", receipt:"genz_"+Date.now()+"_"+i, notes:{ product:title||type||"Gen-Z Visual", price:"₹"+amount } };
+      let order = await razorpay.orders.create(options);
+      return res.json({ok:true, id:order.id, orderId:order.id, amount:order.amount, key_id:process.env.RAZORPAY_KEY_ID, price:amount});
+    }catch(err){
+      lastErr=err;
+      console.log(`Razorpay attempt ${i+1}/3 failed: ${err.message}`);
+      if(i<2) await new Promise(r=>setTimeout(r, 1500));
+    }
+  }
+  throw lastErr;
+ }catch(e){ console.log("Razorpay Final Error:", e.message); res.status(500).json({ok:false, error:e.message || "Payment server busy, try again"}) }
 });
 
 app.post('/api/verify-payment', async (req,res)=>{
@@ -132,8 +147,6 @@ app.get('/api/novels',async(req,res)=>{ try{let list=await Novel.find({isPublish
 app.get('/api/novels/:id',async(req,res)=>{ try{let b=await Novel.findById(req.params.id); if(!b) return res.status(404).json({error:"Not found"}); res.json(b);}catch(e){res.status(500).json({error:e.message})} });
 app.post('/api/novels',protect,async(req,res)=>{ try{ let d=req.body; if(!d.title) return res.status(400).json({error:"Title required"}); let u=await User.findById(req.user.id); let price = d.price? Number(d.price): (d.access==='paid'?10:0); let doc=await Novel.create({...d,price,access:d.access||d.accessType||'free',creatorEmail:u.email,creatorName:u.name||u.email,authorUpi:d.authorUpi||d.upiId||u.upiId||"",upiId:d.authorUpi||u.upiId||"",slug:slugify(d.title),views:Number(d.views)||0}); res.json(doc); }catch(e){res.status(500).json({error:e.message})} });
 app.post('/api/novels/:id/view',async(req,res)=>{ try{let b=await Novel.findByIdAndUpdate(req.params.id,{$inc:{views:1}},{new:true}); res.json({ok:true,views:b?.views||0});}catch(e){res.json({ok:true})} });
-
-// FULL ADMIN ADD VIEWS + EDIT + DELETE
 app.post('/api/novels/:id/add-views',protect,async(req,res)=>{
  try{
   let inc = Number(req.body.views)||100;
@@ -180,17 +193,16 @@ app.put('/api/comics/:id',protect,async(req,res)=>{
 });
 app.delete('/api/comics/:id',protect,async(req,res)=>{ try{let b=await Comic.findById(req.params.id); if(!b) return res.status(404).json({error:"Not found"}); if(b.creatorEmail!==req.user.email && req.user.role!=='admin') return res.status(403).json({error:"Not owner"}); await b.deleteOne(); res.json({ok:true});}catch(e){res.status(500).json({error:e.message})} });
 
-// FULL ADMIN STATS v706
 app.get('/api/admin/stats',protect,isAdmin,async(req,res)=>{
  try{
   let nCount=await Novel.countDocuments(); let cCount=await Comic.countDocuments();
   let nViews=await Novel.aggregate([{$group:{_id:null,total:{$sum:"$views"}}}]);
   let cViews=await Comic.aggregate([{$group:{_id:null,total:{$sum:"$views"}}}]);
   let uCount=await User.countDocuments();
-  res.json({ok:true,mode:"OPEN FULL ADMIN",totalNovels:nCount,totalComics:cCount,totalBooks:nCount+cCount,totalViews:(nViews[0]?.total||0)+(cViews[0]?.total||0),totalUsers:uCount, v:"706 FULL ADMIN OPEN"});
+  res.json({ok:true,mode:"OPEN FULL ADMIN",totalNovels:nCount,totalComics:cCount,totalBooks:nCount+cCount,totalViews:(nViews[0]?.total||0)+(cViews[0]?.total||0),totalUsers:uCount, v:"705 FIXED CLOSED"});
  }catch(e){res.status(500).json({error:e.message})}
 });
 app.get('/api/users',protect,isAdmin,async(req,res)=>{ try{let list=await User.find().select("email role name upiId createdAt").sort({createdAt:-1}); res.json(list);}catch(e){res.status(500).json({error:e.message})} });
 
 const PORT=process.env.PORT||10000;
-app.listen(PORT,()=>console.log(`✅ Gen-Z v706 FULL ADMIN OPEN LIVE ${PORT}`));
+app.listen(PORT,()=>console.log(`✅ Gen-Z v705 FIXED CLOSED LIVE ${PORT}`));
