@@ -1,72 +1,128 @@
 <!DOCTYPE html><html><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Gen-Z Visual v705 PRO</title>
-<style>*{box-sizing:border-box}body{margin:0;background:#07070a;color:#fff;font-family:system-ui}
-header{position:sticky;top:0;z-index:99;display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:rgba(15,15,18,0.95);border-bottom:1px solid #222}
-.logo{font-weight:900;font-size:20px}.logo span{color:#ff00ff}
-.top-btn{padding:8px 14px;border-radius:20px;border:1px solid #333;background:#1a1a1e;color:#aaa;text-decoration:none;font-size:12px;font-weight:700}
-.top-btn.primary{background:#fff;color:#000}
-.search-wrap{max-width:700px;margin:16px auto;padding:0 16px}
-.search-wrap input{width:100%;padding:14px 16px;background:#15151a;border:1px solid #25252c;border-radius:99px;color:#fff;outline:none}
-.hero{max-width:700px;margin:0 auto;padding:30px 20px}
-.hero h1{font-size:42px;line-height:0.9;font-weight:900}
-.hero h1 span{background:linear-gradient(90deg,#ff00ff,#7a00ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.grid{max-width:700px;margin:0 auto;padding:0 16px 120px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.card{background:#15151a;border:1px solid #222;border-radius:16px;overflow:hidden;position:relative;cursor:pointer}
-.card img{width:100%;height:180px;object-fit:cover}
-.card-body{padding:10px}.card-body b{font-size:13px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.card-body small{color:#666;font-size:11px}
-.badge{position:absolute;top:8px;left:8px;padding:3px 8px;border-radius:20px;font-size:9px;font-weight:900}.live{background:#00ff88;color:#000}.paid{background:#facc15;color:#000}
-.nav{position:fixed;bottom:0;left:0;right:0;background:#111;border-top:1px solid #222;display:flex;justify-content:space-around;padding:8px 0}
-.nav a{color:#666;text-decoration:none;font-size:11px;text-align:center}.nav a.active{color:#ff00ff}
-.footer{max-width:700px;margin:0 auto;padding:40px 20px 120px;text-align:center;border-top:1px solid #222;margin-top:30px}.footer a{color:#888;text-decoration:none;margin:0 8px;font-size:12px}
+<title>Gen-Z Visual v706 ULTRA</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}body{margin:0;background:#07070a;color:#fff;font-family:system-ui,-apple-system}
+header{position:sticky;top:0;z-index:99;display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:rgba(15,15,18,0.85);backdrop-filter:blur(12px);border-bottom:1px solid #222}
+.logo{font-family:'Outfit',sans-serif;font-weight:900;font-size:22px;letter-spacing:-1px}.logo span{background:linear-gradient(90deg,#ff00ff,#ff8800);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.top-btn{padding:8px 14px;border-radius:20px;border:1px solid #333;background:#1a1a1e;color:#aaa;text-decoration:none;font-size:12px;font-weight:700}.top-btn.primary{background:#fff;color:#000;border:none}
+.search-wrap{max-width:700px;margin:14px auto;padding:0 16px;position:sticky;top:60px;z-index:90}
+.search-wrap input{width:100%;padding:14px 16px;background:#15151a;border:1px solid #25252c;border-radius:99px;color:#fff;outline:none;box-shadow:0 4px 20px rgba(0,0,0,0.4)}
+.hero{max-width:700px;margin:0 auto;padding:20px 16px 10px}
+.hero h1{font-family:'Outfit',sans-serif;font-size:44px;line-height:0.9;font-weight:900;margin:0}
+.hero h1 span{background:linear-gradient(90deg,#ff00ff,#7a00ff,#ff8800);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.cat{max-width:700px;margin:10px auto;padding:0 16px;display:flex;gap:8px;overflow:auto;scrollbar-width:none}
+.cat::-webkit-scrollbar{display:none}
+.pill{white-space:nowrap;padding:8px 16px;border-radius:99px;border:1px solid #333;background:#15151a;color:#888;font-size:12px;font-weight:800;cursor:pointer;transition:0.2s}
+.pill.active{background:#fff;color:#000;border-color:#fff;transform:scale(1.05)}
+.trend{max-width:700px;margin:12px auto;padding:0 16px;display:flex;gap:12px;overflow:auto;scrollbar-width:none}
+.trend::-webkit-scrollbar{display:none}
+.trend-card{min-width:280px;height:160px;border-radius:20px;overflow:hidden;position:relative;background:#15151a;border:1px solid #222;flex-shrink:0}
+.trend-card img{width:100%;height:100%;object-fit:cover;opacity:0.7}
+.trend-card .info{position:absolute;bottom:0;left:0;right:0;padding:12px;background:linear-gradient(transparent,rgba(0,0,0,0.9))}
+.grid{max-width:700px;margin:0 auto;padding:10px 16px 120px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.card{background:#15151a;border:1px solid #222;border-radius:18px;overflow:hidden;position:relative;cursor:pointer;transition:0.25s}
+.card:hover{transform:translateY(-4px) scale(1.02);border-color:#ff00ff55;box-shadow:0 8px 30px rgba(255,0,255,0.15)}
+.card img{width:100%;height:190px;object-fit:cover;display:block;background:#111}
+.card-body{padding:10px}.card-body b{font-size:13px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card-body small{color:#777;font-size:11px;display:flex;justify-content:space-between;margin-top:4px}
+.badge{position:absolute;top:8px;left:8px;padding:4px 9px;border-radius:20px;font-size:9px;font-weight:900;backdrop-filter:blur(8px)}
+.live{background:#00ff88;color:#000}.paid{background:#facc15;color:#000}.trending{background:linear-gradient(90deg,#ff00ff,#ff8800);color:#fff}
+.skeleton{background:linear-gradient(90deg,#15151a 25%,#1f1f27 50%,#15151a 75%);background-size:200% 100%;animation:shim 1.2s infinite;border-radius:16px;height:240px}
+@keyframes shim{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.nav{position:fixed;bottom:0;left:0;right:0;background:rgba(17,17,17,0.92);backdrop-filter:blur(16px);border-top:1px solid #222;display:flex;justify-content:space-around;padding:8px 0;z-index:99}
+.nav a{color:#666;text-decoration:none;font-size:11px;text-align:center;padding:4px 12px;border-radius:12px}.nav a.active{color:#ff00ff;background:rgba(255,0,255,0.1)}
+.footer{max-width:700px;margin:0 auto;padding:30px 20px 120px;text-align:center;border-top:1px solid #1a1a1a;margin-top:20px}.footer a{color:#555;text-decoration:none;margin:0 6px;font-size:11px}
 </style>
 </head><body>
-<header><div class="logo">Gen-Z <span>Visual</span></div><div style="display:flex;gap:6px"><a href="login.html" class="top-btn primary">Login</a><a href="dashboard.html" class="top-btn">Studio</a></div></header>
-<div class="search-wrap"><input id="searchBox" placeholder="Search novels, comics..." oninput="filterCards()"></div>
-<div class="hero"><h1>Stories for<br><span>Gen-Z</span><br>by Gen-Z</h1><p>LIVE + PAID ₹ + VIEWS - NEVER EMPTY</p><div id="status" style="margin-top:16px;font-size:11px;color:#00ff88">● Waking LIVE...</div></div>
-<div id="grid" class="grid"></div>
+<header><div class="logo">Gen-Z <span>Visual</span> <small style="font-size:10px;background:#00ff88;color:#000;padding:2px 6px;border-radius:6px;margin-left:6px;vertical-align:middle">v706 ULTRA</small></div><div style="display:flex;gap:6px"><a href="login.html" class="top-btn primary">Login</a><a href="dashboard.html?v=706" class="top-btn">Studio</a></div></header>
+
+<div class="search-wrap"><input id="searchBox" placeholder="🔍 Search novels, comics..." oninput="filterCards()"></div>
+
+<div class="hero">
+<h1>Stories for<br><span>Gen-Z</span><br>by Gen-Z</h1>
+<p style="color:#888;font-size:13px;margin:8px 0 0">LIVE • PAID ₹ • FAST ImgBB • NEVER EMPTY</p>
+<div id="status" style="margin-top:10px;font-size:11px;color:#00ff88;font-weight:800">● Waking LIVE...</div>
+</div>
+
+<div class="cat" id="catPills">
+<div class="pill active" onclick="setCat('all',this)">✨ All</div>
+<div class="pill" onclick="setCat('novel',this)">📚 Novels</div>
+<div class="pill" onclick="setCat('comic',this)">💥 Comics</div>
+<div class="pill" onclick="setCat('free',this)">🆓 Free</div>
+<div class="pill" onclick="setCat('paid',this)">💎 Paid ₹</div>
+</div>
+
+<div class="trend" id="trendRow" style="display:none"></div>
+
+<div id="grid" class="grid">
+<div class="skeleton"></div><div class="skeleton"></div>
+</div>
 
 <footer class="footer">
-<div style="color:#666;font-size:11px;margin-bottom:12px">Gen-Z Visual © 2025 | Digital Novels ₹10 & Comics ₹20</div>
-<a href="terms.html">Terms</a> | <a href="privacy.html">Privacy</a> | <a href="refund.html">Refund</a> | <a href="cancellation.html">Cancellation</a> | <a href="contact.html">Contact</a>
-<div style="margin-top:12px;color:#555;font-size:10px">xhettriakash1@gmail.com | Instant Digital Delivery</div>
+<div style="color:#666;font-size:11px;margin-bottom:10px">Gen-Z Visual © 2025 | ULTRA FAST</div>
+<a href="terms.html">Terms</a> • <a href="privacy.html">Privacy</a> • <a href="refund.html">Refund</a> • <a href="contact.html">Contact</a>
+<div style="margin-top:12px;color:#444;font-size:10px">xhettriakash1@gmail.com | ImgBB FAST Delivery</div>
 </footer>
 
 <div class="nav"><a href="index.html" class="active">🏠<br>Home</a><a href="novels.html">📚<br>Novels</a><a href="comics.html">💥<br>Comics</a><a href="dashboard.html">📝<br>Studio</a></div>
+
 <script>
-const API_BASE="https://gen-z-visual-2.onrender.com"; const API=API_BASE+"/api"; let allItems=[];
-async function getLive(){ try{ let [r1,r2]=await Promise.all([fetch(API+'/novels'),fetch(API+'/comics')]); let n=await r1.json(); let c=await r2.json(); n=Array.isArray(n)?n:(n.novels||[]); c=Array.isArray(c)?c:(c.comics||[]); return [...n.map(x=>({...x,type:'novel'})), ...c.map(x=>({...x,type:'comic'}))]; }catch{ return []; } }
-async function loadAll(){ 
+const API_BASE="https://gen-z-visual-2.onrender.com"; const API=API_BASE+"/api";
+let allItems=[], currentCat='all';
+
+async function getLive(){
   try{
-    await fetch(API_BASE+"/api/health");
-    document.getElementById('status').innerText="● LIVE - Connected";
-  }catch{}
-  let live=await getLive(); allItems=live;
-  let g=document.getElementById('grid'); 
-  if(live.length>0){ 
-    g.innerHTML=live.map(i=>{
-      const pid=i._id||i.id;
-      const link=i.type==='novel'?`read-novel.html?id=${pid}`:`read-comic.html?id=${pid}`;
-      return `<div class="card" onclick="location.href='${link}'"><span class="badge ${i.access==='paid'?'paid':'live'}">${i.access==='paid'?'₹'+(i.price||10):'LIVE'}</span><img src="${i.cover||i.coverImage||''}" onerror="this.src='https://via.placeholder.com/300x400/15151a/ff00ff?text=GenZ'"><div class="card-body"><b>${i.title}</b><small>${i.author||'Creator'}</small></div></div>`
-    }).join(''); 
-    document.getElementById('status').innerText=`● LIVE - ${live.length} Stories Active`;
-  } else {
-    document.getElementById('status').innerText="● LIVE - Ready";
-    g.innerHTML='<div style="grid-column:1/3;text-align:center;color:#555;padding:30px">Publish first story in Studio</div>';
-  }
+    let [r1,r2]=await Promise.all([fetch(API+'/novels',{cache:"no-store"}),fetch(API+'/comics',{cache:"no-store"})]);
+    let n=await r1.json(); let c=await r2.json();
+    n=Array.isArray(n)?n:(n.novels||[]); c=Array.isArray(c)?c:(c.comics||[]);
+    return [...n.map(x=>({...x,type:'novel',views:x.views||0})), ...c.map(x=>({...x,type:'comic',views:x.views||0}))].sort((a,b)=>(b.views||0)-(a.views||0));
+  }catch{ return []; }
 }
-function filterCards(){
+
+function setCat(cat,el){
+  currentCat=cat;
+  document.querySelectorAll('.pill').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  renderFiltered();
+}
+
+function renderFiltered(){
   let q=document.getElementById('searchBox').value.toLowerCase();
-  let f=allItems.filter(i=>i.title.toLowerCase().includes(q));
+  let f=allItems.filter(i=>{
+    let okCat = currentCat==='all' || (currentCat==='novel'&&i.type==='novel') || (currentCat==='comic'&&i.type==='comic') || (currentCat==='free'&&i.access!=='paid') || (currentCat==='paid'&&i.access==='paid');
+    let okQ = !q || i.title.toLowerCase().includes(q) || (i.author||'').toLowerCase().includes(q);
+    return okCat && okQ;
+  });
   let g=document.getElementById('grid');
-  if(f.length===0){ g.innerHTML='<div style="grid-column:1/3;text-align:center;color:#666">No match</div>'; return; }
+  if(f.length===0){ g.innerHTML='<div style="grid-column:1/3;text-align:center;color:#555;padding:40px">No stories found</div>'; return; }
   g.innerHTML=f.map(i=>{
     const pid=i._id||i.id;
     const link=i.type==='novel'?`read-novel.html?id=${pid}`:`read-comic.html?id=${pid}`;
-    return `<div class="card" onclick="location.href='${link}'"><span class="badge ${i.access==='paid'?'paid':'live'}">${i.access==='paid'?'₹'+(i.price||10):'LIVE'}</span><img src="${i.cover||i.coverImage}"><div class="card-body"><b>${i.title}</b><small>${i.author}</small></div></div>`
+    const isPaid=i.access==='paid';
+    return `<div class="card" onclick="location.href='${link}'"><span class="badge ${isPaid?'paid':'live'}">${isPaid?'₹'+(i.price||10):'LIVE'}</span><img loading="lazy" src="${i.cover||i.coverImage||''}" onerror="this.src='https://via.placeholder.com/300x400/15151a/ff00ff?text=GenZ'"><div class="card-body"><b>${(i.title||'Untitled').slice(0,28)}</b><small><span>${i.type==='novel'?'📚':'💥'} ${i.author||'Akash'}</span><span>👁️ ${i.views||0}</span></small></div></div>`
   }).join('');
 }
+
+async function loadAll(){
+  try{ await fetch(API_BASE+"/",{cache:"no-store"}); }catch{}
+  let live=await getLive(); allItems=live;
+  document.getElementById('status').innerText=`● LIVE • ${live.length} Stories • FAST`;
+
+  // Trending row - top 3 viewed
+  if(live.length>=2){
+    let tr=document.getElementById('trendRow'); tr.style.display='flex';
+    let top=live.slice(0,3);
+    tr.innerHTML=top.map(i=>{
+      const pid=i._id||i.id;
+      const link=i.type==='novel'?`read-novel.html?id=${pid}`:`read-comic.html?id=${pid}`;
+      return `<div class="trend-card" onclick="location.href='${link}'"><img src="${i.cover||i.coverImage}" loading="lazy"><span class="badge trending" style="top:10px;left:10px">🔥 TRENDING</span><div class="info"><b style="font-size:13px">${i.title.slice(0,26)}</b><br><small style="color:#aaa">👁️ ${i.views||0} views • ${i.type}</small></div></div>`
+    }).join('');
+  }
+  renderFiltered();
+}
+function filterCards(){ renderFiltered(); }
 loadAll();
-setInterval(()=>{ fetch(API_BASE+"/api/health").catch(()=>{}); }, 240000);
-setTimeout(()=>{ fetch(API_BASE+"/api/health").then(()=>{ document.getElementById('status').innerText="● LIVE - All OK"; }).catch(()=>{}); }, 3000);
+setInterval(()=>fetch(API_BASE+"/",{cache:"no-store"}).catch(()=>{}), 240000);
 </script></body></html>
