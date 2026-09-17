@@ -1,7 +1,7 @@
 {
   "name": "gen-z-visual-backend",
   "version": "708.0",
-  "description": "Gen-Z Visual v708 FB OPEN - RAZORPAY + FB LIKE COMMENT TRENDING",
+  "description": "Gen-Z Visual v708 FB OPEN - RAZORPAY + FB LIKE COMMENT TRENDING + FILE",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
@@ -13,7 +13,8 @@
     "express": "^4.19.2",
     "mongoose": "^8.4.0",
     "jsonwebtoken": "^9.0.2",
-    "razorpay": "^2.9.2"
+    "razorpay": "^2.9.2",
+    "multer": "^1.4.5-lts.1"
   },
   "engines": {
     "node": "20.x"
