@@ -8,7 +8,7 @@ header{display:flex;justify-content:space-between;align-items:center;padding:12p
 .top-info{background:#15151a;border:1px solid #222;border-radius:24px;padding:18px;display:flex;gap:14px;margin-bottom:16px}
 .top-info img{width:90px;height:130px;border-radius:12px;object-fit:cover}
 .comic-pages{display:flex;flex-direction:column;gap:0;background:#15151a;border-radius:24px;overflow:hidden;border:1px solid #222;padding:6px}
-.comic-pages img{width:100%;display:block;margin:0 auto;border-radius:12px;cursor:zoom-in}
+.comic-pages img{width:100%;display:block;margin:0 auto;border-radius:12px}
 .page-num{text-align:center;font-size:10px;color:#555;padding:8px 0}
 .progress{height:4px;background:#222;border-radius:99px;margin:10px 0;overflow:hidden;position:sticky;top:55px;z-index:10}
 .progress-bar{height:100%;background:linear-gradient(90deg,#ff8800,#00ff88);width:0%}
@@ -25,7 +25,6 @@ header{display:flex;justify-content:space-between;align-items:center;padding:12p
 <div class="top-info"><img id="cover" src="https://picsum.photos/300/400"><div style="flex:1"><h2 id="t" style="margin:0;font-size:20px;font-weight:900">Loading v705...</h2><p id="author" style="font-size:12px;color:#888">...</p><p id="desc" style="font-size:11px;color:#666;margin-top:8px"></p><span id="badge" style="font-size:10px;background:#ff00ff22;border:1px solid #ff00ff40;padding:4px 10px;border-radius:20px;color:#ff8aff">Waking LIVE v705...</span><div style="margin-top:10px"><button class="ctrl" onclick="window.scrollBy({top:-innerHeight*0.8,behavior:'smooth'})">↑ Up</button><button class="ctrl" onclick="window.scrollBy({top:innerHeight*0.8,behavior:'smooth'})">↓ Down</button></div></div></div>
 <div class="comic-pages" id="pages"><p style="text-align:center;color:#666;padding:20px">⏳ Loading LIVE v705...</p></div>
 </div>
-
 <div id="paywall" class="paywall"><div class="pay-box">
 <div style="font-size:40px">💎</div>
 <h2 style="margin:10px 0">Premium Comic LOCKED</h2>
@@ -34,72 +33,47 @@ header{display:flex;justify-content:space-between;align-items:center;padding:12p
 <p id="payUpi" style="font-size:11px;color:#00ff88;background:#00ff8815;padding:6px;border-radius:8px"></p>
 <p style="font-size:11px;color:#666;margin-top:8px">Secure payment via Razorpay • Comic ₹20</p>
 <button id="payBtn" onclick="payNowRazorpay()" style="width:100%;padding:14px;background:#facc15;color:#000;border:none;border-radius:12px;font-weight:900;margin-top:12px;cursor:pointer">🔓 Pay ₹20 & Unlock Now</button>
-<p id="payStatus" style="font-size:10px;color:#666;margin-top:10px">v705 auto-retry enabled • No more waking error</p>
+<p id="payStatus" style="font-size:10px;color:#666;margin-top:10px">v705 auto-retry enabled</p>
 <button onclick="location.href='comics.html?v=705'" style="width:100%;padding:10px;background:#222;color:#888;border:1px solid #333;border-radius:12px;margin-top:8px">← Back to Comics</button>
 </div></div>
-
 <script>
-const API_BASE="https://gen-z-visual-2.onrender.com";
-const API=API_BASE+"/api";
-let currentBook=null,currentId=null, currentRealId=null;
-
-// v705 WAKE - keep alive
-fetch(API_BASE+"/",{cache:"no-store"}).catch(()=>{});
-fetch(API_BASE+"/api/health",{cache:"no-store"}).catch(()=>{});
-setInterval(()=>fetch(API_BASE+"/api/health",{cache:"no-store"}).catch(()=>{}), 120000);
-
+const API_BASE="https://gen-z-visual-2.onrender.com"; const API=API_BASE+"/api";
+let currentBook=null,currentId=null,currentRealId=null;
+fetch(API_BASE+"/",{cache:"no-store"}).catch(()=>{}); fetch(API_BASE+"/api/health",{cache:"no-store"}).catch(()=>{});
+setInterval(()=>fetch(API_BASE+"/api/health",{cache:"no-store"}).catch(()=>{}),120000);
 async function loadStory(){
-let params=new URLSearchParams(location.search);
-let id=params.get("id"), xml=params.get("xml");
-currentId=id||xml;
-if(!id &&!xml){document.getElementById("t").innerText="No ID";return;}
-let realId=(id||xml||"").replace("my_",""); currentRealId=realId;
-let book=null,source="";
-
+let params=new URLSearchParams(location.search); let id=params.get("id"),xml=params.get("xml");
+currentId=id||xml; if(!id&&!xml){document.getElementById("t").innerText="No ID";return;}
+let realId=(id||xml||"").replace("my_",""); currentRealId=realId; let book=null,source="";
 document.getElementById("badge").innerText="🔍 Waking LIVE v705...";
-try{ await fetch(API_BASE+"/",{cache:"no-store"}); }catch{}
-
+try{await fetch(API_BASE+"/",{cache:"no-store"});}catch{}
 if(xml){
- try{
-  let txt=await fetch("data/comics.xml?v=705",{cache:"no-store"}).then(r=>r.text());
-  let doc=new DOMParser().parseFromString(txt,"text/xml");
-  let c=[...doc.querySelectorAll("comic")].find(x=> (x.querySelector("id")?.textContent)===realId);
-  if(c){
-   book={ _id: c.querySelector("id")?.textContent, title:c.querySelector("title")?.textContent, author:c.querySelector("author")?.textContent, cover:c.querySelector("cover")?.textContent, pages:(c.querySelector("pages")?.textContent||"").split(",").map(s=>s.trim()).filter(Boolean), description:c.querySelector("desc")?.textContent||"", access:"free", price:20, views:0, isXML:true };
-   source="XML ✅";
-  }
- }catch{}
+ try{let txt=await fetch("data/comics.xml?v=705",{cache:"no-store"}).then(r=>r.text()); let doc=new DOMParser().parseFromString(txt,"text/xml");
+ let c=[...doc.querySelectorAll("comic")].find(x=> (x.querySelector("id")?.textContent)===realId);
+ if(c){ book={_id:c.querySelector("id")?.textContent,title:c.querySelector("title")?.textContent,author:c.querySelector("author")?.textContent,cover:c.querySelector("cover")?.textContent,pages:(c.querySelector("pages")?.textContent||"").split(",").map(s=>s.trim()).filter(Boolean),description:c.querySelector("desc")?.textContent||"",access:"free",price:20,views:0,isXML:true}; source="XML ✅";}}catch{}
 }
-
-if(!book && id){
+if(!book&&id){
  try{let r=await fetch(API+"/comics/"+realId,{cache:"no-store"});if(r.ok){book=await r.json();source="DIRECT LIVE ✅";}}catch{}
  if(!book){try{let r=await fetch(API+"/comics",{cache:"no-store"});if(r.ok){let list=await r.json();list=Array.isArray(list)?list:list.comics||[];book=list.find(x=>String(x._id)===String(realId)||String(x._id)===String(id));if(book)source="LIVE LIST ✅";}}catch{}}
 }
-
-if(!book){document.getElementById("t").innerText="Comic not found";document.getElementById("pages").innerHTML=`ID ${currentId} not found.<br>Backend waking: <a href="${API}/comics" style="color:#ff8800" target="_blank">Open API</a> then retry`;document.getElementById("badge").innerText="❌ Not Found";return;}
-
-currentBook=book;
-book.price=20;
-
-if(!book.isXML){
- try{ fetch(API+"/comics/"+(book._id||realId)+"/view",{method:"POST",cache:"no-store"}).catch(()=>{}); }catch{}
+if(!book){document.getElementById("t").innerText="Comic not found";document.getElementById("pages").innerHTML=`ID ${currentId} not found.`;document.getElementById("badge").innerText="❌ Not Found";return;}
+currentBook=book; book.price=20;
+if(!book.isXML){try{fetch(API+"/comics/"+(book._id||realId)+"/view",{method:"POST",cache:"no-store"}).catch(()=>{});}catch{}
 }
-
-let access=(book.access||book.accessType||'free').toLowerCase();let price=20;
+let access=(book.access||book.accessType||'free').toLowerCase();
 if(access==='paid'){
  let user=null;try{user=JSON.parse(localStorage.getItem('user')||localStorage.getItem('genz_user')||'null')}catch{}
  let bought=localStorage.getItem('bought_'+currentId)||localStorage.getItem('bought_'+realId)||localStorage.getItem('bought_my_'+realId);
  let isOwner=false;if(user){let u=(user.email||'').toLowerCase();let c=(book.creatorEmail||'').toLowerCase();if(c&&u&&c===u)isOwner=true;if(u==='xhettriakash1@gmail.com')isOwner=true;}
  if(book.isXML) isOwner=true;
  if(!bought&&!isOwner){
-  document.getElementById("t").innerText=book.title;document.getElementById("author").innerText="by "+(book.author||'GenZ')+" • 👁️ "+(book.views||0);
+  document.getElementById("t").innerText=book.title; document.getElementById("author").innerText="by "+(book.author||'GenZ')+" • 👁️ "+(book.views||0);
   document.getElementById("cover").src=book.cover||book.coverImage||(book.pages&&book.pages[0])||'https://picsum.photos/300/400';
-  document.getElementById("badge").innerText='💎 PAID • ₹20 • LOCKED';document.getElementById("payTitle").innerText=book.title;document.getElementById("payPrice").innerText='₹20';
+  document.getElementById("badge").innerText='💎 PAID • ₹20 • LOCKED'; document.getElementById("payTitle").innerText=book.title; document.getElementById("payPrice").innerText='₹20';
   document.getElementById("payUpi").innerText="Secure Razorpay • Comic ₹20 • Instant Unlock";
-  document.getElementById("paywall").classList.add('on');document.getElementById("pages").innerHTML='🔒 Paid comic locked - pay ₹20 to unlock';return;
+  document.getElementById("paywall").classList.add('on'); document.getElementById("pages").innerHTML='🔒 Paid comic locked - pay ₹20 to unlock';return;
  }
 }
-
 document.getElementById("t").innerText=book.title||"Untitled";
 document.getElementById("author").innerText="by "+(book.author||book.creatorName||"GenZ")+" • "+source+" • 👁️ "+((book.views||0)+1)+" views • "+(access==='paid'?'PAID ₹20':'FREE');
 document.getElementById("desc").innerText=book.description||"";
@@ -109,94 +83,31 @@ let pages=book.pages||[];let html="";pages.forEach((p,i)=>{html+=`<div><img src=
 document.getElementById("pages").innerHTML=html||"No pages found";
 window.addEventListener('scroll',()=>{let s=(window.scrollY/(document.body.scrollHeight-window.innerHeight))*100;document.getElementById('bar').style.width=s+'%';});
 }
-
-// --- v705 PRO FIXED - AUTO RETRY 3x - NO POPUP ---
 async function payNowRazorpay(){
-  const btn=document.getElementById("payBtn");
-  const st=document.getElementById("payStatus");
-  btn.disabled=true;
-  let attempt=0;
+  const btn=document.getElementById("payBtn"); const st=document.getElementById("payStatus");
+  btn.disabled=true; let attempt=0;
   while(attempt<3){
     try{
-      attempt++;
-      btn.innerText=`⏳ Waking server ${attempt}/3...`;
-      if(st) st.innerText=`Contacting server attempt ${attempt}/3...`;
-
+      attempt++; btn.innerText=`⏳ Waking server ${attempt}/3...`; if(st) st.innerText=`Contacting server ${attempt}/3...`;
       await fetch(API_BASE+"/",{cache:"no-store"}).catch(()=>{});
-
-      const res = await fetch(`${API_BASE}/api/create-order`,{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({type:"comic", amount:20, title: currentBook.title||"Comic", comicId: currentRealId})
-      });
+      const res = await fetch(`${API_BASE}/api/create-order`,{method:'POST',headers:{'Content-Type':'application/json'},body: JSON.stringify({type:"comic", amount:20, title: currentBook.title||"Comic", comicId: currentRealId})});
       const data = await res.json().catch(()=>({}));
-
-      // If server says woke up or retry - silent retry
-      if((data.error && data.error.toLowerCase().includes("woke")) || data.retry){
-        if(attempt<3){
-          btn.innerText=`⏳ Server waking... retry ${attempt}/3`;
-          await new Promise(r=>setTimeout(r,3500));
-          continue;
-        }
-      }
-      if(!res.ok){
-        throw new Error(data.error||"Server waking");
-      }
-      if(!data.orderId &&!data.id){
-        throw new Error(data.error||"No order id - waking");
-      }
-
-      let oid = data.orderId || data.id;
-      btn.innerText="💳 Opening Razorpay...";
-      if(st) st.innerText="✅ Server ready - opening payment";
-
-      var options = {
-        key: data.key_id,
-        amount: data.amount,
-        currency: "INR",
-        name: "Gen-Z Visual",
-        description: (currentBook.title||"Comic")+" - Comic ₹20",
-        order_id: oid,
+      if((data.error&&data.error.toLowerCase().includes("woke"))||data.retry){ if(attempt<3){ await new Promise(r=>setTimeout(r,3500)); continue; } }
+      if(!res.ok||(!data.orderId&&!data.id)) throw new Error(data.error||"Waking");
+      let oid=data.orderId||data.id; btn.innerText="💳 Opening Razorpay...";
+      var options={key:data.key_id,amount:data.amount,currency:"INR",name:"Gen-Z Visual",description:(currentBook.title||"Comic")+" - Comic ₹20",order_id:oid,
         handler: async function(response){
-          if(st) st.innerText="Verifying payment...";
-          try{
-            const verify = await fetch(`${API_BASE}/api/verify-payment`,{
-              method:'POST',
-              headers:{'Content-Type':'application/json'},
-              body: JSON.stringify(response)
-            });
-            const result = await verify.json();
-            if(result.ok){
-              localStorage.setItem('bought_'+currentId,'yes');
-              localStorage.setItem('bought_'+currentRealId,'yes');
-              localStorage.setItem('bought_my_'+currentRealId,'yes');
-              localStorage.setItem('paid_'+currentId,'yes');
-              alert("✅ Payment Success! Paid ₹20 - Unlocked!");
-              location.reload();
-            }else{
-              alert("❌ Verification Failed!");
-              btn.disabled=false; btn.innerText="🔓 Pay ₹20 & Unlock Now";
-            }
-          }catch(e){ location.reload(); }
+          const verify = await fetch(`${API_BASE}/api/verify-payment`,{method:'POST',headers:{'Content-Type':'application/json'},body: JSON.stringify(response)});
+          const result = await verify.json(); if(result.ok){
+            localStorage.setItem('bought_'+currentId,'yes'); localStorage.setItem('bought_'+currentRealId,'yes'); localStorage.setItem('bought_my_'+currentRealId,'yes');
+            alert("✅ Payment Success! Paid ₹20 - Unlocked!"); location.reload();
+          }else{ alert("❌ Verification Failed!"); btn.disabled=false; btn.innerText="🔓 Pay ₹20 & Unlock Now"; }
         },
-        modal:{ ondismiss: function(){ btn.disabled=false; btn.innerText="🔓 Pay ₹20 & Unlock Now"; if(st) st.innerText="Cancelled - tap to try again"; } },
-        theme:{color:"#facc15"}
-      };
-      var rzp = new Razorpay(options);
-      rzp.open();
-      return;
-
-    }catch(e){
-      if(attempt>=3){
-        btn.disabled=false;
-        btn.innerText="❌ Failed - Tap to retry";
-        if(st) st.innerText="Server was waking - wait 5s then tap again";
-        return;
-      }
-      await new Promise(r=>setTimeout(r,3500));
-    }
+        modal:{ondismiss:function(){btn.disabled=false; btn.innerText="🔓 Pay ₹20 & Unlock Now";}},
+        theme:{color:"#facc15"}};
+      var rzp=new Razorpay(options); rzp.open(); return;
+    }catch(e){ if(attempt>=3){ btn.disabled=false; btn.innerText="❌ Failed - Tap to retry"; if(st) st.innerText=e.message+" wait 5s"; return; } await new Promise(r=>setTimeout(r,3500)); }
   }
 }
-
 loadStory();
 </script></body></html>
