@@ -22,17 +22,13 @@ header{position:sticky;top:0;z-index:99;display:flex;justify-content:space-betwe
 .info{padding:10px}
 .nav{position:fixed;bottom:0;left:0;right:0;background:#111;border-top:1px solid #222;display:flex;justify-content:space-around;padding:8px 0;z-index:99}
 .nav a{color:#666;text-decoration:none;font-size:11px;text-align:center}.nav a.active{color:#ff00ff}
-/* v708 UPLOAD */
-.modal{position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:200;display:none;align-items:center;justify-content:center;padding:16px}
-.modal.on{display:flex}
-.modal-box{background:#15151a;border:1px solid #333;border-radius:16px;width:100%;max-width:420px;padding:16px}
-.inp{width:100%;padding:11px 12px;border-radius:10px;background:#1a1a1e;border:1px solid #2a2a30;color:#fff;margin:6px 0;outline:none}
-.btn{width:100%;padding:12px;border-radius:10px;border:0;font-weight:900;cursor:pointer;margin-top:8px}
-.btn-p{background:#ff00ff;color:#fff}.btn-g{background:#222;color:#888}
-.file-btn{display:block;width:100%;padding:12px;border-radius:10px;background:#222;border:1px dashed #444;color:#aaa;text-align:center;cursor:pointer;margin:6px 0}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:999;display:none;align-items:center;justify-content:center;padding:16px}
+.modal.on{display:flex}.box{background:#15151a;border:1px solid #333;border-radius:16px;width:100%;max-width:400px;padding:16px}
+.inp{width:100%;padding:11px;border-radius:10px;background:#1a1a1e;border:1px solid #2a2a30;color:#fff;margin:5px 0}
+.fbtn{display:block;padding:12px;border-radius:10px;background:#222;border:1px dashed #555;color:#aaa;text-align:center;margin:6px 0;cursor:pointer}
 </style>
 </head><body>
-<header><div class="logo">Gen-Z <span>Novels</span> <small style="font-size:9px;background:#ff00ff;color:#fff;padding:2px 5px;border-radius:5px">v708 FB LIKE</small></div><div style="display:flex;gap:8px"><button onclick="toggleView()" style="padding:6px 10px;border-radius:8px;background:#222;border:1px solid #333;color:#fff">⊞</button><button onclick="openUpload()" style="padding:7px 12px;border-radius:20px;background:#ff00ff;color:#fff;border:0;font-size:11px;font-weight:800">+ Upload</button><a href="dashboard.html?v=708" style="padding:7px 12px;border-radius:20px;background:#fff;color:#000;text-decoration:none;font-size:11px;font-weight:800">✍️ Studio</a></div></header>
+<header><div class="logo">Gen-Z <span>Novels</span> <small style="font-size:9px;background:#ff00ff;color:#fff;padding:2px 5px;border-radius:5px">v708 FB LIKE</small></div><div style="display:flex;gap:6px"><button onclick="toggleView()" style="padding:6px 10px;border-radius:8px;background:#222;border:1px solid #333;color:#fff">⊞</button><button onclick="openUp()" style="padding:7px 12px;border-radius:20px;background:#ff00ff;color:#fff;border:0;font-size:11px;font-weight:800">+ Upload</button><a href="dashboard.html?v=708" style="padding:7px 12px;border-radius:20px;background:#fff;color:#000;text-decoration:none;font-size:11px;font-weight:800">✍️ Studio</a></div></header>
 <div class="search-wrap"><input id="q" class="search" placeholder="🔍 Search novels v708..." oninput="filter()"></div>
 <div class="filters" id="filters">
 <div class="chip on" onclick="setGenre('all',this)">All</div>
@@ -45,30 +41,22 @@ header{position:sticky;top:0;z-index:99;display:flex;justify-content:space-betwe
 </div>
 <div id="grid" class="grid"></div>
 
-<!-- FAB -->
-<a href="javascript:openUpload()" style="position:fixed;bottom:80px;right:16px;background:#ff00ff;color:#fff;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;text-decoration:none;box-shadow:0 8px 20px rgba(255,0,255,0.4);z-index:100;">+</a>
+<!-- v708 UPLOAD BUTTONS -->
+<button onclick="openUp()" style="position:fixed;bottom:85px;right:14px;width:56px;height:56px;border-radius:50%;background:#ff00ff;color:#fff;border:0;font-size:28px;box-shadow:0 8px 20px rgba(255,0,255,.5);z-index:90">+</button>
 
-<!-- v708 UPLOAD MODAL -->
-<div id="upModal" class="modal" onclick="if(event.target==this)closeUpload()">
-<div class="modal-box">
-<h3 style="margin:0 0 8px">Upload Novel v708</h3>
-<input id="uTitle" class="inp" placeholder="Title">
-<input id="uAuthor" class="inp" placeholder="Author">
-<select id="uGenre" class="inp"><option>romance</option><option>fantasy</option><option>horror</option><option>sci-fi</option><option>thriller</option></select>
-<select id="uAccess" class="inp"><option value="free">FREE</option><option value="paid">PAID ₹10</option></select>
-<textarea id="uDesc" class="inp" placeholder="Description" rows="3"></textarea>
-
-<label for="uCover" class="file-btn">📷 Choose Cover Image <span id="coverName" style="color:#ff00ff"></span></label>
-<input type="file" id="uCover" accept="image/*" hidden>
-
-<label for="uFile" class="file-btn">📁 Choose Novel File (PDF/TXT) <span id="fileName" style="color:#00ff88"></span></label>
-<input type="file" id="uFile" accept=".pdf,.txt,.docx,.epub" hidden>
-
-<button class="btn btn-p" onclick="doUpload()">🚀 Upload Now</button>
-<button class="btn btn-g" onclick="closeUpload()">Cancel</button>
-<p id="upStatus" style="font-size:11px;color:#888;margin-top:8px"></p>
-</div>
-</div>
+<div id="upM" class="modal" onclick="if(event.target==this)closeUp()"><div class="box">
+<h3 style="margin:0 0 10px">Upload Novel v708</h3>
+<input id="t" class="inp" placeholder="Title *">
+<input id="a" class="inp" placeholder="Author">
+<select id="g" class="inp"><option>romance</option><option>fantasy</option><option>horror</option><option>sci-fi</option></select>
+<select id="ac" class="inp"><option value="free">FREE</option><option value="paid">PAID ₹</option></select>
+<textarea id="d" class="inp" rows="2" placeholder="Description"></textarea>
+<label for="c" class="fbtn">📷 Cover Image <b id="cn" style="color:#ff00ff"></b></label><input id="c" type="file" accept="image/*" hidden>
+<label for="f" class="fbtn">📁 Novel File PDF/TXT <b id="fn" style="color:#0f8"></b></label><input id="f" type="file" accept=".pdf,.txt,.docx,.epub" hidden>
+<button onclick="up()" style="width:100%;padding:12px;border-radius:10px;background:#ff00ff;color:#fff;border:0;font-weight:800;margin-top:6px">🚀 Upload</button>
+<button onclick="closeUp()" style="width:100%;padding:10px;border-radius:10px;background:#222;color:#888;border:0;margin-top:6px">Cancel</button>
+<p id="s" style="font-size:11px;color:#888"></p>
+</div></div>
 
 <div class="nav">
 <a href="index.html?v=708">🏠<br>Home</a>
@@ -102,38 +90,17 @@ function render(){
 function filter(){render();}
 function setGenre(g,el){genre=g;document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));el.classList.add('on');render();}
 function toggleView(){isList=!isList;document.getElementById('grid').classList.toggle('list',isList);render();}
-function openUpload(){document.getElementById('upModal').classList.add('on')}
-function closeUpload(){document.getElementById('upModal').classList.remove('on')}
-
-document.getElementById('uCover').addEventListener('change',e=>{
- let f=e.target.files[0]; if(f) document.getElementById('coverName').textContent=' : '+f.name;
-});
-document.getElementById('uFile').addEventListener('change',e=>{
- let f=e.target.files[0]; if(f) document.getElementById('fileName').textContent=' : '+f.name;
-});
-
-async function doUpload(){
- let st=document.getElementById('upStatus');
- let title=document.getElementById('uTitle').value.trim();
- let author=document.getElementById('uAuthor').value.trim()||'Anon';
- let genreV=document.getElementById('uGenre').value;
- let access=document.getElementById('uAccess').value;
- let desc=document.getElementById('uDesc').value.trim();
- let coverF=document.getElementById('uCover').files[0];
- let novelF=document.getElementById('uFile').files[0];
- if(!title){st.textContent='❌ Title required'; return;}
- st.textContent='⏳ Uploading v708...';
- let fd=new FormData();
- fd.append('title',title); fd.append('author',author); fd.append('genre',genreV); fd.append('access',access); fd.append('description',desc);
- if(coverF) fd.append('cover',coverF);
- if(novelF) fd.append('file',novelF);
- if(novelF) fd.append('novelFile',novelF);
- try{
-  let r=await fetch(API+'/api/novels',{method:'POST',body:fd});
-  let d=await r.json();
-  if(r.ok){st.textContent='✅ Uploaded!'; setTimeout(()=>{closeUpload(); load();},800);}
-  else st.textContent='❌ '+(d.message||'Failed');
- }catch(e){st.textContent='❌ Network error - Render sleeping, try again in 30s';}
-}
+function openUp(){document.getElementById('upM').classList.add('on')}
+function closeUp(){document.getElementById('upM').classList.remove('on')}
+document.getElementById('c').onchange=e=>{if(e.target.files[0])document.getElementById('cn').textContent=': '+e.target.files[0].name}
+document.getElementById('f').onchange=e=>{if(e.target.files[0])document.getElementById('fn').textContent=': '+e.target.files[0].name}
+async function up(){
+ let s=document.getElementById('s'); let title=document.getElementById('t').value.trim();
+ if(!title){s.textContent='❌ Title needed'; return;}
+ s.textContent='⏳ Uploading v708...';
+ let fd=new FormData(); fd.append('title',title); fd.append('author',document.getElementById('a').value); fd.append('genre',document.getElementById('g').value); fd.append('access',document.getElementById('ac').value); fd.append('description',document.getElementById('d').value);
+ let cf=document.getElementById('c').files[0]; let nf=document.getElementById('f').files[0];
+ if(cf) fd.append('cover',cf); if(nf){fd.append('file',nf); fd.append('novelFile',nf);}
+ try{let r=await fetch(API+'/api/novels',{method:'POST',body:fd}); let d=await r.json(); if(r.ok){s.textContent='✅ Done!'; setTimeout(()=>{closeUp();load()},800);} else s.textContent='❌ '+(d.message||'fail')}catch{s.textContent='❌ Render sleeping, retry in 30s'}}
 load();
 </script></body></html>
