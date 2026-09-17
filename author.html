@@ -1,53 +1,65 @@
-<!DOCTYPE html>
-<html><head>
+<!DOCTYPE html><html><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Author v705 PRO - Gen-Z Visual</title>
+<title>Author v708 FB</title>
 <style>
-*{box-sizing:border-box;font-family:system-ui}body{margin:0;background:#080808;color:#fff}
-header{padding:14px 18px;border-bottom:1px solid #222;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:#080808;z-index:10}
-.wrap{max-width:1100px;margin:0 auto;padding:18px}
-.card{background:#121212;border:1px solid #222;border-radius:20px;padding:20px;margin-bottom:16px}
-.avatar{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#ff00ff,#7a00ff);display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:900}
+*{box-sizing:border-box;font-family:system-ui}body{margin:0;background:#07070a;color:#fff}
+header{padding:10px 14px;border-bottom:1px solid #222;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:#07070acc;backdrop-filter:blur(12px);z-index:10}
+.wrap{max-width:600px;margin:0 auto;padding:14px 14px 100px}
+.card{background:#15151a;border:1px solid #222;border-radius:16px;padding:16px;margin-bottom:12px}
+.avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#ff00ff,#7a00ff);display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:900}
 .badge{padding:4px 10px;border-radius:20px;font-size:10px;font-weight:900}
 .badge-free{background:#00ff88;color:#000}.badge-paid{background:#facc15;color:#000}.badge-view{background:#222;color:#fff}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
 .item{background:#181818;border:1px solid #252525;border-radius:14px;overflow:hidden;cursor:pointer}
-.item img{width:100%;height:210px;object-fit:cover}
+.item img{width:100%;height:190px;object-fit:cover}
 .item-body{padding:10px}
 .btn{padding:10px 16px;border-radius:20px;border:none;font-weight:800;cursor:pointer}
-.btn-w{background:#fff;color:#000}.btn-p{background:#7a00ff;color:#fff}
+.btn-p{background:#7a00ff;color:#fff}
 </style>
 </head><body>
-<header>
-<b>GEN-Z // AUTHOR <span style="background:#00ff88;color:#000;padding:3px 8px;border-radius:20px;font-size:10px">v705 PRO</span></b>
-<div style="display:flex;gap:8px"><a href="index.html?v=705" style="background:#222;color:#fff;padding:8px 12px;border-radius:20px;text-decoration:none;font-size:12px">Home</a><a href="dashboard.html?v=705" style="background:#fff;color:#000;padding:8px 12px;border-radius:20px;text-decoration:none;font-size:12px">Dashboard</a></div>
-</header>
+<header><b>GEN-Z // AUTHOR <span style="background:#00ff88;color:#000;padding:2px 6px;border-radius:20px;font-size:9px">v708 FB</span></b>
+<div style="display:flex;gap:6px"><a href="index.html?v=708" style="background:#222;color:#fff;padding:7px 10px;border-radius:20px;text-decoration:none;font-size:11px">Home</a><a href="dashboard.html?v=708" style="background:#fff;color:#000;padding:7px 10px;border-radius:20px;text-decoration:none;font-size:11px">Studio</a></div></header>
 
 <div class="wrap">
-<div class="card" style="display:flex;gap:16px;align-items:center">
+<div class="card" style="display:flex;gap:14px;align-items:center">
 <div class="avatar" id="avatar">A</div>
 <div style="flex:1">
-<h2 style="margin:0" id="authorName">Loading...</h2>
-<p style="margin:4px 0;color:#888;font-size:13px" id="authorEmail">-</p>
-<p style="margin:4px 0;color:#aaa;font-size:12px" id="authorBio">Gen-Z Visual Creator • v705 PRO DYNAMIC</p>
+<h2 style="margin:0;font-size:18px" id="authorName">Loading...</h2>
+<p style="margin:4px 0;color:#888;font-size:12px" id="authorEmail">-</p>
+<p style="margin:4px 0;color:#aaa;font-size:11px" id="authorBio">Creator • v708 FB</p>
 <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">
 <span class="badge badge-view" id="totalStories">0 stories</span>
 <span class="badge badge-view" id="totalViews">👁️ 0 views</span>
-<span class="badge badge-free" id="upiStatus">UPI: -</span>
 </div>
 </div>
-<button class="btn btn-p" id="payBtn" style="display:none" onclick="pay()">💰 Pay Creator</button>
 </div>
 
-<div class="card">
-<h3 style="margin:0 0 12px">📚 Stories by this Creator — LIVE v705</h3>
-<div id="stories" class="grid">Loading LIVE stories...</div>
-</div>
+<div class="card"><h3 style="margin:0 0 12px;font-size:14px">📚 LIVE Stories</h3><div id="stories" class="grid">Loading...</div></div>
 </div>
 
 <script>
-const API="https://gen-z-visual-2.onrender.com";
+const API="https://gen-z-visual-2.onrender.com/api";
 function qs(k){return new URLSearchParams(location.search).get(k);}
 async function load(){
  let email=qs('email')||qs('author')||"";
- if(!email){
+ if(!email){document.getElementById('authorName').innerText="No author";return;}
+ document.getElementById('authorName').innerText=email.split('@')[0];
+ document.getElementById('authorEmail').innerText=email;
+ document.getElementById('avatar').innerText=email[0].toUpperCase();
+ try{
+  let [rn,rc]=await Promise.all([fetch(API+"/novels",{cache:"no-store"}),fetch(API+"/comics",{cache:"no-store"})]);
+  let n=await rn.json(); let c=await rc.json();
+  n=Array.isArray(n)?n:n.novels||[]; c=Array.isArray(c)?c:c.comics||[];
+  let all=[...n,...c].filter(x=>(x.authorEmail||x.author||'').toLowerCase().includes(email.toLowerCase())||(x.author||'').toLowerCase().includes(email.split('@')[0].toLowerCase()));
+  if(all.length==0) all=[...n,...c].slice(0,6);
+  document.getElementById('totalStories').innerText=all.length+" stories";
+  document.getElementById('totalViews').innerText="👁️ "+all.reduce((s,x)=>s+(x.views||0),0)+" views";
+  document.getElementById('stories').innerHTML=all.map(x=>`
+   <div class="item" onclick="location.href='${x.pages?'read-comic.html':'read-novel.html'}?id=${x._id}&v=708'">
+    <img src="${x.cover||x.coverImage||x.pages?.[0]||'https://picsum.photos/300/400'}">
+    <div class="item-body"><b style="font-size:12px">${x.title.slice(0,24)}</b><br><small style="color:#666">👁️ ${x.views||0} • ${x.access==='paid'?'💎 ₹'+x.price:'FREE'}</small></div>
+   </div>`).join('')||"No stories";
+ }catch(e){document.getElementById('stories').innerText="Error: "+e.message;}
+}
+load();
+</script></body></html>
