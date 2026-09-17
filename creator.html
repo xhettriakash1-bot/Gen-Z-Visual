@@ -1,14 +1,12 @@
-<!DOCTYPE html>
-<html><head>
+<!DOCTYPE html><html><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Creator v705 PRO - Gen-Z Visual</title>
+<title>Creator v708 FB - Gen-Z Visual</title>
 <style>
 *{box-sizing:border-box;font-family:system-ui}body{margin:0;background:#080808;color:#fff}
 header{padding:12px 16px;border-bottom:1px solid #222;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:#080808;z-index:10}
 .wrap{max-width:700px;margin:18px auto;padding:0 16px 120px}
 .card{background:#15151a;border:1px solid #222;border-radius:20px;padding:20px}
 input,textarea,select{width:100%;padding:13px;margin:7px 0;background:#0e0e12;border:1px solid #2a2a2a;border-radius:12px;color:#fff;outline:none}
-input:focus,textarea:focus{border-color:#ff00ff}
 .btn{width:100%;padding:13px;border:none;border-radius:99px;font-weight:900;cursor:pointer;margin-top:10px}
 .btn-p{background:linear-gradient(135deg,#ff00ff,#7a00ff);color:#fff}.btn-g{background:#1f1f1f;color:#fff;border:1px solid #2a2a2a}
 .tabs{display:flex;gap:8px;margin:10px 0}.tab{flex:1;padding:12px;border-radius:99px;text-align:center;cursor:pointer;border:1px solid #2a2a2a;background:#1a1a1e;font-weight:800;font-size:13px}
@@ -16,139 +14,40 @@ input:focus,textarea:focus{border-color:#ff00ff}
 .badge{padding:3px 8px;border-radius:20px;font-size:9px;font-weight:900}.badge-live{background:#00ff88;color:#000}.badge-paid{background:#facc15;color:#000}
 .item{display:flex;gap:10px;background:#0e0e12;border:1px solid #222;padding:10px;border-radius:12px;margin:6px 0}
 .item img{width:48px;height:66px;object-fit:cover;border-radius:8px}
+.actions{display:flex;gap:10px;color:#666;font-size:10px;margin-top:4px}
 </style>
 </head><body>
 <header>
-<b>Creator Studio <span style="background:#00ff88;color:#000;padding:3px 8px;border-radius:20px;font-size:10px">v705 PRO DYNAMIC</span></b>
-<div style="display:flex;gap:8px"><a href="index.html?v=705" style="background:#222;color:#fff;padding:8px 12px;border-radius:20px;text-decoration:none;font-size:12px">Home</a><a href="dashboard.html?v=705" style="background:#7a00ff;color:#fff;padding:8px 12px;border-radius:20px;text-decoration:none;font-size:12px">Dash</a></div>
+<b>Creator Studio <span style="background:#ff00ff;color:#fff;padding:3px 8px;border-radius:20px;font-size:10px">v708 FB LIKE</span></b>
+<div style="display:flex;gap:8px"><a href="index.html?v=708" style="background:#222;color:#fff;padding:8px 12px;border-radius:20px;text-decoration:none;font-size:12px">Home</a><a href="dashboard.html?v=708" style="background:#7a00ff;color:#fff;padding:8px 12px;border-radius:20px;text-decoration:none;font-size:12px">Dash</a></div>
 </header>
-
 <div class="wrap">
 <div class="card">
-<div id="upiBox" style="background:#00ff8815;border:1px solid #00ff8840;padding:10px;border-radius:12px;font-size:11px;margin-bottom:10px">💳 UPI: <span id="upiTxt">Checking...</span> <a href="dashboard.html?v=705" style="color:#00ff88">Set UPI</a></div>
-
-<!-- NEW PASSWORD CARD v705 -->
-<div style="background:#1a1a00;border:1px solid #ffcc00;padding:12px;border-radius:12px;margin-bottom:12px"><b style="font-size:13px">🔑 Change Password v705</b><br><input id="cpEmail" placeholder="Email*"><input id="cpOld" type="password" placeholder="Old OR CREATOR2026*"><input id="cpNew" type="password" placeholder="New Password*"><button class="btn" style="background:#ffcc00;color:#000" onclick="changePassCreator()">Change Password 🔑</button><div id="cpStat" style="font-size:11px;color:#ffcc00;margin-top:4px"></div></div>
-
-<div class="tabs">
-<div class="tab active" id="tabNovel" onclick="setType('novel')">📚 Novel</div>
-<div class="tab" id="tabComic" onclick="setType('comic')">🎨 Comic</div>
-</div>
-
+<div style="background:#00ff8815;border:1px solid #00ff8840;padding:10px;border-radius:12px;font-size:11px;margin-bottom:10px">💳 UPI: <span id="upiTxt">Checking...</span> <a href="dashboard.html?v=708" style="color:#00ff88">Set UPI</a></div>
+<div style="background:#1a1a00;border:1px solid #ffcc00;padding:12px;border-radius:12px;margin-bottom:12px"><b style="font-size:13px">🔑 Change Password v708</b><br><input id="cpEmail" placeholder="Email*"><input id="cpOld" type="password" placeholder="Old OR CREATOR2026*"><input id="cpNew" type="password" placeholder="New Password*"><button class="btn" style="background:#ffcc00;color:#000" onclick="changePassCreator()">Change Password 🔑</button><div id="cpStat" style="font-size:11px;color:#ffcc00;margin-top:4px"></div></div>
+<div class="tabs"><div class="tab active" id="tabNovel" onclick="setType('novel')">📚 Novel</div><div class="tab" id="tabComic" onclick="setType('comic')">🎨 Comic</div></div>
 <input id="title" placeholder="Title * min 2 chars">
-<input id="cover" placeholder="Cover URL (auto from first page if comic empty)">
-<textarea id="desc" rows="3" placeholder="Description * min 10 chars"></textarea>
-<div id="novelBox">
-<textarea id="content" rows="8" placeholder="Novel Content * min 30 chars - full story"></textarea>
-<p id="contentCnt" style="font-size:10px;color:#666">0 / 30</p>
-</div>
-<div id="comicBox" style="display:none">
-<textarea id="pages" rows="8" placeholder="Comic Pages * comma or new line separated https:// URLs: https://page1.jpg, https://page2.jpg"></textarea>
-<p style="font-size:10px;color:#00ff88">First URL = auto cover if cover empty</p>
-</div>
-
-<div style="display:flex;gap:8px">
-<select id="genre" style="flex:1"><option>Fantasy</option><option>Action</option><option>Romance</option><option>Drama</option><option>Comics</option><option>Manga</option><option>Horror</option><option>City</option><option>Neon</option></select>
-<select id="access" style="flex:1"><option value="free">FREE Public</option><option value="paid">PAID ₹ Locked</option></select>
-</div>
-<input id="price" type="number" placeholder="Price ₹10-999 if PAID" style="display:none" min="10" max="999">
-
-<button class="btn btn-p" onclick="publish()">🚀 Publish LIVE v705 - Visible to ALL</button>
+<input id="cover" placeholder="Cover URL (auto)">
+<textarea id="desc" rows="3" placeholder="Description * min 10"></textarea>
+<div id="novelBox"><textarea id="content" rows="8" placeholder="Novel Content * min 30"></textarea><p id="contentCnt" style="font-size:10px;color:#666">0 / 30</p></div>
+<div id="comicBox" style="display:none"><textarea id="pages" rows="8" placeholder="Pages https:// URLs comma/newline"></textarea></div>
+<div style="display:flex;gap:8px"><select id="genre"><option>Fantasy</option><option>Action</option><option>Romance</option><option>Drama</option><option>Comics</option></select><select id="access"><option value="free">FREE</option><option value="paid">PAID</option></select></div>
+<input id="price" type="number" placeholder="Price ₹10-999" style="display:none">
+<button class="btn btn-p" onclick="publish()">🚀 Publish LIVE v708 FB</button>
 <p id="msg" style="font-size:12px;text-align:center;margin-top:10px;white-space:pre-wrap"></p>
-
-<div style="margin-top:18px;border-top:1px solid #222;padding-top:12px">
-<b style="font-size:13px">📦 My LIVE Published 👁️ views</b> <span id="cnt" style="font-size:11px;color:#666"></span>
-<div id="list" style="margin-top:8px">Loading...</div>
+<div style="margin-top:18px;border-top:1px solid #222;padding-top:12px"><b style="font-size:13px">📦 My LIVE • FB Likes</b> <span id="cnt" style="font-size:11px;color:#666"></span><div id="list" style="margin-top:8px">Loading...</div></div>
 </div>
 </div>
-</div>
-
 <script>
-const API="https://gen-z-visual-2.onrender.com";
-let TYPE="novel";
-let USER={}; try{USER=JSON.parse(localStorage.getItem("user")||localStorage.getItem("genz_user")||"{}");}catch{}
-let TOKEN=localStorage.getItem("token")||localStorage.getItem("genz_token")||"";
-let UPI="";
-
-function setType(t){
- TYPE=t;
- document.getElementById("tabNovel").classList.toggle("active",t==="novel");
- document.getElementById("tabComic").classList.toggle("active",t==="comic");
- document.getElementById("novelBox").style.display=t==="novel"?"block":"none";
- document.getElementById("comicBox").style.display=t==="comic"?"block":"none";
-}
-document.getElementById("access").addEventListener("change", e=>{
- document.getElementById("price").style.display=e.target.value==='paid'?"block":"none";
-});
-document.getElementById("content").addEventListener("input", e=>{
- document.getElementById("contentCnt").innerText=e.target.value.length+" / 30";
-});
-function isValidUrl(s){ try{ let u=new URL(s); return u.protocol==='http:'||u.protocol==='https:'; }catch{return false;} }
-async function changePassCreator(){ let email=cpEmail.value.trim(), oldP=cpOld.value, newP=cpNew.value; if(!email||!oldP||!newP){cpStat.innerText='Fill all';return;} if(newP.length<6){cpStat.innerText='Min 6';return;} cpStat.innerText='Changing v705...'; try{ await fetch(API+"/",{cache:"no-store"}); let r=await fetch(API+"/api/auth/change-password",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email, oldPassword:oldP, newPassword:newP})}); let d=await r.json(); cpStat.innerText=r.ok?'✅ Changed v705!':'❌ '+(d.error||'Add server.js route'); }catch(e){cpStat.innerText='❌ '+e.message;} }
-async function checkUpi(){
- try{
-  await fetch(API+"/",{cache:"no-store"});
-  let r=await fetch(API+"/api/me",{headers:{Authorization:`Bearer ${TOKEN}`}});
-  let d=await r.json();
-  if(d?.upiId){ UPI=d.upiId; document.getElementById("upiTxt").innerText=d.upiId+" ✅ PAID enabled"; document.getElementById("upiTxt").style.color="#00ff88"; }
-  else { document.getElementById("upiTxt").innerText="Not set - PAID blocked ⚠️"; document.getElementById("upiTxt").style.color="#ffaa00"; }
-  document.getElementById("cpEmail").value=USER.email||localStorage.getItem("email")||"";
- }catch{ document.getElementById("upiTxt").innerText="Backend waking..."; }
-}
-async function publish(){
- let title=document.getElementById("title").value.trim();
- let cover=document.getElementById("cover").value.trim();
- let desc=document.getElementById("desc").value.trim();
- let genre=document.getElementById("genre").value;
- let access=document.getElementById("access").value;
- let price=Number(document.getElementById("price").value)||0;
- let m=document.getElementById("msg");
- if(!title||title.length<2){m.style.color="#f44";m.innerText="⛔ Title min 2 chars";return;}
- if(!desc||desc.length<10){m.style.color="#f44";m.innerText="⛔ Desc min 10 chars";return;}
- if(!TOKEN){m.style.color="#f44";m.innerHTML="⛔ Not logged in <a href='login.html?v=705' style='color:#ff00ff'>Login</a>";return;}
- if(access==='paid'){
-   if(!UPI.includes('@')){m.style.color="#f44";m.innerText="❌ Save UPI in Dashboard first for PAID!";return;}
-   if(price<10){m.style.color="#f44";m.innerText="❌ PAID price min ₹10";return;}
- }
- m.style.color="#fa0"; m.innerText="Publishing "+TYPE+" LIVE v705...";
- let body={title,description:desc,genre,access,price:access==='paid'?price:0, author:USER.name||USER.email||"GenZ", creatorEmail:USER.email};
- if(TYPE==="novel"){
-  let content=document.getElementById("content").value.trim();
-  if(!content||content.length<30){m.style.color="#f44";m.innerText="⛔ Novel content min 30, now "+content.length;return;}
-  body.content=content;
-  body.cover=cover||`https://picsum.photos/seed/${encodeURIComponent(title)}/400/600`;
-  body.coverImage=body.cover;
- } else {
-  let p=document.getElementById("pages").value.trim();
-  let pages=p? p.split(/[,\n]+/).map(s=>s.trim()).filter(s=>s && isValidUrl(s)) : [];
-  if(pages.length===0){m.style.color="#f44";m.innerText="⛔ Need at least 1 valid https:// page URL";return;}
-  body.pages=pages;
-  body.cover=cover||pages[0];
-  body.coverImage=body.cover;
- }
- let endpoint=TYPE==="novel"?"/api/novels":"/api/comics";
- try{
-  let r=await fetch(API+endpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+TOKEN},body:JSON.stringify(body)});
-  let d=await r.json();
-  if(!r.ok) throw new Error(d.error||JSON.stringify(d));
-  m.style.color="#0f8"; m.innerText="✅ PUBLISHED LIVE v705! "+title+" as "+TYPE.toUpperCase()+(access==='paid'?` PAID ₹${price}`:' FREE')+"\nID: "+(d.novel?._id||d.comic?._id||d._id||"ok");
-  load();
- }catch(e){m.style.color="#f44";m.innerText="❌ "+e.message;}
-}
-async function load(){
- try{
-  await fetch(API+"/",{cache:"no-store"});
-  let [rn,rc]=await Promise.all([fetch(API+"/api/novels",{cache:"no-store"}),fetch(API+"/api/comics",{cache:"no-store"})]);
-  let n=await rn.json(); let c=await rc.json();
-  let all=[...(Array.isArray(n)?n:[]).map(x=>({...x,_t:"NOVEL"})),...(Array.isArray(c)?c:[]).map(x=>({...x,_t:"COMIC"}))];
-  let email=(USER.email||"").toLowerCase();
-  let mine=all.filter(x=>(x.creatorEmail||"").toLowerCase()===email).sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
-  if(mine.length===0) mine=all.slice(0,5);
-  document.getElementById("cnt").innerText=mine.length+" stories • "+mine.reduce((s,x)=>s+(x.views||0),0)+" views";
-  document.getElementById("list").innerHTML=mine.map(x=>`<div class="item"><img src="${x.cover||x.coverImage||x.pages?.[0]||'https://picsum.photos/400/600'}"><div style="flex:1"><b style="font-size:12px">${x.title.slice(0,30)}</b> <span class="badge ${x.access==='paid'?'badge-paid':'badge-live'}">${x.access==='paid'?'₹'+x.price:'FREE'} • 👁️ ${x.views||0}</span><br><small style="color:#666">${x._t} • ${new Date(x.createdAt).toLocaleDateString()}</small></div></div>`).join("")||"No LIVE yet";
- }catch(e){document.getElementById("list").innerText="Waking backend... "+e.message;}
-}
-checkUpi(); load();
-if(new URLSearchParams(location.search).get("type")==="comic") setType("comic");
+const API="https://gen-z-visual-2.onrender.com";let TYPE="novel";let USER={};try{USER=JSON.parse(localStorage.getItem("user")||localStorage.getItem("genz_user")||"{}");}catch{}let TOKEN=localStorage.getItem("token")||localStorage.getItem("genz_token")||"";let UPI="";
+function setType(t){TYPE=t;document.getElementById("tabNovel").classList.toggle("active",t==="novel");document.getElementById("tabComic").classList.toggle("active",t==="comic");document.getElementById("novelBox").style.display=t==="novel"?"block":"none";document.getElementById("comicBox").style.display=t==="comic"?"block":"none";}
+document.getElementById("access").addEventListener("change",e=>{document.getElementById("price").style.display=e.target.value==='paid'?"block":"none";});
+document.getElementById("content").addEventListener("input",e=>{document.getElementById("contentCnt").innerText=e.target.value.length+" / 30";});
+function isValidUrl(s){try{let u=new URL(s);return u.protocol==='http:'||u.protocol==='https:';}catch{return false;}}
+async function changePassCreator(){let email=cpEmail.value.trim(),oldP=cpOld.value,newP=cpNew.value;if(!email||!oldP||!newP){cpStat.innerText='Fill all';return;}if(newP.length<6){cpStat.innerText='Min 6';return;}cpStat.innerText='Changing v708...';try{await fetch(API+"/",{cache:"no-store"});let r=await fetch(API+"/api/auth/change-password",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email,oldPassword:oldP,newPassword:newP})});let d=await r.json();cpStat.innerText=r.ok?'✅ Changed v708!':'❌ '+(d.error||'Error');}catch(e){cpStat.innerText='❌ '+e.message;}}
+async function checkUpi(){try{await fetch(API+"/",{cache:"no-store"});let r=await fetch(API+"/api/me",{headers:{Authorization:`Bearer ${TOKEN}`}});let d=await r.json();if(d?.upiId){UPI=d.upiId;upiTxt.innerText=d.upiId+" ✅";}else{upiTxt.innerText="Not set ⚠️";}cpEmail.value=USER.email||"";}catch{upiTxt.innerText="Waking...";}}
+async function publish(){let title=document.getElementById("title").value.trim();let cover=document.getElementById("cover").value.trim();let desc=document.getElementById("desc").value.trim();let genre=document.getElementById("genre").value;let access=document.getElementById("access").value;let price=Number(document.getElementById("price").value)||0;let m=document.getElementById("msg");if(!title||title.length<2){m.innerText="⛔ Title min 2";return;}if(!desc||desc.length<10){m.innerText="⛔ Desc min 10";return;}if(!TOKEN){m.innerHTML="⛔ Login <a href='login.html?v=708'>Login</a>";return;}if(access==='paid'&&!UPI.includes('@')){m.innerText="❌ Save UPI first";return;}if(access==='paid'&&price<10){m.innerText="❌ Price min 10";return;}m.style.color="#fa0";m.innerText="Publishing "+TYPE+" v708...";let body={title,description:desc,genre,access,price:access==='paid'?price:0,author:USER.name||USER.email||"GenZ",creatorEmail:USER.email};if(TYPE==="novel"){let content=document.getElementById("content").value.trim();if(!content||content.length<30){m.innerText="⛔ Content min 30";return;}body.content=content;body.cover=cover||`https://picsum.photos/seed/${encodeURIComponent(title)}/400/600`;body.coverImage=body.cover;}else{let p=document.getElementById("pages").value.trim();let pages=p? p.split(/[,\n]+/).map(s=>s.trim()).filter(s=>s&&isValidUrl(s)):[];if(pages.length===0){m.innerText="⛔ Need 1 page URL";return;}body.pages=pages;body.cover=cover||pages[0];body.coverImage=body.cover;}let endpoint=TYPE==="novel"?"/api/novels":"/api/comics";try{let r=await fetch(API+endpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+TOKEN},body:JSON.stringify(body)});let d=await r.json();if(!r.ok)throw new Error(d.error||JSON.stringify(d));m.style.color="#0f8";m.innerText="✅ PUBLISHED v708 FB! "+title;load();}catch(e){m.style.color="#f44";m.innerText="❌ "+e.message;}}
+async function load(){try{await fetch(API+"/",{cache:"no-store"});let [rn,rc]=await Promise.all([fetch(API+"/api/novels",{cache:"no-store"}),fetch(API+"/api/comics",{cache:"no-store"})]);let n=await rn.json();let c=await rc.json();let all=[...(Array.isArray(n)?n:[]).map(x=>({...x,_t:"NOVEL"})),...(Array.isArray(c)?c:[]).map(x=>({...x,_t:"COMIC"}))];let email=(USER.email||"").toLowerCase();let mine=all.filter(x=>(x.creatorEmail||"").toLowerCase()===email).sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));if(mine.length===0)mine=all.slice(0,5);cnt.innerText=mine.length+" • "+mine.reduce((s,x)=>s+(x.views||0),0)+" views • "+mine.reduce((s,x)=>s+(x.likes||0),0)+" likes";list.innerHTML=mine.map(x=>`<div class="item"><img src="${x.cover||x.coverImage||x.pages?.[0]}"><div style="flex:1"><b style="font-size:12px">${x.title.slice(0,30)}</b> <span class="badge ${x.access==='paid'?'badge-paid':'badge-live'}">${x.access==='paid'?'₹'+x.price:'FREE'}</span><div class="actions"><span>👁️ ${x.views||0}</span><span>❤️ ${x.likes||0}</span><span>💬 ${x.comments||0}</span></div></div></div>`).join("");}catch(e){list.innerText="Waking...";}}
+checkUpi();load();
 </script>
 </body></html>
