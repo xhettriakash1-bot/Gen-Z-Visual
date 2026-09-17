@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<comics v="708.0" note="v708 FB OPEN - NEVER EMPTY - PAID + VIEWS + LIKES">
+  <comic>
+    <id>live_101</id>
+    <title>Alone - The Beginning</title>
+    <author>GenZ Studio</author>
+    <genre>DRAMA</genre>
+    <cover>https://picsum.photos/400/600?random=11</cover>
+    <description>v708 FB: First chapter of Alone series. A Gen-Z journey of solitude in neon city. FREE + FB features ❤️💬👁️</description>
+    <pages>https://picsum.photos/800/1200?random=101,https://picsum.photos/800/1200?random=102,https://picsum.photos/800/1200?random=103</pages>
+    <type>comic</type>
+    <access>free</access>
+    <price>0</price>
+  </comic>
+  <comic>
+    <id>live_102</id>
+    <title>City Lights</title>
+    <author>GenZ Studio</author>
+    <genre>CITY</genre>
+    <cover>https://picsum.photos/400/600?random=12</cover>
+    <description>v708 FB: Life in the city at night. Neon, love, and chaos. Swipe v708 PRO.</description>
+    <pages>https://picsum.photos/800/1200?random=201,https://picsum.photos/800/1200?random=202</pages>
+    <type>comic</type>
+    <access>free</access>
+    <price>0</price>
+  </comic>
+  <comic>
+    <id>live_103</id>
+    <title>Neon Dreams v708 FB</title>
+    <author>Akash x Gen-Z</author>
+    <genre>NEON</genre>
+    <cover>https://picsum.photos/400/600?random=13</cover>
+    <description>v708 FB ULTRA: Now with PAID ₹20 + VIEWS 👁️ + LIKES ❤️ tracking. OPEN build.</description>
+    <pages>https://picsum.photos/800/1200?random=301,https://picsum.photos/800/1200?random=302,https://picsum.photos/800/1200?random=303,https://picsum.photos/800/1200?random=304</pages>
+    <type>comic</type>
+    <access>paid</access>
+    <price>20</price>
+  </comic>
+  <comic>
+    <id>live_104</id>
+    <title>Cyber Punk 2077 - GenZ Edit</title>
+    <author>GenZ Studio</author>
+    <genre>ACTION</genre>
+    <cover>https://picsum.photos/400/600?random=14</cover>
+    <description>v708: Cyberpunk city with Gen-Z twist. FREE for testing.</description>
+    <pages>https://picsum.photos/800/1200?random=401,https://picsum.photos/800/1200?random=402,https://picsum.photos/800/1200?random=403</pages>
+    <type>comic</type>
+    <access>free</access>
+    <price>0</price>
+  </comic>
+  <comic>
+    <id>live_105</id>
+    <title>Love in Neon</title>
+    <author>GenZ Studio</author>
+    <genre>ROMANCE</genre>
+    <cover>https://picsum.photos/400/600?random=15</cover>
+    <description>NEW v708 FB: Romance in neon city. PAID ₹20 unlocks all pages + comments v708.</description>
+    <pages>https://picsum.photos/800/1200?random=501,https://picsum.photos/800/1200?random=502,https://picsum.photos/800/1200?random=503</pages>
+    <type>comic</type>
+    <access>paid</access>
+    <price>20</price>
+  </comic>
+  <comic>
+    <id>live_106</id>
+    <title>Midnight Hacker</title>
+    <author>Akash</author>
+    <genre>THRILLER</genre>
+    <cover>https://picsum.photos/400/600?random=16</cover>
+    <description>NEW v708 FB OPEN: Hacker life. Trending with views*2 + likes algorithm.</description>
+    <pages>https://picsum.photos/800/1200?random=601,https://picsum.photos/800/1200?random=602</pages>
+    <type>comic</type>
+    <access>free</access>
+    <price>0</price>
+  </comic>
+</comics>
