@@ -1,0 +1,53 @@
+<!DOCTYPE html><html><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin Login v708 FB - Gen-Z Visual</title>
+<style>
+*{box-sizing:border-box;font-family:system-ui}body{margin:0;background:#07070a;color:#fff;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+.box{width:100%;max-width:380px;background:#15151a;border:1px solid #232326;border-radius:24px;padding:24px;box-shadow:0 0 30px #ff00ff20}
+h2{margin:0 0 6px;font-weight:900;letter-spacing:-1px}
+.sub{color:#666;font-size:11px;margin-bottom:16px}
+input{width:100%;padding:14px;margin:8px 0;background:#0a0a0c;color:#fff;border:1px solid #2a2a30;border-radius:12px;outline:none}
+input:focus{border-color:#ff00ff;box-shadow:0 0 0 3px #ff00ff20}
+button{width:100%;padding:14px;margin-top:12px;border-radius:99px;background:linear-gradient(135deg,#ff00ff,#7a00ff);color:#fff;font-weight:900;border:none;cursor:pointer;transition:0.3s}
+button:hover{transform:translateY(-2px);box-shadow:0 10px 20px #ff00ff40}
+pre{background:#0a0a0c;padding:12px;border-radius:12px;margin-top:14px;font-size:11px;white-space:pre-wrap;border:1px solid #222;color:#aaa}
+.badge{font-size:9px;background:#00ff88;color:#000;padding:3px 8px;border-radius:99px;font-weight:800}
+a{color:#ff00ff;font-size:12px;text-decoration:none}
+</style>
+</head><body>
+<div class="box">
+<h2>🔧 ADMIN LOGIN <span style="color:#ff00ff">v708 FB</span> <span class="badge">LIVE</span></h2>
+<p class="sub">Backend: gen-z-visual-2 • Razorpay • v708 FINAL</p>
+<input id="e" placeholder="Admin Email">
+<input id="p" placeholder="Password" type="password">
+<button onclick="doLogin()">LOGIN AS ADMIN v708</button>
+<pre id="out">Ready - API: gen-z-visual-2 LIVE ✅ v708 FB</pre>
+<p style="text-align:center;margin-top:12px"><a href="index.html?v=708">← Back Home v708</a></p>
+</div>
+<script>
+const API="https://gen-z-visual-2.onrender.com/api/auth/login";
+async function doLogin(){
+ let email=document.getElementById('e').value.trim().toLowerCase();
+ let pass=document.getElementById('p').value.trim();
+ let out=document.getElementById('out');
+ if(!email||!pass) return out.innerText="Enter email + password";
+ out.innerText="Connecting to "+API+"...";
+ try{
+  let r=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email,password:pass})});
+  let d=await r.json();
+  out.innerText+="\nResponse: "+JSON.stringify(d,null,2);
+  if(r.ok && d.token){
+   localStorage.setItem("user",JSON.stringify(d.user));
+   localStorage.setItem("genz_user",JSON.stringify(d.user));
+   localStorage.setItem("email",d.user.email);
+   localStorage.setItem("role",d.user.role);
+   localStorage.setItem("token",d.token);
+   localStorage.setItem("genz_token",d.token);
+   localStorage.setItem("isAdmin","true");
+   out.innerText+=`\n\n✅ SAVED! Role=${d.user.role}\n✅ Opening admin.html?v=708...`;
+   setTimeout(()=>location.href="admin.html?v=708",800);
+  } else { out.innerText+="\n❌ Failed: "+(d.error||d.message); }
+ }catch(e){ out.innerText+="\n❌ FETCH FAILED: "+e.message+"\nCheck backend /api/health on Render"; }
+}
+</script>
+</body></html>
