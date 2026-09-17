@@ -1,84 +1,119 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<novels v="705.0" note="NEVER EMPTY FALLBACK - v705 PRO DYNAMIC + PAID">
+<novels v="708.0" note="v708 FB OPEN - NEVER EMPTY - 6 novels - PAID + VIEWS">
   <novel>
     <id>live_n101</id>
     <title>Alone - The Silent Echo</title>
     <author>GenZ Studio</author>
     <genre>Drama</genre>
     <cover>https://picsum.photos/400/600?random=21</cover>
-    <description>v705 PRO: A boy lost in neon city, searching for meaning in silence. Gen-Z's first visual novel. Fallback when MongoDB wakes.</description>
+    <description>v708 FB: A boy lost in neon city, searching for meaning in silence. FREE with ❤️💬👁️ v708 OPEN.</description>
     <content>Chapter 1: The Silent Echo
 
 The city never slept, but I did — in pieces. Neon lights flickered like my thoughts, broken and bright.
 
-This is v705 PRO DYNAMIC demo content. When you publish from Dashboard, this XML is backup. Readers never see empty page.
+This is v708 FB OPEN demo content. When you publish from Dashboard, this XML is backup. Readers never see empty page.
 
-Gen-Z Visual is now with VIEWS tracking + PAID support. If you set novel as PAID, server checks UPI before publish.
+Gen-Z Visual is now with VIEWS tracking + PAID ₹10 support. If you set novel as PAID, Razorpay checks before publish.
 
-Welcome to v705.</content>
+Welcome to v708 FB OPEN.</content>
     <type>novel</type>
     <access>free</access>
+    <price>0</price>
   </novel>
-
   <novel>
     <id>live_n102</id>
     <title>City of Broken Hearts</title>
     <author>Akash Chettri</author>
     <genre>Romance</genre>
     <cover>https://picsum.photos/400/600?random=22</cover>
-    <description>v705 PRO: Love, betrayal and neon nights. A story that hits like 2AM thoughts.</description>
+    <description>v708 FB: Love, betrayal and neon nights. A story that hits like 2AM thoughts. PAID ₹10</description>
     <content>Chapter 1: Broken Hearts at 2AM
 
 She said city lights are beautiful. I said they are lonely.
 
-v705 PRO content - full dynamic novel support with UPI payment integration.
+v708 FB content - full dynamic novel support with Razorpay + UPI.
 
-If this novel is PAID, backend blocks read until payment.
+If this novel is PAID ₹10, backend blocks read until payment via Razorpay.
 
-Demo - Replace with real when you publish LIVE.</content>
+Demo - Replace with real when you publish LIVE v708.</content>
     <type>novel</type>
-    <access>free</access>
+    <access>paid</access>
+    <price>10</price>
   </novel>
-
   <novel>
     <id>live_n103</id>
-    <title>Neon Dreams v705 PRO</title>
+    <title>Neon Dreams v708 FB</title>
     <author>Akash x Gen-Z</author>
     <genre>Tech Thriller</genre>
     <cover>https://picsum.photos/400/600?random=24</cover>
-    <description>v705 PRO DYNAMIC: When backend sleeps, XML wakes. Now with PAID + VIEWS + SLUG. NEVER EMPTY guarantee.</description>
-    <content>Chapter 1: Firewall - The Uprising
+    <description>v708 FB OPEN: When backend sleeps, XML wakes. Now with PAID + VIEWS + SLUG + FB. NEVER EMPTY.</description>
+    <content>Chapter 1: Firewall - The Uprising v708
 
-v704.7 had firewall that cleaned every 5 min. v705 PRO cleans every 30 sec + tracks views.
+v705 cleaned every 30 sec. v708 FB tracks views*2 + likes for trending + comments.
 
-This novel ensures Gen-Z Visual never shows "No novels yet" - always 3+ fallback stories.
+This novel ensures Gen-Z Visual never shows "No novels yet" - always 6 fallback.
 
 Backend: gen-z-visual-2.onrender.com
-Version: v705 PRO DYNAMIC
-Features: UPI, PAID/FREE, VIEWS, SLUG, Rate Limit Advance
+Version: v708 FB OPEN
+Features: Razorpay ₹10, PAID/FREE, VIEWS 👁️, LIKES ❤️, COMMENTS 💬, UPI payouts
 
 This is story of backend that never sleeps.</content>
     <type>novel</type>
     <access>free</access>
+    <price>0</price>
   </novel>
-
   <novel>
     <id>live_n104</id>
     <title>Quantum Love - GenZ 2026</title>
     <author>GenZ Studio</author>
     <genre>Sci-Fi Romance</genre>
     <cover>https://picsum.photos/400/600?random=25</cover>
-    <description>NEW v705: Sci-fi love in quantum city. Added to make NEVER EMPTY 4+ stories guarantee!</description>
+    <description>NEW v708: Sci-fi love in quantum city. PAID ₹10 unlocks full story v708.</description>
     <content>Chapter 1: Quantum Entanglement
 
 We were two particles, entangled across neon timeline.
 
-v705 PRO NEW story - added for extra NEVER EMPTY safety. Now you have 4 novels + 4 comics = 8 total fallback minimum.
+v708 FB NEW story - 6 novels minimum now. No reader will ever see empty page.
 
-No reader will ever see empty page.
+This is Gen-Z Visual v708 promise - FB OPEN.</content>
+    <type>novel</type>
+    <access>paid</access>
+    <price>10</price>
+  </novel>
+  <novel>
+    <id>live_n105</id>
+    <title>Midnight Code</title>
+    <author>Akash</author>
+    <genre>Thriller</genre>
+    <cover>https://picsum.photos/400/600?random=26</cover>
+    <description>NEW v708 FB: A coder in Siliguri builds neon empire. Based on true v708 journey.</description>
+    <content>Chapter 1: The Code at 3AM
 
-This is Gen-Z Visual v705 promise.</content>
+Siliguri was asleep. My laptop was not.
+
+This is new v708 story about building Gen-Z Visual. Razorpay, Render, v708 FB features.
+
+FREE to read - test FB likes.</content>
     <type>novel</type>
     <access>free</access>
+    <price>0</price>
+  </novel>
+  <novel>
+    <id>live_n106</id>
+    <title>Razorpay Diaries</title>
+    <author>GenZ Studio</author>
+    <genre>Business</genre>
+    <cover>https://picsum.photos/400/600?random=27</cover>
+    <description>NEW v708: How we got Razorpay approved with ₹10 novels. Real startup story.</description>
+    <content>Chapter 1: Approval
+
+We needed 4 pages: privacy, terms, refund, contact. We had v708 FB.
+
+This novel is PAID ₹10 - testing Razorpay flow v708 FINAL.
+
+If you can read this after paying ₹10, v708 payment works!</content>
+    <type>novel</type>
+    <access>paid</access>
+    <price>10</price>
   </novel>
 </novels>
