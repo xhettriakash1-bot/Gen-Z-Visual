@@ -97,4 +97,4 @@ export default function CreateNovel() {
       <p style={{fontSize:'10px', color:'#666', textAlign:'center', marginTop:'8px'}}>v708 FB • FB Like ready</p>
     </div>
   );
-        }
+                                                                                                                            }
