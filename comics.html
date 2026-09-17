@@ -1,6 +1,6 @@
 <!DOCTYPE html><html><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Comics v707 FB FILTER</title>
+<title>Comics v708 FB FILTER</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#07070a;color:#fff;font-family:system-ui}
 header{position:sticky;top:0;z-index:99;display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:rgba(17,17,18,0.94);backdrop-filter:blur(12px);border-bottom:1px solid #222}
@@ -19,54 +19,25 @@ header{position:sticky;top:0;z-index:99;display:flex;justify-content:space-betwe
 .badge{position:absolute;top:8px;left:8px;padding:3px 8px;border-radius:20px;font-size:8px;font-weight:900}
 .badge-live{background:#00ff88;color:#000}.badge-paid{background:#facc15;color:#000}
 .info{padding:10px}
-.fab{position:fixed;bottom:80px;right:16px;background:linear-gradient(135deg,#ff8800,#ff5500);color:#fff;padding:12px 20px;border-radius:99px;font-weight:900;text-decoration:none;z-index:50}
+.actions{display:flex;gap:12px;padding:0 10px 10px;color:#666;font-size:11px}
+.actions span{cursor:pointer}
 .nav{position:fixed;bottom:0;left:0;right:0;background:#111;border-top:1px solid #222;display:flex;justify-content:space-around;padding:8px 0;z-index:99}
 .nav a{color:#666;text-decoration:none;font-size:11px;text-align:center}.nav a.active{color:#ff8800}
 </style>
 </head><body>
-<header><div class="logo">🎨 Comics <small style="font-size:9px;background:#ff8800;color:#000;padding:2px 5px;border-radius:5px">v707 FILTER</small></div><div style="display:flex;gap:8px"><button onclick="toggleView()" style="padding:6px 10px;border-radius:8px;background:#222;border:1px solid #333;color:#fff">⊞</button><a href="dashboard.html?v=707" style="padding:7px 12px;border-radius:20px;background:#ff8800;color:#000;text-decoration:none;font-size:11px;font-weight:800">+ Studio</a></div></header>
-
+<header><div class="logo">🎨 Comics <small style="font-size:9px;background:#ff8800;color:#000;padding:2px 5px;border-radius:5px">v708 LIKE</small></div><div style="display:flex;gap:8px"><button onclick="toggleView()" style="padding:6px 10px;border-radius:8px;background:#222;border:1px solid #333;color:#fff">⊞</button><a href="dashboard.html?v=708" style="padding:7px 12px;border-radius:20px;background:#ff8800;color:#000;text-decoration:none;font-size:11px;font-weight:800">+ Studio</a></div></header>
 <div class="search-wrap"><input id="q" class="search" placeholder="🔍 Search comics..." oninput="filter()"></div>
-<div class="filters" id="filters">
-<div class="chip on" onclick="setGenre('all',this)">All</div>
-<div class="chip" onclick="setGenre('action',this)">Action</div>
-<div class="chip" onclick="setGenre('romance',this)">Romance</div>
-<div class="chip" onclick="setGenre('free',this)">FREE</div>
-<div class="chip" onclick="setGenre('paid',this)">PAID</div>
-</div>
-
+<div class="filters"><div class="chip on" onclick="setGenre('all',this)">All</div><div class="chip" onclick="setGenre('action',this)">Action</div><div class="chip" onclick="setGenre('romance',this)">Romance</div><div class="chip" onclick="setGenre('free',this)">FREE</div><div class="chip" onclick="setGenre('paid',this)">PAID</div></div>
 <div id="grid" class="grid"></div>
-<a href="dashboard.html?v=707" class="fab">+ Publish</a>
-
-<div class="nav">
-<a href="index.html?v=707">🏠<br>Home</a><a href="novels.html?v=707">📚<br>Novels</a><a href="comics.html?v=707" class="active">🎨<br>Comics</a><a href="dashboard.html?v=707">✏️<br>Studio</a>
-</div>
-
+<div class="nav"><a href="index.html?v=708">🏠<br>Home</a><a href="novels.html?v=708">📚<br>Novels</a><a href="comics.html?v=708" class="active">🎨<br>Comics</a><a href="dashboard.html?v=708">✏️<br>Studio</a></div>
 <script>
 const API="https://gen-z-visual-2.onrender.com";let all=[],genre='all',isList=false;
-fetch(API+"/",{cache:"no-store"}).catch(()=>{});
-async function load(){
- let g=document.getElementById('grid'); g.innerHTML="<p style='color:#555;padding:20px'>⏳ Waking LIVE...</p>";
- try{let r=await fetch(API+"/api/comics",{cache:"no-store"});let d=await r.json(); all=Array.isArray(d)?d:d.comics||[];}catch{all=[];}
- if(all.length===0){try{let txt=await fetch("data/comics.xml?v=707",{cache:"no-store"}).then(r=>r.text());let doc=new DOMParser().parseFromString(txt,"text/xml");all=[...doc.querySelectorAll("comic")].map(c=>({_id:c.querySelector("id")?.textContent,title:c.querySelector("title")?.textContent,author:c.querySelector("author")?.textContent,cover:c.querySelector("cover")?.textContent||c.querySelector("pages")?.textContent?.split(",")[0],access:"free",views:0,genre:"all",isXML:true}));}catch{}}
- render();
-}
-function render(){
- let q=document.getElementById('q').value.toLowerCase();
- let f=all.filter(n=>{
-  let okG=genre==='all'||(genre==='free'&&(n.access||'free')==='free')||(genre==='paid'&&(n.access||'')==='paid')||(n.genre||'').toLowerCase().includes(genre);
-  let okQ=!q||n.title.toLowerCase().includes(q);
-  return okG&&okQ;
- });
- document.getElementById('grid').innerHTML=f.map(c=>`
- <div class="card ${isList?'list':''}" onclick="location.href='read-comic.html?${c.isXML?'xml':'id'}=${c._id}&v=707'">
-  <span class="badge ${c.access==='paid'?'badge-paid':'badge-live'}">${c.access==='paid'?'₹'+c.price:'LIVE'}</span>
-  <img src="${c.cover||c.pages?.[0]||'https://picsum.photos/400/600'}" loading="lazy">
-  <div class="info"><b style="font-size:13px">${c.title.slice(0,28)}</b><br><small style="color:#888">${c.author||'Anon'} • 👁️ ${c.views||0}</small><br><button style="width:100%;margin-top:6px;padding:7px;border-radius:20px;background:#fff;color:#000;border:none;font-weight:800;font-size:11px">${c.access==='paid'?'🔒 ₹'+c.price:'📖 Read'}</button></div>
- </div>`).join('')||"<p style='color:#666;padding:20px'>No comics</p>";
-}
+function getLikes(id){return parseInt(localStorage.getItem("like_comic_"+id)||"0");}
+function toggleLike(e,id){e.stopPropagation();let k="like_comic_"+id;let cur=localStorage.getItem(k);if(cur){localStorage.removeItem(k);}else{localStorage.setItem(k,"1");}render();}
+async function load(){document.getElementById('grid').innerHTML="<p style='color:#555;padding:20px'>⏳ Waking LIVE...</p>";try{let r=await fetch(API+"/api/comics",{cache:"no-store"});let d=await r.json();all=Array.isArray(d)?d:d.comics||[];}catch{all=[];}render();}
+function render(){let q=document.getElementById('q').value.toLowerCase();let f=all.filter(n=>{let okG=genre==='all'||(genre==='free'&&(n.access||'free')==='free')||(genre==='paid'&&(n.access||'')==='paid')||(n.genre||'').toLowerCase().includes(genre);let okQ=!q||n.title.toLowerCase().includes(q);return okG&&okQ;});
+document.getElementById('grid').innerHTML=f.map(c=>`<div class="card ${isList?'list':''}" onclick="location.href='read-comic.html?id=${c._id}&v=708'"><span class="badge ${c.access==='paid'?'badge-paid':'badge-live'}">${c.access==='paid'?'₹'+c.price:'FREE'}</span><img src="${c.cover||c.pages?.[0]||'https://picsum.photos/400/600'}" loading="lazy"><div class="info"><b style="font-size:13px">${c.title.slice(0,28)}</b><br><small style="color:#888">👁️ ${c.views||0}</small></div><div class="actions"><span onclick="toggleLike(event,'${c._id}')">${getLikes(c._id)?'❤️':'🤍'} ${(c.likes||0)+getLikes(c._id)}</span><span>💬 ${c.comments||0}</span><span>↗️ Share</span></div></div>`).join('')||"<p style='color:#666;padding:20px'>No comics</p>";}
 function setGenre(g,el){genre=g;document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));el.classList.add('on');render();}
-function filter(){render();}
-function toggleView(){isList=!isList;document.getElementById('grid').classList.toggle('list',isList);render();}
+function filter(){render();}function toggleView(){isList=!isList;document.getElementById('grid').classList.toggle('list',isList);render();}
 load();
 </script></body></html>
