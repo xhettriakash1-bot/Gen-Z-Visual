@@ -1,4 +1,19 @@
 User-agent: *
 Allow: /
 
+# v708 FB OPEN - Gen-Z Visual
 Sitemap: https://xhettriakash1-bot.github.io/Gen-Z-Visual/sitemap.xml
+
+# Allow all FB features
+Allow: /index.html
+Allow: /novels.html
+Allow: /comics.html
+Allow: /read-novel.html
+Allow: /read-comic.html
+Allow: /dashboard.html
+Allow: /privacy.html
+Allow: /refund.html
+
+# Block API
+Disallow: /api/
+Disallow: /admin/
