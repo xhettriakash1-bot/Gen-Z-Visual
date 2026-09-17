@@ -1,4 +1,4 @@
-  const express=require('express'),cors=require('cors'),mongoose=require('mongoose'),bcrypt=require('bcryptjs'),jwt=require('jsonwebtoken'),Razorpay=require('razorpay');require('dotenv').config();
+const express=require('express'),cors=require('cors'),mongoose=require('mongoose'),bcrypt=require('bcryptjs'),jwt=require('jsonwebtoken'),Razorpay=require('razorpay');require('dotenv').config();
 const app=express();app.set('trust proxy',1);app.disable('x-powered-by');
 
 const blockedIPs=new Map(), adminAttempts=new Map();
@@ -35,7 +35,7 @@ app.use((req,res,next)=>{
 });
 
 const MONGO_URI=process.env.MONGO_URI||process.env.MONGODB_URI||"";
-mongoose.connect(MONGO_URI,{dbName:"genzvisual"}).then(()=>{console.log("✅ Mongo v705 PRO FINAL OK");ensureAdmins();}).catch(e=>console.log("Mongo Error",e.message));
+mongoose.connect(MONGO_URI,{dbName:"genzvisual"}).then(()=>{console.log("✅ Mongo v706 FULL ADMIN OPEN OK");ensureAdmins();}).catch(e=>console.log("Mongo Error",e.message));
 
 const userSchema=new mongoose.Schema({email:{type:String,unique:true,lowercase:true},password:String,role:{type:String,enum:['reader','creator','admin'],default:'reader'},name:String,portfolio:String,bio:String,upiId:{type:String,default:''},createdAt:{type:Date,default:Date.now}});
 const User=mongoose.models.User||mongoose.model('User',userSchema);
@@ -61,14 +61,15 @@ function slugify(t){return (t||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').slic
 function isValidUrl(u){try{let x=new URL(u);return x.protocol==='http:'||x.protocol==='https:';}catch{return false;}}
 function cleanPages(p){if(!Array.isArray(p)) return []; return [...new Set(p.map(s=>String(s||'').trim()).filter(s=>s.length>10 && isValidUrl(s)))].slice(0,100);}
 
-app.get('/',(req,res)=>res.json({ok:true,msg:"Gen-Z Visual v705 PRO FINAL FIXED CLOSED", time:new Date().toISOString()}));
-app.get('/api/health',(req,res)=>res.json({ok:true,mongo:mongoose.connection.readyState, v:"705 PRO FINAL FIXED CLOSED", razorpay:!!process.env.RAZORPAY_KEY_ID}));
+// FULL ADMIN OPEN v706
+app.get('/',(req,res)=>res.json({ok:true,msg:"Gen-Z Visual v706 FULL ADMIN OPEN ✅", mode:"OPEN", admin:"FULL CONTROL", time:new Date().toISOString()}));
+app.get('/api/health',(req,res)=>res.json({ok:true,mongo:mongoose.connection.readyState, v:"706 FULL ADMIN OPEN", mode:"OPEN", razorpay:!!process.env.RAZORPAY_KEY_ID}));
 
 app.post('/api/create-order',async(req,res)=>{
  try{
   let {amount, type, title} = req.body;
-  if(type==='comic') amount = 20; else if(type==='novel') amount = 10; else amount = Number(amount) || 10;
-  if(amount!==10 && amount!==20) amount=10;
+  if(type==='comic') amount = Number(amount)||20; else if(type==='novel') amount = Number(amount)||10; else amount = Number(amount) || 10;
+  if(amount<1) amount=10;
   let razorpay = getRazorpay();
   let options = { amount: amount*100, currency:"INR", receipt:"genz_"+Date.now(), notes:{ product:title||type||"Gen-Z Visual", price:"₹"+amount } };
   let order = await razorpay.orders.create(options);
@@ -127,35 +128,49 @@ app.get('/api/me',protect,async(req,res)=>{ try{let u=await User.findById(req.us
 app.post('/api/save-upi',protect,async(req,res)=>{
  try{ let {upiId}=req.body; if(!upiId||!upiId.includes("@")) return res.status(400).json({error:"Valid UPI like name@upi required"}); upiId=upiId.trim(); let u=await User.findByIdAndUpdate(req.user.id,{upiId},{new:true}); await Novel.updateMany({creatorEmail:u.email},{authorUpi:upiId,upiId,upi:upiId}); await Comic.updateMany({creatorEmail:u.email},{authorUpi:upiId,upiId,upi:upiId}); res.json({ok:true,upiId}); }catch(e){res.status(500).json({error:e.message})} });
 app.post('/api/fix-upi-all',protect,async(req,res)=>{ try{ let u=await User.findById(req.user.id); if(!u.upiId) return res.status(400).json({error:"Set UPI first"}); let n=await Novel.updateMany({creatorEmail:u.email},{authorUpi:u.upiId,upiId:u.upiId,upi:u.upiId}); let c=await Comic.updateMany({creatorEmail:u.email},{authorUpi:u.upiId,upiId:u.upiId,upi:u.upiId}); res.json({ok:true,count:(n.modifiedCount||0)+(c.modifiedCount||0),upiId:u.upiId}); }catch(e){res.status(500).json({error:e.message})} });
-app.get('/api/novels',async(req,res)=>{ try{let list=await Novel.find({isPublished:true}).sort({createdAt:-1}).limit(300); res.json(list);}catch(e){res.status(500).json({error:e.message})} });
+app.get('/api/novels',async(req,res)=>{ try{let list=await Novel.find({isPublished:true}).sort({createdAt:-1}).limit(500); res.json(list);}catch(e){res.status(500).json({error:e.message})} });
 app.get('/api/novels/:id',async(req,res)=>{ try{let b=await Novel.findById(req.params.id); if(!b) return res.status(404).json({error:"Not found"}); res.json(b);}catch(e){res.status(500).json({error:e.message})} });
-app.post('/api/novels',protect,async(req,res)=>{ try{ let d=req.body; if(!d.title) return res.status(400).json({error:"Title required"}); let u=await User.findById(req.user.id); let doc=await Novel.create({...d,price:10,creatorEmail:u.email,creatorName:u.name||u.email,authorUpi:d.authorUpi||d.upiId||u.upiId||"",upiId:d.authorUpi||u.upiId||"",slug:slugify(d.title),views:0}); res.json(doc); }catch(e){res.status(500).json({error:e.message})} });
+app.post('/api/novels',protect,async(req,res)=>{ try{ let d=req.body; if(!d.title) return res.status(400).json({error:"Title required"}); let u=await User.findById(req.user.id); let price = d.price? Number(d.price): (d.access==='paid'?10:0); let doc=await Novel.create({...d,price,access:d.access||d.accessType||'free',creatorEmail:u.email,creatorName:u.name||u.email,authorUpi:d.authorUpi||d.upiId||u.upiId||"",upiId:d.authorUpi||u.upiId||"",slug:slugify(d.title),views:Number(d.views)||0}); res.json(doc); }catch(e){res.status(500).json({error:e.message})} });
 app.post('/api/novels/:id/view',async(req,res)=>{ try{let b=await Novel.findByIdAndUpdate(req.params.id,{$inc:{views:1}},{new:true}); res.json({ok:true,views:b?.views||0});}catch(e){res.json({ok:true})} });
 
-// v705 EDIT NOVEL + DELETE NOVEL
+// FULL ADMIN ADD VIEWS + EDIT + DELETE
+app.post('/api/novels/:id/add-views',protect,async(req,res)=>{
+ try{
+  let inc = Number(req.body.views)||100;
+  let b=await Novel.findByIdAndUpdate(req.params.id,{$inc:{views:inc}},{new:true});
+  if(!b) return res.status(404).json({error:"Not found"});
+  res.json({ok:true,views:b.views});
+ }catch(e){res.status(500).json({error:e.message})}
+});
 app.put('/api/novels/:id',protect,async(req,res)=>{
  try{
   let b=await Novel.findById(req.params.id);
   if(!b) return res.status(404).json({error:"Not found"});
-  if(b.creatorEmail!==req.user.email && req.user.role!=='admin') return res.status(403).json({error:"Not owner"});
+  if(b.creatorEmail!==req.user.email && req.user.role!=='admin') return res.status(403).json({error:"Not owner - admin can"});
   let updated=await Novel.findByIdAndUpdate(req.params.id,req.body,{new:true});
   res.json({ok:true, novel:updated});
  }catch(e){res.status(500).json({error:e.message})}
 });
 app.delete('/api/novels/:id',protect,async(req,res)=>{ try{let b=await Novel.findById(req.params.id); if(!b) return res.status(404).json({error:"Not found"}); if(b.creatorEmail!==req.user.email && req.user.role!=='admin') return res.status(403).json({error:"Not owner"}); await b.deleteOne(); res.json({ok:true});}catch(e){res.status(500).json({error:e.message})} });
 
-app.get('/api/comics',async(req,res)=>{ try{let list=await Comic.find({isPublished:true}).sort({createdAt:-1}).limit(300); res.json(list);}catch(e){res.status(500).json({error:e.message})} });
+app.get('/api/comics',async(req,res)=>{ try{let list=await Comic.find({isPublished:true}).sort({createdAt:-1}).limit(500); res.json(list);}catch(e){res.status(500).json({error:e.message})} });
 app.get('/api/comics/:id',async(req,res)=>{ try{let b=await Comic.findById(req.params.id); if(!b) return res.status(404).json({error:"Not found"}); res.json(b);}catch(e){res.status(500).json({error:e.message})} });
-app.post('/api/comics',protect,async(req,res)=>{ try{ let d=req.body; if(!d.title) return res.status(400).json({error:"Title required"}); let pages=cleanPages(d.pages); if(pages.length===0 &&!d.cover) return res.status(400).json({error:"At least 1 valid image URL required"}); let u=await User.findById(req.user.id); let doc=await Comic.create({...d,pages,price:20,creatorEmail:u.email,creatorName:u.name||u.email,authorUpi:d.authorUpi||d.upiId||u.upiId||"",upiId:d.authorUpi||u.upiId||"",pageCount:pages.length,slug:slugify(d.title),views:0}); res.json(doc); }catch(e){res.status(500).json({error:e.message})} });
+app.post('/api/comics',protect,async(req,res)=>{ try{ let d=req.body; if(!d.title) return res.status(400).json({error:"Title required"}); let pages=cleanPages(d.pages||d.images?.map(p=>p.image||p.url)); if(pages.length===0 &&!d.cover) return res.status(400).json({error:"At least 1 valid image URL required"}); let u=await User.findById(req.user.id); let price = d.price? Number(d.price): (d.access==='paid'?20:0); let doc=await Comic.create({...d,pages,price,access:d.access||d.accessType||'free',creatorEmail:u.email,creatorName:u.name||u.email,authorUpi:d.authorUpi||d.upiId||u.upiId||"",upiId:d.authorUpi||u.upiId||"",pageCount:pages.length,slug:slugify(d.title),views:Number(d.views)||0}); res.json(doc); }catch(e){res.status(500).json({error:e.message})} });
 app.post('/api/comics/:id/view',async(req,res)=>{ try{let b=await Comic.findByIdAndUpdate(req.params.id,{$inc:{views:1}},{new:true}); res.json({ok:true,views:b?.views||0});}catch(e){res.json({ok:true})} });
-
-// v705 EDIT COMIC + DELETE COMIC
+app.post('/api/comics/:id/add-views',protect,async(req,res)=>{
+ try{
+  let inc = Number(req.body.views)||100;
+  let b=await Comic.findByIdAndUpdate(req.params.id,{$inc:{views:inc}},{new:true});
+  if(!b) return res.status(404).json({error:"Not found"});
+  res.json({ok:true,views:b.views});
+ }catch(e){res.status(500).json({error:e.message})}
+});
 app.put('/api/comics/:id',protect,async(req,res)=>{
   try{
     let b=await Comic.findById(req.params.id);
     if(!b) return res.status(404).json({error:"Not found"});
     if(b.creatorEmail!==req.user.email && req.user.role!=='admin') return res.status(403).json({error:"Not owner"});
-    let pagesIn=req.body.pages;
+    let pagesIn=req.body.pages||req.body.images;
     let pages=pagesIn?cleanPages(pagesIn.map(p=>typeof p==='string'?p:(p.image||p.url||p||''))):undefined;
     let update={...req.body};
     if(pages) {update.pages=pages; update.pageCount=pages.length;}
@@ -165,7 +180,17 @@ app.put('/api/comics/:id',protect,async(req,res)=>{
 });
 app.delete('/api/comics/:id',protect,async(req,res)=>{ try{let b=await Comic.findById(req.params.id); if(!b) return res.status(404).json({error:"Not found"}); if(b.creatorEmail!==req.user.email && req.user.role!=='admin') return res.status(403).json({error:"Not owner"}); await b.deleteOne(); res.json({ok:true});}catch(e){res.status(500).json({error:e.message})} });
 
+// FULL ADMIN STATS v706
+app.get('/api/admin/stats',protect,isAdmin,async(req,res)=>{
+ try{
+  let nCount=await Novel.countDocuments(); let cCount=await Comic.countDocuments();
+  let nViews=await Novel.aggregate([{$group:{_id:null,total:{$sum:"$views"}}}]);
+  let cViews=await Comic.aggregate([{$group:{_id:null,total:{$sum:"$views"}}}]);
+  let uCount=await User.countDocuments();
+  res.json({ok:true,mode:"OPEN FULL ADMIN",totalNovels:nCount,totalComics:cCount,totalBooks:nCount+cCount,totalViews:(nViews[0]?.total||0)+(cViews[0]?.total||0),totalUsers:uCount, v:"706 FULL ADMIN OPEN"});
+ }catch(e){res.status(500).json({error:e.message})}
+});
 app.get('/api/users',protect,isAdmin,async(req,res)=>{ try{let list=await User.find().select("email role name upiId createdAt").sort({createdAt:-1}); res.json(list);}catch(e){res.status(500).json({error:e.message})} });
 
 const PORT=process.env.PORT||10000;
-app.listen(PORT,()=>console.log(`✅ Gen-Z v705 PRO FINAL FIXED CLOSED LIVE ${PORT}`));
+app.listen(PORT,()=>console.log(`✅ Gen-Z v706 FULL ADMIN OPEN LIVE ${PORT}`));
