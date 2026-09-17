@@ -1,12 +1,23 @@
-const express=require('express'),cors=require('cors'),mongoose=require('mongoose'),bcrypt=require('bcryptjs'),jwt=require('jsonwebtoken');require('dotenv').config();
+const express=require('express'),cors=require('cors'),mongoose=require('mongoose'),bcrypt=require('bcryptjs'),jwt=require('jsonwebtoken'),multer=require('multer');require('dotenv').config();
 const {createOrder,verifyPayment}=require('./razorpay');
 const {adminLoginFirewall,clearOnSuccess}=require('../middleware/adminSecure');
 const friendlyFirewall=require('../middleware/firewall');
 const app=express();app.set('trust proxy',1);
-const MONGO=process.env.MONGO_URI||process.env.MONGODB_URI||"";mongoose.connect(MONGO,{dbName:"genzvisual"}).then(()=>console.log("✅ Mongo v708 ULTIMATE")).catch(e=>console.log(e.message));
+const MONGO=process.env.MONGO_URI||process.env.MONGODB_URI||"";mongoose.connect(MONGO,{dbName:"genzvisual"}).then(()=>console.log("✅ Mongo v708 ULTIMATE FILE")).catch(e=>console.log(e.message));
+
+// v708 FILE UPLOAD FIX - multer
+const upload=multer({storage:multer.memoryStorage(),limits:{fileSize:50*1024*1024}});
+app.use(cors({origin:true}));
+// Keep json for old way, but also handle FormData
+app.use(express.json({limit:"50mb"}));
+app.use(express.urlencoded({extended:true,limit:"50mb"}));
+
+app.use(friendlyFirewall);app.use(adminLoginFirewall);
+const JWT=process.env.JWT_SECRET||"GENZ_SECRET_2026";
+
 const userSchema=new mongoose.Schema({email:{type:String,unique:true,lowercase:true},password:String,role:{type:String,default:'reader'},name:String,upiId:{type:String,default:''},createdAt:{type:Date,default:Date.now}});
 const User=mongoose.models.User||mongoose.model('User',userSchema);
-const novelSchema=new mongoose.Schema({title:String,description:String,cover:String,content:String,creatorEmail:String,creatorName:String,access:{type:String,default:'free'},price:{type:Number,default:10},authorUpi:String,upiId:String,slug:String,views:{type:Number,default:0},likes:{type:Number,default:0},commentsCount:{type:Number,default:0},isPublished:{type:Boolean,default:true}},{strict:false,timestamps:true});
+const novelSchema=new mongoose.Schema({title:String,description:String,cover:String,coverImage:String,content:String,fileName:String,fileSize:Number,creatorEmail:String,creatorName:String,access:{type:String,default:'free'},price:{type:Number,default:10},authorUpi:String,upiId:String,slug:String,views:{type:Number,default:0},likes:{type:Number,default:0},commentsCount:{type:Number,default:0},isPublished:{type:Boolean,default:true}},{strict:false,timestamps:true});
 const Novel=mongoose.models.Novel||mongoose.model('Novel',novelSchema);
 const comicSchema=new mongoose.Schema({title:String,description:String,cover:String,pages:Array,creatorEmail:String,creatorName:String,access:{type:String,default:'free'},price:{type:Number,default:20},authorUpi:String,upiId:String,slug:String,pageCount:Number,views:{type:Number,default:0},likes:{type:Number,default:0},commentsCount:{type:Number,default:0},isPublished:{type:Boolean,default:true}},{strict:false,timestamps:true});
 const Comic=mongoose.models.Comic||mongoose.model('Comic',comicSchema);
@@ -14,12 +25,10 @@ const likeSchema=new mongoose.Schema({userEmail:String,targetId:String,targetTyp
 const Like=mongoose.models.Like||mongoose.model('Like',likeSchema);
 const commentSchema=new mongoose.Schema({userEmail:String,userName:String,targetId:String,targetType:String,text:String,createdAt:{type:Date,default:Date.now}});
 const Comment=mongoose.models.Comment||mongoose.model('Comment',commentSchema);
-app.use(cors({origin:true}));app.use(express.json({limit:"50mb"}));
-app.use(friendlyFirewall);app.use(adminLoginFirewall);
-const JWT=process.env.JWT_SECRET||"GENZ_SECRET_2026";
+
 const protect=(req,res,next)=>{try{let t=req.headers.authorization?.split(" ")[1];if(!t)return res.status(401).json({error:"Login"});req.user=jwt.verify(t,JWT);next();}catch{res.status(401).json({error:"Invalid"});}};
-app.get('/',(req,res)=>res.json({ok:true,v:"708 ULTIMATE"}));
-app.get('/api/health',(req,res)=>res.json({ok:true,mongo:mongoose.connection.readyState,v:"708 ULTIMATE"}));
+app.get('/',(req,res)=>res.json({ok:true,v:"708 ULTIMATE FILE"}));
+app.get('/api/health',(req,res)=>res.json({ok:true,mongo:mongoose.connection.readyState,v:"708 ULTIMATE FILE"}));
 app.post('/api/create-order',async(req,res)=>{try{let {amount,type,title}=req.body;let order=await createOrder(amount,title,type);res.json({ok:true,id:order.id,orderId:order.id,amount:order.amount,key_id:process.env.RAZORPAY_KEY_ID});}catch(e){res.status(500).json({error:e.message})}});
 app.post('/api/verify-payment',(req,res)=>{try{let{razorpay_order_id,razorpay_payment_id,razorpay_signature}=req.body;if(verifyPayment(razorpay_order_id,razorpay_payment_id,razorpay_signature))res.json({ok:true});else res.status(400).json({error:"Invalid"});}catch(e){res.status(500).json({error:e.message})}});
 app.post('/api/auth/register',async(req,res)=>{let {email,password,name}=req.body;let e=email.toLowerCase();if(await User.findOne({email:e}))return res.status(400).json({error:"Exists"});let h=await bcrypt.hash(password,10);let u=await User.create({email:e,password:h,name:name||e.split("@")[0],role:'creator'});let token=jwt.sign({id:u._id,email:u.email,role:u.role},JWT,{expiresIn:"30d"});res.json({token,user:u});});
@@ -28,11 +37,53 @@ app.get('/api/novels',async(req,res)=>{res.json(await Novel.find({isPublished:tr
 app.get('/api/comics',async(req,res)=>{res.json(await Comic.find({isPublished:true}).sort({createdAt:-1}).limit(500));});
 app.get('/api/novels/:id',async(req,res)=>{let b=await Novel.findById(req.params.id);if(!b)return res.status(404).json({error:"Not found"});res.json(b);});
 app.get('/api/comics/:id',async(req,res)=>{let b=await Comic.findById(req.params.id);if(!b)return res.status(404).json({error:"Not found"});res.json(b);});
-app.post('/api/novels',protect,async(req,res)=>{let u=await User.findById(req.user.id);let doc=await Novel.create({...req.body,creatorEmail:u.email,creatorName:u.name,price:req.body.price||10});res.json(doc);});
+
+// v708 FIXED NOVEL UPLOAD WITH FILE
+app.post('/api/novels',protect,upload.fields([{name:'file',maxCount:1},{name:'novelFile',maxCount:1},{name:'cover',maxCount:1}]),async(req,res)=>{
+ try{
+  let u=await User.findById(req.user.id);
+  let body=req.body||{};
+  let content=body.content||"";
+  let fileName="", fileSize=0;
+
+  // Handle file if uploaded via FormData
+  let uploadedFile=null;
+  if(req.files){
+    uploadedFile=req.files.file?.[0] || req.files.novelFile?.[0] || null;
+    if(uploadedFile){
+      fileName=uploadedFile.originalname;
+      fileSize=uploadedFile.size;
+      // If TXT, read text into content
+      if(uploadedFile.originalname.endsWith('.txt') || uploadedFile.mimetype.includes('text')){
+        try{ content = uploadedFile.buffer.toString('utf8').slice(0,50000) + "\n" + content; }catch{}
+      } else {
+        content = (content||"") + `\n\n[📁 FILE v708: ${fileName} (${fileSize} bytes) uploaded]`;
+      }
+    }
+  }
+
+  let doc=await Novel.create({
+    title:body.title,
+    description:body.description||"",
+    cover:body.cover||body.coverImage||`https://picsum.photos/seed/${Date.now()}/400/600`,
+    coverImage:body.cover||body.coverImage||"",
+    content:content||"",
+    fileName:fileName,
+    fileSize:fileSize,
+    creatorEmail:u.email,
+    creatorName:u.name,
+    access:body.access||'free',
+    price:body.price||10,
+    slug:body.title?.toLowerCase().replace(/\s+/g,'-')
+  });
+  res.json(doc);
+ }catch(e){console.log(e); res.status(500).json({error:e.message});}
+});
+
 app.post('/api/comics',protect,async(req,res)=>{let u=await User.findById(req.user.id);let doc=await Comic.create({...req.body,creatorEmail:u.email,creatorName:u.name,price:req.body.price||20,pages:req.body.pages||[],pageCount:(req.body.pages||[]).length});res.json(doc);});
 app.post('/api/novels/:id/view',async(req,res)=>{let b=await Novel.findByIdAndUpdate(req.params.id,{$inc:{views:1}},{new:true});res.json({views:b?.views||0});});
 app.post('/api/comics/:id/view',async(req,res)=>{let b=await Comic.findByIdAndUpdate(req.params.id,{$inc:{views:1}},{new:true});res.json({views:b?.views||0});});
 app.post('/api/like/:type/:id',protect,async(req,res)=>{let {type,id}=req.params;let Model=type==='novel'?Novel:Comic;let ex=await Like.findOne({userEmail:req.user.email,targetId:id});if(ex){await ex.deleteOne();let d=await Model.findByIdAndUpdate(id,{$inc:{likes:-1}},{new:true});return res.json({liked:false,likes:d.likes});}await Like.create({userEmail:req.user.email,targetId:id,targetType:type});let d=await Model.findByIdAndUpdate(id,{$inc:{likes:1}},{new:true});res.json({liked:true,likes:d.likes});});
 app.get('/api/comments/:type/:id',async(req,res)=>{res.json(await Comment.find({targetId:req.params.id}).sort({createdAt:-1}).limit(100));});
 app.post('/api/comments/:type/:id',protect,async(req,res)=>{let u=await User.findById(req.user.id);let c=await Comment.create({userEmail:u.email,userName:u.name,targetId:req.params.id,targetType:req.params.type,text:req.body.text?.slice(0,500)});res.json(c);});
-app.listen(process.env.PORT||10000,()=>console.log("✅ v708 ULTIMATE LIVE"));
+app.listen(process.env.PORT||10000,()=>console.log("✅ v708 ULTIMATE FILE LIVE"));
