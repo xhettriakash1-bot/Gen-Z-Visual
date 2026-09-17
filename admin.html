@@ -1,120 +1,91 @@
-<!DOCTYPE html>
-<html><head>
+<!DOCTYPE html><html><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Admin v705 PRO - Gen-Z Visual</title>
+<title>Admin v708 FB DASH</title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#07070a;color:#fff;font-family:system-ui,sans-serif}
-header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#111;border-bottom:1px solid #222;position:sticky;top:0;z-index:99}
-.logo{font-weight:900}.logo span{color:#ff00ff}
-.wrap{max-width:1100px;margin:0 auto;padding:16px 16px 120px}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:800px){.grid2{grid-template-columns:1fr}}
-.card{background:#15151a;border:1px solid #222;border-radius:20px;padding:16px;margin-bottom:14px}
-.card.live{border-color:#00ff8840}
-input{width:100%;padding:12px 14px;margin:6px 0;background:#0e0e12;border:1px solid #2a2a32;border-radius:10px;color:#fff;outline:none}
-.btn{padding:10px 16px;border-radius:20px;border:none;font-weight:800;cursor:pointer}
-.btn-w{background:#fff;color:#000}.btn-f{background:#ff0055;color:#fff}
-.badge{padding:4px 10px;border-radius:20px;font-size:10px;font-weight:900}
-.badge-admin{background:linear-gradient(135deg,#ff00ff,#7a00ff);color:#fff}
-.badge-ok{background:#00ff88;color:#000}.badge-live{background:#00ff88;color:#000}.badge-my{background:#ff00ff;color:#fff}.badge-paid{background:#facc15;color:#000}
-.stat{display:inline-block;background:#1a1a1e;border:1px solid #222;border-radius:12px;padding:8px 14px;margin:4px;font-size:12px;text-align:center}
+*{box-sizing:border-box}body{margin:0;background:#07070a;color:#fff;font-family:system-ui}
+header{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#111;border-bottom:1px solid #222;position:sticky;top:0;z-index:99}
+.logo{font-weight:900}.logo span{color:#ff0055}
+.wrap{max-width:900px;margin:0 auto;padding:14px 14px 100px}
+.card{background:#15151a;border:1px solid #222;border-radius:16px;padding:14px;margin-bottom:12px}
+.stat{display:inline-block;background:#1a1a1e;border:1px solid #222;border-radius:10px;padding:8px 12px;margin:4px;font-size:12px}
+input,select{width:100%;padding:11px 12px;margin:5px 0;background:#0e0e12;border:1px solid #2a2a32;border-radius:10px;color:#fff;outline:none}
+.btn{padding:10px 14px;border-radius:20px;border:none;font-weight:800;cursor:pointer}
+.btn-y{background:#facc15;color:#000}.btn-r{background:#ef4444;color:#fff}.btn-g{background:#00ff88;color:#000}
 .novel{display:flex;gap:10px;align-items:center;background:#0e0e12;border:1px solid #222;padding:10px;border-radius:12px;margin:6px 0}
 .novel img{width:44px;height:60px;object-fit:cover;border-radius:8px}
+.search{border-radius:99px!important}
 </style>
 </head><body>
-<header>
-<div class="logo">Gen-Z <span>Admin</span> <span style="font-size:9px;background:#00ff88;color:#000;padding:3px 8px;border-radius:20px">v705 PRO DYNAMIC CLOSED</span></div>
-<div style="display:flex;gap:8px;align-items:center">
-<span id="adminEmail" style="font-size:11px;color:#888"></span>
-<a href="index.html?v=705" style="background:#222;color:#aaa;padding:8px 12px;border-radius:20px;text-decoration:none;font-size:12px">Home</a>
-<a href="dashboard.html?v=705" style="background:#7a00ff;color:#fff;padding:8px 12px;border-radius:20px;text-decoration:none;font-size:12px">Studio</a>
-<button onclick="logout()" style="background:#ef4444;color:#fff;border:none;padding:8px 12px;border-radius:20px;font-size:12px">Logout</button>
-</div>
-</header>
+<header><div class="logo">Gen-Z <span>Admin</span> <small style="font-size:9px;background:#00ff88;color:#000;padding:2px 5px;border-radius:5px">v708 DASH</small></div><div style="display:flex;gap:6px"><a href="index.html?v=708" style="background:#222;color:#aaa;padding:7px 10px;border-radius:20px;text-decoration:none;font-size:11px">Home</a><button onclick="localStorage.clear();location.href='login.html?v=708'" style="background:#ef4444;color:#fff;border:none;padding:7px 10px;border-radius:20px;font-size:11px">Logout</button></div></header>
 
 <div class="wrap">
-<div class="card live">
-<b>👑 Admin v705 PRO DYNAMIC</b><br>
-<small style="color:#888">LIVE DELETE + VIEWS + PAID + Password Reset v705. Wake optimized.</small><br>
-<div style="margin-top:10px">
-<span class="stat">LIVE Novels: <b id="cLiveNov">0</b></span>
-<span class="stat">LIVE Comics: <b id="cLiveCom">0</b></span>
+<div class="card" style="border-color:#00ff8840">
+<b>👑 Admin v708 FB DASHBOARD</b><br><small style="color:#888">Delete + Views + Paid</small>
+<div style="margin-top:8px">
+<span class="stat">Novels: <b id="cLiveNov">0</b></span>
+<span class="stat">Comics: <b id="cLiveCom">0</b></span>
+<span class="stat">Views: <b id="cViews">0</b></span>
 <span class="stat">Users: <b id="cUsr">0</b></span>
-<span class="stat">Views Total: <b id="cViews">0</b></span>
 </div>
 </div>
 
-<!-- NEW: ADMIN PASSWORD RESET v705 -->
-<div class="card" style="border:1px solid #ffcc00;background:#1a1a00">
-<b>🔑 Admin - Reset ANY User Password v705</b><br><small style="color:#888">Use CREATOR2026 code - reset any email instantly</small>
-<input id="resetEmail" placeholder="User Email to reset*">
-<input id="resetNewPass" type="password" placeholder="New Password for user* min 6">
-<button class="btn" style="background:#ffcc00;color:#000;width:100%;margin-top:8px" onclick="adminResetPass()">🔑 Reset User Password as Admin</button>
-<div id="resetStat" style="font-size:11px;color:#ffcc00;margin-top:6px"></div>
-<hr style="border-color:#222;margin:12px 0">
-<b style="font-size:12px">🔑 Change MY Own Admin Password</b>
-<input id="myEmail" placeholder="My Admin Email">
-<input id="myOldPass" type="password" placeholder="My Old Password">
-<input id="myNewPass" type="password" placeholder="My New Password">
-<button class="btn btn-w" style="width:100%;margin-top:8px" onclick="changeMyPass()">Change My Password v705</button>
-<div id="myPassStat" style="font-size:11px;color:#888;margin-top:6px"></div>
+<div class="card" style="border-color:#facc15;background:#1a1a00">
+<b>🔑 Reset Password - FAST</b>
+<input id="resetEmail" class="search" placeholder="🔍 User email">
+<input id="resetNewPass" type="password" placeholder="New password min 6">
+<button class="btn btn-y" style="width:100%;margin-top:6px" onclick="adminResetPass()">Reset as Admin</button>
+<div id="resetStat" style="font-size:11px;color:#facc15;margin-top:6px"></div>
 </div>
 
-<div class="grid2">
-<div class="card"><b>📚 LIVE Novels + Comics</b><div id="listLive" style="margin-top:8px">Waking backend...</div></div>
-<div class="card"><b>👥 Users LIVE</b><div id="listUsers" style="margin-top:8px">Waking...</div></div>
+<div class="card">
+<div style="display:flex;justify-content:space-between;align-items:center"><b>📚 LIVE Content</b><input id="qContent" class="search" placeholder="Search title" style="width:140px;margin:0" oninput="filterContent()"></div>
+<div id="listLive" style="margin-top:10px">Waking...</div>
+</div>
+
+<div class="card">
+<div style="display:flex;justify-content:space-between;align-items:center"><b>👥 Users</b><input id="qUser" class="search" placeholder="Search email" style="width:140px;margin:0" oninput="filterUsers()"></div>
+<div id="listUsers" style="margin-top:10px">Waking...</div>
 </div>
 </div>
 
 <script>
-const API_BASE="https://gen-z-visual-2.onrender.com";
-const API=API_BASE+"/api";
+const API_BASE="https://gen-z-visual-2.onrender.com";const API=API_BASE+"/api";
 let TOKEN=localStorage.getItem("token")||localStorage.getItem("genz_token")||"";
-let USER={}; try{USER=JSON.parse(localStorage.getItem("user")||localStorage.getItem("genz_user")||"{}")}catch{}
-document.getElementById("adminEmail").innerText=USER.email||"";
-document.getElementById("myEmail").value=USER.email||localStorage.getItem("email")||"";
-
+let allContent=[], allUsers=[];
 async function adminResetPass(){
- let email=document.getElementById("resetEmail").value.trim(), newPass=document.getElementById("resetNewPass").value;
- if(!email||!newPass){resetStat.innerText="Fill all";return;}
- if(newPass.length<6){resetStat.innerText="Min 6";return;}
- resetStat.innerText="Resetting v705 as Admin...";
+ let email=resetEmail.value.trim(), newPass=resetNewPass.value;
+ if(!email||!newPass||newPass.length<6){resetStat.innerText="Fill valid";return;}
+ resetStat.innerText="Resetting...";
  try{
-  await fetch(API_BASE+"/",{cache:"no-store"});
-  let r=await fetch(API+"/auth/change-password",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email, oldPassword:"CREATOR2026", newPassword:newPass})});
-  let d=await r.json();
-  resetStat.innerText=r.ok? "✅ Admin Reset OK for "+email+" v705" : "❌ "+(d.error||JSON.stringify(d).slice(0,200));
+  let r=await fetch(API+"/auth/change-password",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email,oldPassword:"CREATOR2026",newPassword:newPass})});
+  let d=await r.json(); resetStat.innerText=r.ok?"✅ OK for "+email:"❌ "+(d.error||"fail");
  }catch(e){resetStat.innerText="❌ "+e.message;}
 }
-async function changeMyPass(){
- let email=myEmail.value.trim(), oldP=myOldPass.value, newP=myNewPass.value;
- if(!email||!oldP||!newP){myPassStat.innerText="Fill all";return;}
- if(newP.length<6){myPassStat.innerText="Min 6";return;}
- myPassStat.innerText="Changing my pass v705...";
- try{
-  await fetch(API_BASE+"/",{cache:"no-store"});
-  let r=await fetch(API+"/auth/change-password",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email, oldPassword:oldP, newPassword:newP})});
-  let d=await r.json();
-  myPassStat.innerText=r.ok? "✅ My Password Changed v705!" : "❌ "+(d.error||"error");
- }catch(e){myPassStat.innerText="❌ "+e.message;}
+let filterQ="";
+function filterContent(){filterQ=qContent.value.toLowerCase();renderContent();}
+function renderContent(){
+ let f=allContent.filter(x=>x.title.toLowerCase().includes(filterQ));
+ listLive.innerHTML=f.slice(0,30).map(x=>`<div class="novel"><img src="${x.cover||x.coverImage||x.pages?.[0]||'https://picsum.photos/400/600'}"><div style="flex:1"><b style="font-size:11px">${x.title.slice(0,30)}</b><br><small style="color:#888">${x.type} • ${x.access==='paid'?'💎 ₹'+x.price:'FREE'} • 👁️ ${x.views||0}</small></div><button onclick="del('${x._id}','${x.type}')" class="btn btn-r" style="padding:6px 10px;font-size:10px">Del</button></div>`).join("")||"No match";
 }
-function logout(){localStorage.clear(); location.href="login.html?v=705";}
+function filterUsers(){let q=qUser.value.toLowerCase(); listUsers.innerHTML=allUsers.filter(u=>u.email.toLowerCase().includes(q)).slice(0,30).map(u=>`<div style="padding:6px 0;border-bottom:1px solid #222;font-size:11px;display:flex;justify-content:space-between"><span>${u.email} <small style="color:#666">${u.role||''}</small></span><button onclick="resetEmail.value='${u.email}';window.scrollTo(0,0)" style="background:#222;color:#facc15;border:none;padding:3px 8px;border-radius:10px;font-size:10px">Reset</button></div>`).join("")||"No users";}
+async function del(id,type){
+ if(!confirm("Delete "+type+"?")) return;
+ let url=type==='novel'?API+"/novels/"+id:API+"/comics/"+id;
+ try{let r=await fetch(url,{method:"DELETE",headers:{Authorization:"Bearer "+TOKEN}}); if(r.ok){alert("Deleted"); load();} else alert("Need admin token - login again as admin");}catch(e){alert(e.message);}
+}
 async function load(){
  try{
   await fetch(API_BASE+"/",{cache:"no-store"});
   let [rn,rc,ru]=await Promise.all([
-    fetch(API+"/novels",{cache:"no-store"}),
-    fetch(API+"/comics",{cache:"no-store"}),
+    fetch(API+"/novels",{cache:"no-store"}), fetch(API+"/comics",{cache:"no-store"}),
     fetch(API+"/users",{headers:{Authorization:"Bearer "+TOKEN},cache:"no-store"}).catch(()=>({json:async()=>[]}))
   ]);
-  let n=await rn.json(); let c=await rc.json();
-  n=Array.isArray(n)?n:(n.novels||[]); c=Array.isArray(c)?c:(c.comics||[]);
-  document.getElementById("cLiveNov").innerText=n.length;
-  document.getElementById("cLiveCom").innerText=c.length;
-  document.getElementById("cViews").innerText=[...n,...c].reduce((s,x)=>s+(x.views||0),0);
-  document.getElementById("listLive").innerHTML=[...n,...c].sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).slice(0,20).map(x=>`<div class="novel"><img src="${x.cover||x.coverImage||x.pages?.[0]||'https://picsum.photos/400/600'}"><div style="flex:1"><b style="font-size:11px">${x.title.slice(0,28)}</b><br><small style="color:#888">${x.access==='paid'?'💎 ₹'+(x.price||0):'FREE'} • 👁️ ${x.views||0}</small></div></div>`).join("")||"No live";
-  try{ let u=await ru.json(); u=Array.isArray(u)?u:(u.users||[]); document.getElementById("cUsr").innerText=u.length; document.getElementById("listUsers").innerHTML=u.slice(0,30).map(x=>`<div style="padding:6px 0;border-bottom:1px solid #222;font-size:11px">${x.email} <span style="color:#666">${x.role||'reader'}</span> <button onclick="document.getElementById('resetEmail').value='${x.email}'" style="background:#222;color:#ffcc00;border:none;padding:3px 8px;border-radius:10px;font-size:10px;margin-left:6px">Reset Pass</button></div>`).join("")||"No users endpoint - add /users route"; }catch{ document.getElementById("listUsers").innerText="Users route waking..."; }
- }catch(e){ document.getElementById("listLive").innerText="Backend waking 20s... "+e.message; }
+  let n=await rn.json(); let c=await rc.json(); n=Array.isArray(n)?n:n.novels||[]; c=Array.isArray(c)?c:c.comics||[];
+  allContent=[...n.map(x=>({...x,type:'novel'})),...c.map(x=>({...x,type:'comic'}))].sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+  cLiveNov.innerText=n.length; cLiveCom.innerText=c.length; cViews.innerText=allContent.reduce((s,x)=>s+(x.views||0),0);
+  renderContent();
+  try{let u=await ru.json(); u=Array.isArray(u)?u:u.users||[]; allUsers=u; cUsr.innerText=u.length; filterUsers();}catch{cUsr.innerText="0";}
+ }catch(e){listLive.innerText="Waking... "+e.message;}
 }
 load();
-</script>
-</body></html>
+</script></body></html>
