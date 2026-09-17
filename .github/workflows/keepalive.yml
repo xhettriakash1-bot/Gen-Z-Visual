@@ -1,0 +1,15 @@
+name: Keep v708 Alive 24/7
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping v708 Health
+        run: curl -s https://gen-z-visual-2.onrender.com/api/health
+      - name: Ping Main Site
+        run: curl -s https://gen-z-visual-2.onrender.com/
